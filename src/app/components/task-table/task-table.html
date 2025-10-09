@@ -1,0 +1,117 @@
+<div class="tableContainer">
+  <table mat-table [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
+
+    <caption style="caption-side: top;">
+      <h2>Table</h2>
+      <p>
+        A list of all tasks.
+      </p>
+    </caption>
+
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <ng-container matColumnDef="ID">
+        <th mat-header-cell *matHeaderCellDef> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.ID}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> ID </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+        <td mat-cell *matCellDef="let element"> {{element.Title}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Title </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.Description}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Description </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Category </th>
+        <td mat-cell *matCellDef="let element"> {{element.Category}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Category </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Priority">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Priority </th>
+        <td mat-cell *matCellDef="let element"> {{element.Priority}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Priority </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Threat Level">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Threat Level </th>
+        <td mat-cell *matCellDef="let element"> {{element['Threat Level']}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Threat Level </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+        <td mat-cell *matCellDef="let element">{{element.Status}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Status </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Deadline">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Deadline </th>
+        <td mat-cell *matCellDef="let element"> {{deadlineFormatHelper(element.Deadline)}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Deadline </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Created At">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Created At </th>
+        <td mat-cell *matCellDef="let element"> {{deadlineFormatHelper(element['Created At'])}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Created At </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Last Edited">
+        <th mat-header-cell *matHeaderCellDef> Last Edited </th>
+        <td mat-cell *matCellDef="let element"> {{element['Last Edited']}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Last Edited </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Options">
+        <th mat-header-cell *matHeaderCellDef>  Options </th>
+        <td mat-cell *matCellDef="let element"> 
+            <button mat-flat-button color="primary">Finish</button>
+            <button mat-flat-button color="primary">Update</button>
+            <button mat-flat-button color="success">Delete</button>
+        </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> Options </td>
+      </ng-container>
+
+      <!--Columns Below are hidden but needed-->
+      <ng-container matColumnDef="SID">
+        <th mat-header-cell *matHeaderCellDef> SID </th>
+        <td mat-cell *matCellDef="let element"> {{element.SID}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> SID </td>
+      </ng-container>
+
+      <ng-container matColumnDef="TID">
+        <th mat-header-cell *matHeaderCellDef> TID </th>
+        <td mat-cell *matCellDef="let element"> {{element.TID}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> TID </td>
+      </ng-container>
+
+      <ng-container matColumnDef="UID">
+        <th mat-header-cell *matHeaderCellDef> UID </th>
+        <td mat-cell *matCellDef="let element"> {{element.UID}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> UID </td>
+      </ng-container>
+
+      <ng-container matColumnDef="CID">
+        <th mat-header-cell *matHeaderCellDef> CID </th>
+        <td mat-cell *matCellDef="let element"> {{element.CID}} </td>
+        <td mat-footer-cell *matFooterCellDef class="footerRow"> CID </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
+      <tr mat-row *matRowDef="let row; columns: taskColumns;" [ngClass]="evaluateDate(row)"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colSpan]="taskColumns.length">No data found.</td>
+      </tr>
+    </table>
+</div>
+
