@@ -1,3 +1,12 @@
 {
-    
+    "data":[
+        {"id":1,"stat":"Unfinished"},
+        {"id":2,"stat":"In Progress"},
+        {"id":3,"stat":"Finished"},
+        {"id":4,"stat":"Cancelled"},
+        {"id":5,"stat":"Delayed"},
+        {"id":6,"stat":"Continuous"},
+        {"id":7,"stat":"On Hold"},
+        {"id":8,"stat":"Speculation"}
+    ]
 }
