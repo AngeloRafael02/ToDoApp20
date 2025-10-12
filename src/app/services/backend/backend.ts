@@ -48,7 +48,7 @@ export class BackendService {
     }    
   }
 
-  public getTasks(id:number, table:string){
+  public getTasks(id:number, table:string = 'current'){
     let errorMessage:string =  `API GET failed for ${table}. Falling back to local JSON.`;
     let API_URL_Path:string = `${this.nestJS}/task`;
     let backupJSONpath:string = `/assets/data/taskSample`;
@@ -68,7 +68,7 @@ export class BackendService {
     return this.http.get<taskViewInterface[]>(API_URL_Path)
       .pipe(catchError((error:HttpErrorResponse) => {
         console.error(errorMessage, error);
-        return this.http.get<messageInterface>(`${backupJSONpath}/table-error.json`);
+        return this.http.get<taskViewInterface[]>(`${backupJSONpath}/${table}-tasks.json`);
       }));
   }
 
@@ -78,7 +78,8 @@ export class BackendService {
 
   public getColumnHeaders(table:string):Observable<string[]>{
     let errorMessage:string =  `API GET failed for ${table}. Falling back to local JSON.`;
-    return this.http.get<string[]>(`${this.nestJS}/misc/col/${table}`)
+    let backupJSONpath:string = `/assets/data/misc`;
+    return this.http.get<string[]>(`${backupJSONpath}/columns.json`)
       .pipe(catchError((error:HttpErrorResponse)=> {
         console.error(errorMessage, error);
         return this.http.get<string[]>(`assets/data/misc/columns.json`);

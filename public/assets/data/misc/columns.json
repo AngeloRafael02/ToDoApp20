@@ -1,15 +1,13 @@
-{
-    "columns":[
-        "ID",
-        "Title",
-        "Description",
-        "Category",
-        "Priority",
-        "Threat Level",
-        "Status",
-        "Deadline",
-        "Created At",
-        "Last Edited",
-        "ID"
-    ]
-}
+[
+    "ID",
+    "Title",
+    "Description",
+    "Category",
+    "Priority",
+    "Threat Level",
+    "Status",
+    "Deadline",
+    "Created At",
+    "Last Edited",
+    "ID"
+]

@@ -45,7 +45,7 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.backendService.getTasks(1,'current').subscribe(data => {
+    this.backendService.getTasks(1).subscribe(data => {
       console.log(data);
     })
   }

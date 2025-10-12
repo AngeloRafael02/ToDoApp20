@@ -1,9 +1,7 @@
-{
-    "data":[
-        {"id":1,"level":"Low"},
-        {"id":2,"level":"Medium"},
-        {"id":3,"level":"High"},
-        {"id":4,"level":"Alarming"},
-        {"id":5,"level":"Inevitable"}
-    ]
-}
+[
+    {"id":1,"level":"Low"},
+    {"id":2,"level":"Medium"},
+    {"id":3,"level":"High"},
+    {"id":4,"level":"Alarming"},
+    {"id":5,"level":"Inevitable"}
+]

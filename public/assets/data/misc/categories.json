@@ -1,15 +1,13 @@
-{
-    "data":[
-        {"id":1,"cat":"Personal"},
-        {"id":2,"cat":"Knowledge"},
-        {"id":3,"cat":"Career"},
-        {"id":4,"cat":"Automotive"},
-        {"id":5,"cat":"IT"},
-        {"id":6,"cat":"Government"},
-        {"id":7,"cat":"Finance"},
-        {"id":8,"cat":"Estate"},
-        {"id":9,"cat":"Fitness"},
-        {"id":10,"cat":"Health"},
-        {"id":11,"cat":"Other"}
-    ]
-}
+[
+    {"id":1,"cat":"Personal"},
+    {"id":2,"cat":"Knowledge"},
+    {"id":3,"cat":"Career"},
+    {"id":4,"cat":"Automotive"},
+    {"id":5,"cat":"IT"},
+    {"id":6,"cat":"Government"},
+    {"id":7,"cat":"Finance"},
+    {"id":8,"cat":"Estate"},
+    {"id":9,"cat":"Fitness"},
+    {"id":10,"cat":"Health"},
+    {"id":11,"cat":"Other"}
+]

@@ -1,0 +1,15 @@
+[
+    {
+        "id":4,
+        "title":"finished test",
+        "note":"this task is finished",
+        "cat_id":5,
+        "prio":null,
+        "threat_id":1,
+        "stat_id":3,
+        "created_at":"2025-09-28 09:56:16.899",
+        "last_edited":"2025-09-28 09:56:16.899",
+        "deadline":null,
+        "owner_id":1
+    }
+]
