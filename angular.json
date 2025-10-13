@@ -37,6 +37,9 @@
           },
           "configurations": {
             "production": {
+              "security": {
+                "autoCsp": true 
+              },
               "budgets": [
                 {
                   "type": "initial",
