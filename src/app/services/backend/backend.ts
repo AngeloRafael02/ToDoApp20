@@ -15,43 +15,46 @@ import { messageInterface } from '../../interfaces/message.interface';
 export class BackendService {
 
   private nestJS:string = environment.nestJS_url;
+  private backupJSONPath:string = `/assets/data`;
+  private miscAPIpath:string = `${this.nestJS}/misc`;
+  private taskJSONpath:string = `${this.nestJS}/task`;
+  private miscBackupPath:string = `${this.backupJSONPath}/misc`;
+  private taskBackupPath:string = `${this.backupJSONPath}/taskSample`;
+  private errorMsg = (option:string) => {
+    return `API GET failed for ${option}. Falling back to local JSON.`
+  }
 
   constructor(
     private http:HttpClient
   ) { }
 
   public getDropdownItems(option:string){
-    let errorMessage:string =  `API GET failed for ${option}. Falling back to local JSON.`;
-    let miscAPIpath:string = `${this.nestJS}/misc`;
-    let backupJSONpath:string = `/assets/data/misc`;
     switch (option){
       case 'categories':
-        return this.http.get<categoriesInterface[]>(`${miscAPIpath}/allCat`)
+        return this.http.get<categoriesInterface[]>(`${this.miscAPIpath}/allCat`)
           .pipe(catchError((error: HttpErrorResponse) => {
-            console.error(errorMessage, error);
-            return this.http.get<categoriesInterface[]>(`${backupJSONpath}/categories.json`);
+            console.error(this.errorMsg(option), error);
+            return this.http.get<categoriesInterface[]>(`${this.miscBackupPath}/categories.json`);
           }));
       case 'Status':
-        return this.http.get<conditionInterface[]>(`${miscAPIpath}/allCond`)
+        return this.http.get<conditionInterface[]>(`${this.miscAPIpath}/allCond`)
           .pipe(catchError((error:HttpErrorResponse)=> {
-            console.error(errorMessage, error);
-            return this.http.get<conditionInterface[]>(`${backupJSONpath}/conditions.json`);
-          }));
+            console.error(this.errorMsg(option), error);
+            return this.http.get<conditionInterface[]>(`${this.miscBackupPath}/conditions.json`);
+          }))
       case 'threat level':
-        return this.http.get<threatInterface[]>(`${miscAPIpath}/allThreats`)
+        return this.http.get<threatInterface[]>(`$this.miscAPIpath}/allThreats`)
           .pipe(catchError((error:HttpErrorResponse) => {
-            console.error(errorMessage, error);
-            return this.http.get<threatInterface[]>(`${backupJSONpath}/threat-level.json`);
+            console.error(this.errorMsg(option), error);
+            return this.http.get<threatInterface[]>(`${this.miscBackupPath}/threat-level.json`);
           }));
       default: 
-        return this.http.get<messageInterface>(`${backupJSONpath}/error.json`);
+        return this.http.get<messageInterface>(`${this.miscBackupPath}/error.json`);
     }    
   }
 
   public getTasks(id:number, table:string = 'current'){
-    let errorMessage:string =  `API GET failed for ${table}. Falling back to local JSON.`;
-    let API_URL_Path:string = `${this.nestJS}/task`;
-    let backupJSONpath:string = `/assets/data/taskSample`;
+    let API_URL_Path:string = this.taskJSONpath;
     switch (table){
       case 'current':
         API_URL_Path += `/all/${id}`;
@@ -67,8 +70,8 @@ export class BackendService {
     }
     return this.http.get<taskViewInterface[]>(API_URL_Path)
       .pipe(catchError((error:HttpErrorResponse) => {
-        console.error(errorMessage, error);
-        return this.http.get<taskViewInterface[]>(`${backupJSONpath}/${table}-tasks.json`);
+        console.error(this.errorMsg(table), error);
+        return this.http.get<taskViewInterface[]>(`${this.taskBackupPath}/${table}-tasks.json`);
       }));
   }
 
@@ -77,19 +80,15 @@ export class BackendService {
   }
 
   public getColumnHeaders(table:string):Observable<string[]>{
-    let errorMessage:string =  `API GET failed for ${table}. Falling back to local JSON.`;
-    let backupJSONpath:string = `/assets/data/misc`;
-    return this.http.get<string[]>(`${backupJSONpath}/columns.json`)
+    return this.http.get<string[]>(`${this.miscBackupPath}/columns.json`)
       .pipe(catchError((error:HttpErrorResponse)=> {
-        console.error(errorMessage, error);
+        console.error(this.errorMsg(table), error);
         return this.http.get<string[]>(`assets/data/misc/columns.json`);
       }));
   }
 
   public getChartData(id:number, option:string){
-    let errorMessage:string =  `API GET failed for ${option}. Falling back to local JSON.`;
-    let miscAPIpath:string = `${this.nestJS}/misc`;
-    let backupJSONpath:string = `/assets/data/misc`;
+    let miscAPIpath:string = this.miscAPIpath;
     switch (option){
       case 'categories':
         miscAPIpath += `/catGrouped/${id}`;
@@ -105,8 +104,8 @@ export class BackendService {
     }
     return this.http.get<chartDataInterface[]>(miscAPIpath)
       .pipe(catchError((error:HttpErrorResponse) => {
-        console.error(errorMessage, error);
-        return this.http.get<messageInterface>(`${backupJSONpath}/threat-level.json`);
+        console.error(this.errorMsg(option), error);
+        return this.http.get<messageInterface>(`${this.miscBackupPath}/threat-level.json`);
       }));
   }
 
