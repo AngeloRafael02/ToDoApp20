@@ -71,7 +71,7 @@ export class BackendService {
     return this.http.get<taskViewInterface[]>(API_URL_Path)
       .pipe(catchError((error:HttpErrorResponse) => {
         console.error(this.errorMsg(table), error);
-        return this.http.get<taskViewInterface[]>(`${this.taskBackupPath}/${table}-tasks.json`);
+        return this.http.get<messageInterface>(`${this.miscBackupPath}/error.json`);
       }));
   }
 
