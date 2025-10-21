@@ -1,21 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, AfterContentChecked } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { CdkColumnDef } from '@angular/cdk/table';
-
 
 import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/misc/string/string';
 import { Date } from '../../services/misc/date/date';
 import { Style } from '../../services/misc/style/style';
-import { taskViewInterface } from '../../interfaces/task.interface';
+import { tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
+import { messageInterface } from '../../interfaces/message.interface';
 
 @Component({
   selector: 'task-table',
-  providers:[
-    CdkColumnDef
-  ],
   imports: [
     CommonModule,
     MatTableModule,
@@ -25,7 +21,7 @@ import { taskViewInterface } from '../../interfaces/task.interface';
   styleUrl: './task-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements OnInit, OnChanges, OnDestroy {
+export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, AfterContentChecked {
 
 
   private tasks:taskViewInterface[] = [] 
@@ -36,7 +32,8 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy {
     public stringService:String,
     public backendService:BackendService,
     public dateService:Date,
-    public styleService:Style
+    public styleService:Style,
+    private cdr: ChangeDetectorRef
   ){
     this.backendService.getColumnHeaders('task_view').subscribe(data => {
       this.taskColumns = data;
@@ -44,10 +41,26 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy {
     });
   }
 
+  private isErrorMessage(obj:tasksOrMessage):obj is messageInterface {
+    return 'message' in obj && typeof (obj as messageInterface).message === 'string';
+  }
+
   ngOnInit(): void {
     this.backendService.getTasks(1).subscribe(data => {
-      console.log(data);
+      if (!this.isErrorMessage(data)){
+        this.tasks = data;
+        this.tasksSource.data = this.tasks;
+      } else {
+        alert(data.message);
+      }
     })
+  }
+
+  ngAfterViewInit(): void {
+
+  }
+  ngAfterContentChecked(): void {
+    this.cdr.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -56,6 +69,7 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy {
   ngOnDestroy(): void {
     
   }
+
 
 
   public deadlineFormatHelper(deadline:string):string{

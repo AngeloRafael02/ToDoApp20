@@ -1,3 +1,5 @@
+import { messageInterface } from "./message.interface"
+
 export interface taskInterface {
     id?:number
     title:string
@@ -28,3 +30,5 @@ export interface taskViewInterface{
     UID:number
     CID:number
 }
+
+export type tasksOrMessage = taskViewInterface[] | messageInterface;
