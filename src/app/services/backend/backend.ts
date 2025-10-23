@@ -80,10 +80,10 @@ export class BackendService {
   }
 
   public getColumnHeaders(table:string):Observable<string[]>{
-    return this.http.get<string[]>(`${this.miscBackupPath}/columns.json`)
+    return this.http.get<string[]>(`${this.miscAPIpath}/col/${table}`)
       .pipe(catchError((error:HttpErrorResponse)=> {
         console.error(this.errorMsg(table), error);
-        return this.http.get<string[]>(`assets/data/misc/columns.json`);
+        return this.http.get<string[]>(`${this.miscBackupPath}/columns.json`);
       }));
   }
 
