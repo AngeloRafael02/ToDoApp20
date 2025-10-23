@@ -19,7 +19,6 @@ export class BackendService {
   private miscAPIpath:string = `${this.nestJS}/misc`;
   private taskJSONpath:string = `${this.nestJS}/task`;
   private miscBackupPath:string = `${this.backupJSONPath}/misc`;
-  private taskBackupPath:string = `${this.backupJSONPath}/taskSample`;
   private errorMsg = (option:string) => {
     return `API GET failed for ${option}. Falling back to local JSON.`
   }
