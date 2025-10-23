@@ -1,13 +1,16 @@
 [
-    "ID",
+    "ID",          
     "Title",
-    "Description",
+    "Description", 
     "Category",
-    "Priority",
+    "Priority",    
     "Threat Level",
-    "Status",
+    "Status",      
     "Deadline",
-    "Created At",
+    "Created At",  
     "Last Edited",
-    "ID"
+    "SID",         
+    "TID",
+    "UID",         
+    "CID"
 ]
