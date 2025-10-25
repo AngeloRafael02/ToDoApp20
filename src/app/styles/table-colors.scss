@@ -1,5 +1,11 @@
 /* File Contains all Colors for Table cells */
 
+@use './pallete.scss' as pallete;
+
+/* Table */
+$borderColor:black;
+$headerColor:pallete.$color4;
+
 /* CATEGORIES */
 $personal:#d9ead3;
 $knowledge:#cfe2f3;

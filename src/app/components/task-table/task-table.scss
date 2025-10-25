@@ -1,0 +1,30 @@
+@use '../../styles/pallete.scss' as pallete;
+@use '../../styles/table-colors.scss' as tbl;
+
+table,th,td   {
+    border: 1px solid black;
+    margin: 0em 2em 0em 2em;
+    caption {
+      color:pallete.$primaryTextColor;
+    }
+    th,td {
+      text-align: center;
+      &:first-child,
+      &:nth-child(9),
+      &:nth-child(10),
+      &:nth-child(11) ~ th,
+      &:nth-child(11) ~ td{ /* Using the parent selector '&' */
+        display: none;
+      }
+    }
+    th{
+      background-color: tbl.$headerColor;
+    }
+    td{
+      border: 1px solid black;
+      button{
+        width: 50px; 
+        margin-left:5px;
+      }
+    }
+}
