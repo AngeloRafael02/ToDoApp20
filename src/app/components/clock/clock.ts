@@ -10,17 +10,15 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
     </div>
   `,
   styles: `
+  @use '../../styles/pallete.scss' as palette;
     .digital-clock {
       text-align: center;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       font-size: 1.5em;
       font-weight: 500;
       padding: 20px;
-      border: 1px solid #007bff;
-      background-color: #f8f9fa;
-      border-radius: 8px;
+      background-color: transparent;
       display: inline-block;
-      color: #333;
+      color: palette.$primaryTextColor;
     }
     h2 {
         margin: 0;
