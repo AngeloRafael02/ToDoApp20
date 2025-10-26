@@ -23,8 +23,8 @@ import { messageInterface } from '../../interfaces/message.interface';
 })
 export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, AfterContentChecked {
 
-
   private tasks:taskViewInterface[] = [] 
+  public title:string = 'Current';
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
 
@@ -59,6 +59,7 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, A
   ngAfterViewInit(): void {
 
   }
+  
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
@@ -69,8 +70,6 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, A
   ngOnDestroy(): void {
     
   }
-
-
 
   public deadlineFormatHelper(deadline:string):string{
     return this.dateService.dateFormatHelper(deadline);
