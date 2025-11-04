@@ -4,7 +4,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-modal',
+  selector: 'modal',
   imports: [
     MatIconModule,
     MatButtonModule,
@@ -86,12 +86,12 @@ export class Modal {
       Open Modal
     </button>
 
-    <app-modal 
+    <modal 
       [visible]="isModalVisible" 
       (close)="isModalVisible = false"
     >
       <h3>🥳 Success!</h3>
       <p>This is **Modal Content** with a custom header and text.</p>
       <button mat-button (click)="isModalVisible = false">Close from inside</button>
-    </app-modal>
+    </modal>
 */

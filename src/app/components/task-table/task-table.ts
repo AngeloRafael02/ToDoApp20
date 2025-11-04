@@ -9,6 +9,7 @@ import { Date } from '../../services/misc/date/date';
 import { Style } from '../../services/misc/style/style';
 import { tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
 import { messageInterface } from '../../interfaces/message.interface';
+import { TaskForm } from '../task-form/task-form';
 
 @Component({
   selector: 'task-table',
@@ -16,6 +17,7 @@ import { messageInterface } from '../../interfaces/message.interface';
     CommonModule,
     MatTableModule,
     MatButtonModule,
+    TaskForm
   ],
   templateUrl: './task-table.html',
   styleUrl: './task-table.scss',

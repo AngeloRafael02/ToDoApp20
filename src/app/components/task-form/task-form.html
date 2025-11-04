@@ -1,1 +1,9 @@
-<p>task-form works!</p>
+<button mat-raised-button (click)="isModalOpen = true">Task</button>
+
+<modal 
+    [visible]="isModalOpen" 
+    (close)="isModalOpen = false"
+>
+    <p>task-form works!</p>
+    <button (click)="isModalOpen = false">Got It!</button>
+</modal>
