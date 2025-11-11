@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MatDialogModule } from '@angular/material/dialog';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, TemplateRef, ViewChild } from '@angular/core';
+import { MatDialogModule,MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -11,92 +11,73 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule
   ],
   template: `
-  @if(visible){
-    <div class="modal-backdrop" (click)="onClose()">
-      <div class="modal-content" (click)="$event.stopPropagation()">
-      
-        <div class="modal-header">
-          <h2 class="modal-title">{{ title }}</h2>
-          <button mat-icon-button class="modal-close-button" (click)="onClose()" aria-label="Close modal">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
+    <ng-template> 
+      <h2 mat-dialog-title>
+        {{ title }}
         
-        <div class="modal-body">
-          <ng-content></ng-content>
-        </div>
-
-      </div>
-    </div>
-  }
+        <button mat-icon-button mat-dialog-close style="position: absolute; top: 12px; right: 8px;" aria-label="Close dialog">
+          <mat-icon>close</mat-icon>
+        </button>
+      </h2>
+  
+      <mat-dialog-content>
+        <ng-content></ng-content>
+      </mat-dialog-content>
+  
+      <mat-dialog-actions align="end">
+      </mat-dialog-actions>
+    </ng-template>
   `,
-  styles: `
-    .modal-backdrop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      .modal-content {
-        background-color: white;
-        padding: 24px;
-        border-radius: 8px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-        position: relative;
-        min-width: 300px;
-        max-width: 80%;
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0;
-          margin-bottom: 16px;
-          .modal-title {
-            margin: 0;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-right: 8px; 
-          }
-          .modal-close-button {
-            position: absolute; 
-            top: 8px;
-            right: 8px;
-          }
-        }
-        .modal-body {
-          padding-top: 16px; 
-        }
-      }
-    }
-  `
+  styles: ``,
 })
-export class Modal {
+export class Modal implements OnChanges {
+  @ViewChild(TemplateRef, { static: true }) dialogTemplate!: TemplateRef<any>;
+
   @Input() title: string = '';
   @Input() visible: boolean = false;
-  @Output() close = new EventEmitter<void>();
+  @Output() close = new EventEmitter<any>();
 
-  onClose(): void {
-    this.close.emit();
+  private dialogRef!: MatDialogRef<any> | null;
+
+  constructor(private dialog: MatDialog) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['visible']) {
+      if (this.visible && !this.dialogRef) {
+        this.openModal();
+      } else if (!this.visible && this.dialogRef) {
+        this.dialogRef.close();
+      }
+    }
+  }
+
+  openModal(): void {
+    this.dialogRef = this.dialog.open(this.dialogTemplate, {
+      width: '400px',
+      disableClose: false,
+      hasBackdrop: true,
+    });
+
+    this.dialogRef.afterClosed().subscribe(result => {
+      this.dialogRef = null;
+      this.close.emit(result);
+    });
   }
 }
 
 
 /**NOTE - How to use this Component:
-    <button mat-raised-button color="primary" (click)="isModalVisible = true">
-      Open Modal
-    </button>
+  <button mat-raised-button color="primary" (click)="isModalVisible = true">
+    Open Material Dialog
+  </button>
 
-    <modal 
-      [visible]="isModalVisible" 
-      (close)="isModalVisible = false"
-    >
-      <h3>🥳 Success!</h3>
-      <p>This is **Modal Content** with a custom header and text.</p>
-      <button mat-button (click)="isModalVisible = false">Close from inside</button>
-    </modal>
+  <modal
+    [visible]="isModalVisible"
+    [title]="'Material Dialog Title'"
+    (close)="isModalVisible = false"
+  >
+    <h3>🎉 Material Success!</h3>
+    <p>This content is injected into the <mat-dialog-content> section.</p>
+    <button mat-button mat-dialog-close>Close from inside</button>
+  </modal>
 */
