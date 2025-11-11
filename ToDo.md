@@ -10,8 +10,8 @@
 - Make Table Mobile friendly
 
 ### task-form Component
-- make it Modal
-- Create template
+- make it Modal - DONE
+- Create template - DONE
 - use component for creating and editing tasks
 
 ### task-charts Component
