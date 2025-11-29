@@ -35,7 +35,7 @@ export class BackendService {
             console.error(this.errorMsg(option), error);
             return this.http.get<categoriesInterface[]>(`${this.miscBackupPath}/categories.json`);
           }));
-      case 'Status':
+      case 'status':
         return this.http.get<conditionInterface[]>(`${this.miscAPIpath}/allCond`)
           .pipe(catchError((error:HttpErrorResponse)=> {
             console.error(this.errorMsg(option), error);
