@@ -13,7 +13,7 @@
         <ng-container [matColumnDef]="col">
           <th mat-header-cell *matHeaderCellDef>  {{ col }} </th>
           @if (col == 'Options') {
-            <td mat-cell *matCellDef="let element"> 
+            <td mat-cell *matCellDef="let element" style="display: flex;"> 
                 <button mat-flat-button color="primary">Finish</button>
                 <button mat-flat-button color="primary">Update</button>
                 <button mat-flat-button color="success">Delete</button>
