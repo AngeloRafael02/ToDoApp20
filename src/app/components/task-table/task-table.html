@@ -1,12 +1,12 @@
 <div class="tableContainer">
-  <task-form></task-form>
   <table mat-table [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
 
-    <caption style="caption-side: top;">
+    <caption>
       <h2>{{title}} Tasks Table</h2>
-      <p>
-        A list of all {{title | lowercase}} tasks.
-      </p>
+      <p>A list of all {{title | lowercase}} tasks.</p>
+      <div>
+        <task-form></task-form>
+      </div>
     </caption>
 
       @for (col of taskColumns; track col) {

@@ -5,7 +5,13 @@ table,th,td   {
     border: 1px solid black;
     margin: 0em 2em 0em 2em;
     caption {
+      caption-side: top;
       color:pallete.$primaryTextColor;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      div {
+        display: flex;
+      }
     }
     th,td {
       text-align: center;
