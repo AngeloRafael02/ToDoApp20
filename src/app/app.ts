@@ -12,6 +12,7 @@ import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
 import { Observable, Subscription } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { DropdownDataService } from './services/dropdown-data';
 
 @Component({
   selector: 'app-root',
@@ -40,7 +41,8 @@ export class App implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private titleService: Title,
     private metaService: Meta,
-    private backend:BackendService
+    private backend:BackendService,
+    private dropdownService:DropdownDataService,
   ) {}
 
   ngOnInit(): void {
@@ -67,7 +69,13 @@ export class App implements OnInit, OnDestroy {
     const itemObservable = this.backend.getDropdownItems(serviceOption) as Observable<T[]>;
     const sub = itemObservable.subscribe({
       next: (data: T[]) => {
-          (this[propertyName] as T[] | null) = data;
+          if (propertyName === 'categories') {
+              this.dropdownService.setCategories(data as categoriesInterface[]);
+          } else if (propertyName === 'statuses') {
+              this.dropdownService.setStatuses(data as conditionInterface[]);
+          } else if (propertyName === 'threatLevels') {
+              this.dropdownService.setThreatLevels(data as threatInterface[]);
+          }
           console.log(`${serviceOption} loaded:`, data);
       },
       error: (err: HttpErrorResponse) => console.error(`Error fetching ${serviceOption}:`, err)
