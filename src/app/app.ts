@@ -57,7 +57,7 @@ export class App implements OnInit, OnDestroy {
     this.metaService.addTags(tags);
     
     this.loadDropdownItem('categories', 'categories');
-    this.loadDropdownItem('Status', 'statuses');
+    this.loadDropdownItem('status', 'statuses');
     this.loadDropdownItem('threat level', 'threatLevels');
   }
 

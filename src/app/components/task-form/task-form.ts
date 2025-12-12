@@ -39,8 +39,9 @@ export class TaskForm implements OnInit {
   public taskForm!: FormGroup;
 
   public categories$: Observable<categoriesInterface[] | null>;
-  public status$: Observable<conditionInterface[] | null>;
+  public statuses$: Observable<conditionInterface[] | null>;
   public threats$: Observable<threatInterface[] | null>;
+  
   constructor(
     private fb: FormBuilder, 
     private snackBar: MatSnackBar,
@@ -50,7 +51,7 @@ export class TaskForm implements OnInit {
   ngOnInit(): void {
 
     this.categories$ = this.dropdownService.categories$;
-    this.status$ = this.dropdownService.statuses$;
+    this.statuses$ = this.dropdownService.statuses$; // <--- Initialized here
     this.threats$ = this.dropdownService.threatLevels$;
 
     this.taskForm = this.fb.group({ 

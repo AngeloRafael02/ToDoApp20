@@ -4,6 +4,7 @@
     <form [formGroup]="taskForm" (ngSubmit)="onSubmit()"> 
         <mat-dialog-content>
             <mat-grid-list cols="2" rowHeight="100px" gutterSize="10px">
+                
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Task</mat-label>
@@ -47,18 +48,19 @@
                     <mat-form-field>
                         <mat-label>Category</mat-label>
                         <mat-select formControlName="cat_id">
-                            @if(categories$ | async; as categories){
+                            @if (categories$ | async; as categories) {
                                 @for (category of categories; track category.id) {
                                     <mat-option [value]="category.id">{{category.cat}}</mat-option>
-                                  }
-                                @if(hasError('category', 'required')){
-                                    <mat-error>
-                                        Category is **required**.
-                                    </mat-error>
                                 }
+                            } @else {
+                                <mat-option disabled>Loading categories...</mat-option>
                             }
                         </mat-select>
-
+                        @if(hasError('cat_id', 'required')){
+                            <mat-error>
+                                Category is **required**.
+                            </mat-error>
+                        }
                     </mat-form-field>
                 </mat-grid-tile>
 
@@ -81,39 +83,40 @@
 
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
-                        <mat-label>Threat</mat-label>
+                        <mat-label>Threat Level</mat-label>
                         <mat-select formControlName="threat_id">
-                            @if(threats$ | async; as threats){
+                            @if (threats$ | async; as threats) {
                                 @for (threat of threats; track threat.id) {
                                     <mat-option [value]="threat.id">{{threat.level}}</mat-option>
-                                  }
-                                @if(hasError('threat', 'required')){
-                                    <mat-error>
-                                        Threat Level is **required**.
-                                    </mat-error>
                                 }
+                            } @else {
+                                <mat-option disabled>Loading threat levels...</mat-option>
                             }
                         </mat-select>
-                      </mat-form-field>
+                        @if(hasError('threat_id', 'required')){
+                            <mat-error>Threat Level is **required**.</mat-error>
+                        }
+                    </mat-form-field>
                 </mat-grid-tile>
 
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Status</mat-label>
                         <mat-select formControlName="stat_id">
-                            @if(status$ | async; as statuses){
+                            @if (statuses$ | async; as statuses) {
                                 @for (status of statuses; track status.id) {
                                     <mat-option [value]="status.id">{{status.stat}}</mat-option>
-                                  }
-                                @if(hasError('status', 'required')){
-                                    <mat-error>
-                                        Status is **required**.
-                                    </mat-error>
                                 }
+                            } @else {
+                                <mat-option disabled>Loading statuses...</mat-option>
                             }
                         </mat-select>
-                      </mat-form-field>
+                        @if(hasError('stat_id', 'required')){
+                            <mat-error>Status is **required**.</mat-error>
+                        }
+                    </mat-form-field>
                 </mat-grid-tile>
+
             </mat-grid-list>
         </mat-dialog-content>
         <mat-dialog-actions>
