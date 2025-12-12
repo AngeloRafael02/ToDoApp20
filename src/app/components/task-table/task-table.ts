@@ -27,11 +27,15 @@ import { Modal } from '../modal/modal';
 })
 export class TaskTable implements OnInit, AfterContentChecked {
 
-  private tasks:taskViewInterface[] = [] 
   public title:string = 'Current';
-  public isModalOpen:boolean = false;
+
+  private tasks:taskViewInterface[] = [] 
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
+  public selectedTask: taskViewInterface | undefined;
+
+  public isModalOpen:boolean = false;
+  public modalMode:'create'|'edit' = 'create';
 
   constructor(
     public stringService:String,
@@ -66,8 +70,19 @@ export class TaskTable implements OnInit, AfterContentChecked {
     this.cdr.detectChanges();
   }
 
-  public openTaskForm(mode:'create'|'edit' = 'create', id:number = 1){
-    this.isModalOpen = true
+  public openTaskForm(mode:'create'|'edit' = 'create', id:number = 0) {
+    this.isModalOpen = true;
+    this.modalMode = mode;
+    this.selectedTask = undefined;
+
+    if (mode === 'edit') {
+      this.selectedTask = this.tasks.find(task => task.ID === id); 
+      if (this.selectedTask) {
+        console.log('Selected Task for Edit:', this.selectedTask);
+      } else {
+        console.error(`Task with ID ${id} not found.`);
+      }
+    }
   }
 
   public deadlineFormatHelper(deadline:string):string{

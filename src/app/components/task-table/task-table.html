@@ -16,13 +16,13 @@
             <td mat-cell *matCellDef="let element"> 
               <div  style="display: flex;">
                 <button mat-flat-button color="primary">Finish</button>
-                <button mat-flat-button color="primary" (click)="openTaskForm('edit')">Update</button>
+                <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">Update</button>
                 <button mat-flat-button color="success">Delete</button>
               </div>
             </td>
           } @else {
             <td mat-cell *matCellDef="let element"> 
-              {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element[col]) : element[col] }} 
+              {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element.ID) : element[col] }} 
             </td>
           }
         </ng-container>
@@ -37,7 +37,7 @@
     </table>
 
     <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
-      <task-form></task-form>
+      <task-form [task]="selectedTask"></task-form>
     </modal>
 </div>
 

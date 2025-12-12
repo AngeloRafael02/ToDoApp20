@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -13,6 +13,7 @@ import { AsyncPipe } from '@angular/common';
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { DropdownDataService } from '../../services/dropdown-data';
 import { Observable } from 'rxjs';
+import { taskViewInterface } from '../../interfaces/task.interface';
 
 @Component({
   selector: 'task-form',
@@ -33,6 +34,19 @@ import { Observable } from 'rxjs';
   styleUrl: './task-form.scss'
 })
 export class TaskForm implements OnInit {
+
+  private _task: taskViewInterface | undefined;
+  
+  @Input() 
+  set task(taskData: taskViewInterface | undefined) {
+    this._task = taskData;
+    this.patchForm(); // Call a method to update the form when the task is set
+  }
+
+  get task(): taskViewInterface | undefined {
+    return this._task;
+  }
+
   public isModalOpen: boolean = false;
   public taskForm!: FormGroup;
 
@@ -49,7 +63,7 @@ export class TaskForm implements OnInit {
   ngOnInit(): void {
 
     this.categories$ = this.dropdownService.categories$;
-    this.statuses$ = this.dropdownService.statuses$; // <--- Initialized here
+    this.statuses$ = this.dropdownService.statuses$;
     this.threats$ = this.dropdownService.threatLevels$;
 
     this.taskForm = this.fb.group({ 
@@ -64,6 +78,35 @@ export class TaskForm implements OnInit {
       deadline:[''],
       owner_id:[1]
     });
+  }
+
+  patchForm(): void {
+    if (this.task && this.taskForm) {
+      this.taskForm.patchValue({
+        title: this.task.Title,
+        note: this.task.Description,
+        cat_id:this.task.CID,
+        prio:this.task.Priority,
+        threat_id:this.task.TID,
+        stat_id:this.task.SID,
+        deadline:this.task.Deadline,
+        owner_id:this.task.UID
+      });
+      
+    } else if (this.taskForm) {
+        this.taskForm.reset({
+            title: '',
+            note: '',
+            cat_id: 1, 
+            prio: null, 
+            threat_id: 1, 
+            stat_id: 1, 
+            created_at: new Date(), 
+            last_edited: new Date(), 
+            deadline: '', 
+            owner_id: 1
+        });
+    }
   }
 
   onSubmit(): void {
