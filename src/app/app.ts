@@ -76,7 +76,7 @@ export class App implements OnInit, OnDestroy {
           } else if (propertyName === 'threatLevels') {
               this.dropdownService.setThreatLevels(data as threatInterface[]);
           }
-          console.log(`${serviceOption} loaded:`, data);
+          //console.log(`${serviceOption} loaded:`, data);
       },
       error: (err: HttpErrorResponse) => console.error(`Error fetching ${serviceOption}:`, err)
     });

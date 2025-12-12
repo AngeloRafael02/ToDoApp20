@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef, AfterViewInit, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -10,6 +10,7 @@ import { Style } from '../../services/misc/style/style';
 import { tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
 import { messageInterface } from '../../interfaces/message.interface';
 import { TaskForm } from '../task-form/task-form';
+import { Modal } from '../modal/modal';
 
 @Component({
   selector: 'task-table',
@@ -17,16 +18,18 @@ import { TaskForm } from '../task-form/task-form';
     CommonModule,
     MatTableModule,
     MatButtonModule,
+    Modal,
     TaskForm
   ],
   templateUrl: './task-table.html',
   styleUrl: './task-table.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, AfterContentChecked {
+export class TaskTable implements OnInit, AfterContentChecked {
 
   private tasks:taskViewInterface[] = [] 
   public title:string = 'Current';
+  public isModalOpen:boolean = false;
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
 
@@ -58,19 +61,13 @@ export class TaskTable implements OnInit, OnChanges, OnDestroy, AfterViewInit, A
     })
   }
 
-  ngAfterViewInit(): void {
-
-  }
   
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-  }
-
-  ngOnDestroy(): void {
-    
+  public openTaskForm(mode:'create'|'edit' = 'create', id:number = 1){
+    this.isModalOpen = true
   }
 
   public deadlineFormatHelper(deadline:string):string{

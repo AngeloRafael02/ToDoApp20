@@ -5,7 +5,7 @@
       <h2>{{title}} Tasks Table</h2>
       <p>A list of all {{title | lowercase}} tasks.</p>
       <div>
-        <task-form></task-form>
+        <button mat-flat-button (click)="openTaskForm('create')">New Task</button>
       </div>
     </caption>
 
@@ -16,7 +16,7 @@
             <td mat-cell *matCellDef="let element"> 
               <div  style="display: flex;">
                 <button mat-flat-button color="primary">Finish</button>
-                <button mat-flat-button color="primary">Update</button>
+                <button mat-flat-button color="primary" (click)="openTaskForm('edit')">Update</button>
                 <button mat-flat-button color="success">Delete</button>
               </div>
             </td>
@@ -35,5 +35,9 @@
         <td class="mat-cell" [attr.colSpan]="taskColumns.length">No data found.</td>
       </tr>
     </table>
+
+    <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
+      <task-form></task-form>
+    </modal>
 </div>
 

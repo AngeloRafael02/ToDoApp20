@@ -13,7 +13,6 @@ import { AsyncPipe } from '@angular/common';
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { DropdownDataService } from '../../services/dropdown-data';
 import { Observable } from 'rxjs';
-import { Modal } from '../modal/modal';
 
 @Component({
   selector: 'task-form',
@@ -29,7 +28,6 @@ import { Modal } from '../modal/modal';
     MatGridListModule,
     FormsModule,
     ReactiveFormsModule,
-    Modal
   ],
   templateUrl: './task-form.html',
   styleUrl: './task-form.scss'
