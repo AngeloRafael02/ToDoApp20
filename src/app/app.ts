@@ -5,14 +5,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
+import { Observable, Subscription } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Clock } from './components/clock/clock';
 import { TaskTable } from './components/task-table/task-table';
 import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
-import { Observable, Subscription } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
-import { DropdownDataService } from './services/dropdown-data';
+import { DropdownDataService } from './services/dropdown-data/dropdown-data';
 
 @Component({
   selector: 'app-root',

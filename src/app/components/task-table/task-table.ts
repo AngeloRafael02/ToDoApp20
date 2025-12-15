@@ -4,9 +4,9 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 
 import { BackendService} from '../../services/backend/backend';
-import { String } from '../../services/misc/string/string';
-import { Date } from '../../services/misc/date/date';
-import { Style } from '../../services/misc/style/style';
+import { String } from '../../services/utils/string/string';
+import { Date } from '../../services/utils/date/date';
+import { Style } from '../../services/utils/style/style';
 import { tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
 import { messageInterface } from '../../interfaces/message.interface';
 import { TaskForm } from '../task-form/task-form';

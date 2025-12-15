@@ -12,7 +12,7 @@ import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
-import { DropdownDataService } from '../../services/dropdown-data';
+import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { taskViewInterface } from '../../interfaces/task.interface';
 
 @Component({

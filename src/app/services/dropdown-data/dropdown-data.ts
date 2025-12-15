@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { categoriesInterface, conditionInterface, threatInterface } from '../interfaces/forms.interface';
+import { categoriesInterface,conditionInterface,threatInterface } from '../../interfaces/forms.interface';
 
 @Injectable({
   providedIn: 'root'
