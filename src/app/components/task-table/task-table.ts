@@ -7,7 +7,7 @@ import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/utils/string/string';
 import { Date } from '../../services/utils/date/date';
 import { Style } from '../../services/utils/style/style';
-import { tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
+import { taskInterface, tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
 import { messageInterface } from '../../interfaces/message.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
@@ -61,7 +61,7 @@ import { Modal } from '../modal/modal';
         </table>
 
         <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
-          <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm()"></task-form>
+          <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm($event)"></task-form>
         </modal>
     </div>
   `,
@@ -165,8 +165,17 @@ export class TaskTable implements OnInit, AfterContentChecked {
     }
   }
 
-  public closeTaskForm(): void {
-    this.isModalOpen = false;
+  public closeTaskForm(taskData:taskInterface): void {
+    if (taskData) {
+      if (taskData.id) {
+        this.backendService.updateOneTask(taskData,taskData.id as number)
+        console.log('Update existing task:', taskData);
+      } else {
+        this.backendService.addTask(taskData);
+        console.log('Create new task:', taskData);
+      }
+    }
+  this.isModalOpen = false;
   }
 
   public deadlineFormatHelper(deadline:string):string{

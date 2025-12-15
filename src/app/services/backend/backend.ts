@@ -108,28 +108,20 @@ export class BackendService {
       }));
   }
 
-  public addTask(taskObj:taskInterface):Subscription{
-    return this.http.post(`${this.nestJS}/task`,taskObj).subscribe(data => {
-      console.log(data);
-    });
+  public addTask(taskObj:taskInterface):Observable<any>{
+    return this.http.post(`${this.nestJS}/task`, taskObj);
   }
 
-  public updateOneTask(taskObj:taskInterface, ID:number):Subscription{
-    return this.http.put(`${this.nestJS}/task/${ID}`,taskObj).subscribe(data => {
-      console.log(data);
-    });
+  public updateOneTask(taskObj:taskInterface, ID:number):Observable<any>{
+    return this.http.put(`${this.nestJS}/task/${ID}`, taskObj);
   }
 
-  public finishOneTask(ID:number):Subscription{
-    return this.http.put(`${this.nestJS}/task/finish/${ID}`,{}).subscribe(data=>{
-      console.log(data)
-    });
+  public finishOneTask(ID:number): Observable<any> {
+    return this.http.put(`${this.nestJS}/task/finish/${ID}`,{});
   }
 
-  public deleteOneTask(taskID:number):Subscription{
-    return this.http.delete(`${this.nestJS}/task/${taskID}`).subscribe(data => {
-      console.log(data);
-    });
+  public deleteOneTask(taskID:number): Observable<any> {
+    return this.http.delete(`${this.nestJS}/task/${taskID}`);
   }
 }
 

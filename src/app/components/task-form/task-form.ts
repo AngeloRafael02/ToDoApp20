@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
-import { taskViewInterface } from '../../interfaces/task.interface';
+import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 
 @Component({
   selector: 'task-form',
@@ -170,7 +170,7 @@ export class TaskForm implements OnInit {
   }
 
   @Output() 
-  public taskSubmitted: EventEmitter<any> = new EventEmitter();
+  public taskSubmitted: EventEmitter<taskInterface> = new EventEmitter();
 
   public taskForm!: FormGroup;
   public categories$: Observable<categoriesInterface[] | null>;
@@ -190,6 +190,7 @@ export class TaskForm implements OnInit {
     this.threats$ = this.dropdownService.threatLevels$;
 
     this.taskForm = this.fb.group({ 
+      id:[null],
       title:["", [Validators.required, Validators.maxLength(50)]],
       note:["",Validators.maxLength(255)],
       cat_id:[1,Validators.required],
@@ -203,9 +204,10 @@ export class TaskForm implements OnInit {
     });
   }
 
-  patchForm(): void {
+  public patchForm(): void {
     if (this.task && this.taskForm) {
       this.taskForm.patchValue({
+        id:this.task.ID,
         title: this.task.Title,
         note: this.task.Description,
         cat_id:this.task.CID,
@@ -215,54 +217,53 @@ export class TaskForm implements OnInit {
         deadline:this.task.Deadline,
         owner_id:this.task.UID
       });
-      
+        this.taskForm.markAsPristine();
+        this.taskForm.markAsUntouched();
+        this.taskForm.updateValueAndValidity();
     } else if (this.taskForm) {
-        this.taskForm.reset({
-            title: '',
-            note: '',
-            cat_id: 1, 
-            prio: null, 
-            threat_id: 1, 
-            stat_id: 1, 
-            created_at: new Date(), 
-            last_edited: new Date(), 
-            deadline: '', 
-            owner_id: 1
-        });
+        this.resetForm();
     }
   }
 
-  onSubmit(): void {
+  public onSubmit(): void {
     if (this.taskForm.valid) {
-      console.log('Task Data:', this.taskForm.value);
-      this.snackBar.open('Task submitted successfully!', 'Dismiss', {
-        duration: 3000,
-        verticalPosition: 'top'
-      });
-
-      this.taskSubmitted.emit();
-      
-      this.taskForm.reset({
-        title: '',
-        deadline: null,
-        note: '',
-        category: 1,
-        prio: 1,
-        threat: 1,
-        status: 1,
-      });
-
+        console.log('Task Data:', this.taskForm.value);
+        this.snackBar.open('Task submitted successfully!', 'Dismiss', {
+            duration: 3000,
+            verticalPosition: 'top'
+        });
+        this.taskSubmitted.emit(this.taskForm.value);
+        this.resetForm();
     } else {
-      this.taskForm.markAllAsTouched();
-      this.snackBar.open('Please correct the errors in the form.', 'Dismiss', {
-        duration: 3000,
-        verticalPosition: 'top'
-      });
+        this.taskForm.markAllAsTouched();
+        this.snackBar.open('Please correct the errors in the form.', 'Dismiss', {
+            duration: 3000,
+            verticalPosition: 'top'
+        });
     }
   }
 
   public hasError(controlName: string, errorType: string): boolean {
     const control = this.taskForm.get(controlName);
     return !!(control && control.hasError(errorType) && (control.dirty || control.touched));
+  }
+
+  private resetForm() {
+      this.taskForm.reset({
+          id:null,
+          title: "",
+          note: "",
+          cat_id: 1,
+          prio: null,
+          threat_id: 1,
+          stat_id: 1,
+          created_at: new Date(),
+          last_edited: new Date(),
+          deadline: "",
+          owner_id: 1
+      });
+      this.taskForm.markAsPristine();
+      this.taskForm.markAsUntouched();
+      this.taskForm.updateValueAndValidity();
   }
 }
