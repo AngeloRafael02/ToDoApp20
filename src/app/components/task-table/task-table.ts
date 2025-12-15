@@ -21,8 +21,88 @@ import { Modal } from '../modal/modal';
     Modal,
     TaskForm
   ],
-  templateUrl: './task-table.html',
-  styleUrl: './task-table.scss',
+  template: `
+    <div class="tableContainer">
+      <table mat-table [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
+
+        <caption>
+          <h2>{{title}} Tasks Table</h2>
+          <p>A list of all {{title | lowercase}} tasks.</p>
+          <div>
+            <button mat-flat-button (click)="openTaskForm('create')">New Task</button>
+          </div>
+        </caption>
+
+          @for (col of taskColumns; track col) {
+            <ng-container [matColumnDef]="col">
+              <th mat-header-cell *matHeaderCellDef>  {{ col }} </th>
+              @if (col == 'Options') {
+                <td mat-cell *matCellDef="let element"> 
+                  <div  style="display: flex;">
+                    <button mat-flat-button color="primary">Finish</button>
+                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">Update</button>
+                    <button mat-flat-button color="success">Delete</button>
+                  </div>
+                </td>
+              } @else {
+                <td mat-cell *matCellDef="let element"> 
+                  {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element.ID) : element[col] }} 
+                </td>
+              }
+            </ng-container>
+          }
+
+          <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
+          <tr mat-row *matRowDef="let row; columns: taskColumns;" [ngClass]="evaluateDate(row)"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" [attr.colSpan]="taskColumns.length">No data found.</td>
+          </tr>
+        </table>
+
+        <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
+          <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm()"></task-form>
+        </modal>
+    </div>
+  `,
+  styles: `
+    @use '../../styles/pallete.scss' as pallete;
+    @use '../../styles/table-colors.scss' as tbl;
+
+    table,th,td   {
+        border: 1px solid black;
+        margin: 0em 2em 0em 2em;
+        caption {
+          caption-side: top;
+          color:pallete.$primaryTextColor;
+          padding-top: 0.5rem;
+          padding-bottom: 0.5rem;
+          div {
+            display: flex;
+          }
+        }
+        th,td {
+          text-align: center;
+          &:first-child,
+          &:nth-child(9),
+          &:nth-child(10),
+          &:nth-child(11) ~ th,
+          &:nth-child(11) ~ td{ /* Using the parent selector '&' */
+            display: none;
+          }
+        }
+        th{
+          background-color: tbl.$headerColor;
+        }
+        td{
+          border: 1px solid black;
+          button{
+            width: 50px; 
+            margin-left:5px;
+          }
+        }
+    }  
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskTable implements OnInit, AfterContentChecked {

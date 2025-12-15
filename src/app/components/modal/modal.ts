@@ -14,8 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
     <ng-template> 
       <h2 mat-dialog-title>
         {{ title }}
-        
-        <button mat-icon-button mat-dialog-close style="position: absolute; top: 12px; right: 8px;" aria-label="Close dialog">
+        <button mat-icon-button mat-dialog-close aria-label="Close dialog">
           <mat-icon>close</mat-icon>
         </button>
       </h2>
@@ -28,7 +27,13 @@ import { MatButtonModule } from '@angular/material/button';
       </mat-dialog-actions>
     </ng-template>
   `,
-  styles: ``,
+  styles: `
+    button {
+      position: absolute; 
+      top: 12px; 
+      right: 8px;
+    }
+  `,
 })
 export class Modal implements OnChanges {
   @ViewChild(TemplateRef, { static: true }) dialogTemplate!: TemplateRef<any>;
