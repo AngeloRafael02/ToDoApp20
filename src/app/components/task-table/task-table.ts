@@ -85,6 +85,10 @@ export class TaskTable implements OnInit, AfterContentChecked {
     }
   }
 
+  public closeTaskForm(): void {
+    this.isModalOpen = false;
+  }
+
   public deadlineFormatHelper(deadline:string):string{
     return this.dateService.dateFormatHelper(deadline);
   }

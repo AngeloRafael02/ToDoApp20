@@ -37,7 +37,7 @@
     </table>
 
     <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
-      <task-form [task]="selectedTask"></task-form>
+      <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm()"></task-form>
     </modal>
 </div>
 

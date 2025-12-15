@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -40,16 +40,16 @@ export class TaskForm implements OnInit {
   @Input() 
   set task(taskData: taskViewInterface | undefined) {
     this._task = taskData;
-    this.patchForm(); // Call a method to update the form when the task is set
+    this.patchForm();
   }
-
   get task(): taskViewInterface | undefined {
     return this._task;
   }
 
-  public isModalOpen: boolean = false;
-  public taskForm!: FormGroup;
+  @Output() 
+  public taskSubmitted: EventEmitter<any> = new EventEmitter();
 
+  public taskForm!: FormGroup;
   public categories$: Observable<categoriesInterface[] | null>;
   public statuses$: Observable<conditionInterface[] | null>;
   public threats$: Observable<threatInterface[] | null>;
@@ -112,11 +112,12 @@ export class TaskForm implements OnInit {
   onSubmit(): void {
     if (this.taskForm.valid) {
       console.log('Task Data:', this.taskForm.value);
-      this.isModalOpen = false; 
       this.snackBar.open('Task submitted successfully!', 'Dismiss', {
         duration: 3000,
         verticalPosition: 'top'
       });
+
+      this.taskSubmitted.emit();
       
       this.taskForm.reset({
         title: '',
