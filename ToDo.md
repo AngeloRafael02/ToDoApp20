@@ -12,7 +12,8 @@
 ### task-form Component
 - make it Modal - DONE
 - Create template - DONE
-- use component for creating and editing tasks
+- use component for creating and editing tasks - DONE
+    - Fix POST and PUT Request (might be a NestJS Refactor, need further testing)
 
 ### task-charts Component
 - create carts dor Cat, Stat, and Threat Level

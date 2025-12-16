@@ -25,8 +25,18 @@ import { DropdownDataService } from './services/dropdown-data/dropdown-data';
     Clock,
     TaskTable
   ],
-  templateUrl: './app.html',
-  styleUrl: './app.scss'
+  template: `
+    <div class="container">
+      <app-clock></app-clock>
+      <task-table></task-table>
+    </div>
+  `,
+  styles: `
+    .container {
+      padding-left: 5%;
+      padding-right: 5%;
+    }
+  `
 })
 export class App implements OnInit, OnDestroy {
 

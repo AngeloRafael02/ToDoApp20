@@ -6,7 +6,7 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
   imports: [DatePipe],
   template: `
     <div class="digital-clock">
-      <h2>{{ currentTime() | date:'EEEE MMM d y HH:mm:ss z' }}</h2>
+      <h2>{{ currentTime() | date:'EEEE MMM d, y HH:mm:ss z' }}</h2>
     </div>
   `,
   styles: `
@@ -15,7 +15,6 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
       text-align: center;
       font-size: 1.5em;
       font-weight: 500;
-      padding: 20px;
       background-color: transparent;
       display: inline-block;
       color: palette.$primaryTextColor;

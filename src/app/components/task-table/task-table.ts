@@ -71,7 +71,6 @@ import { Modal } from '../modal/modal';
 
     table,th,td   {
         border: 1px solid black;
-        margin: 0em 2em 0em 2em;
         caption {
           caption-side: top;
           color:pallete.$primaryTextColor;
