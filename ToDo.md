@@ -18,5 +18,8 @@
 ### task-charts Component
 - create carts dor Cat, Stat, and Threat Level
 
+### server
+- explore server.ts data fetching with (pg + TypeORM)
+
 ### misc
 - create git Hook to check if console commands are in any file
