@@ -42,7 +42,7 @@ export class BackendService {
             return this.http.get<conditionInterface[]>(`${this.miscBackupPath}/conditions.json`);
           }))
       case 'threat level':
-        return this.http.get<threatInterface[]>(`$this.miscAPIpath}/allThreats`)
+        return this.http.get<threatInterface[]>(`${this.miscAPIpath}/allThreats`)
           .pipe(catchError((error:HttpErrorResponse) => {
             console.error(this.errorMsg(option), error);
             return this.http.get<threatInterface[]>(`${this.miscBackupPath}/threat-level.json`);
