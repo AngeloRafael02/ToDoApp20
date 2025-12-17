@@ -29,7 +29,7 @@ export class PieChart implements AfterViewInit {
     }
   }
 
-  createChart() {
+  public createChart():void {
     const labels = this.data.map(item => item.name);
     const values = this.data.map(item => item.value);
 
@@ -39,7 +39,7 @@ export class PieChart implements AfterViewInit {
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0'],
+          backgroundColor: this.generateHexArray(this.data.length),
         }]
       },
       options: {
@@ -47,6 +47,19 @@ export class PieChart implements AfterViewInit {
         maintainAspectRatio: true
       }
     });
+  }
+
+  public generateHexArray(count:number):string[] {
+    const hexChars = '0123456789ABCDEF';
+    const result = [];
+    for (let i = 0; i < count; i++) {
+      let color = '#';
+      for (let j = 0; j < 6; j++) {
+        color += hexChars[Math.floor(Math.random() * 16)];
+      }
+      result.push(color);
+    }
+    return result;
   }
 }
 
