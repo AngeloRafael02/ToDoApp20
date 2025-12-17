@@ -15,6 +15,9 @@
 - use component for creating and editing tasks - DONE
     - Fix POST and PUT Request (might be a NestJS Refactor, need further testing)
 
+## pieChart Component
+- Create PieChart Wrapper Component, that takes data as props/@Input (use chart.js and ng2-charts)
+
 ### task-charts Component
 - create carts dor Cat, Stat, and Threat Level
 
