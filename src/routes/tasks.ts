@@ -17,7 +17,7 @@ taskRouter.get('/',async (req, res) => {
 });
 
 
-taskRouter.get('/:id', async (req, res) => {
+taskRouter.get('/task/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const result = await pool.query('SELECT * FROM task_view WHERE id = $1;', [id]);
@@ -34,6 +34,20 @@ taskRouter.get('/:id', async (req, res) => {
         res.status(500).json({
             status: 'error',
             message: 'An error occurred while fetching the task.'
+        });
+    }
+});
+
+taskRouter.get('/columns/:table', async (req, res) => {
+    const { table } = req.params;
+    try{
+        const result = await pool.query(` SELECT column_name FROM information_schema.columns WHERE table_name = $1 `,[table]);
+        res.json(result.rows);
+    } catch (error){
+        console.error('Database Query Error:', error);
+        res.status(500).json({ 
+            status: 'error', 
+            message: 'Failed to retrieve data from database.' 
         });
     }
 });
