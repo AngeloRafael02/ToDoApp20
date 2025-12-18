@@ -3,6 +3,8 @@ import express from 'express';
 import { join } from 'node:path';
 
 import { utilsRouter } from './routes/utils';
+import { taskRouter } from './routes/tasks';
+import { chartsRouter } from './routes/charts';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -10,6 +12,8 @@ const app = express();
 const angularApp = new AngularNodeAppEngine();
 
 app.use('/utils',utilsRouter);
+app.use('/tasks',taskRouter);
+app.use('/charts',chartsRouter);
 
 /**
  * Serve static files from /browser
