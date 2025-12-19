@@ -12,16 +12,15 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
   styles: `
   @use '../../styles/pallete.scss' as palette;
     .digital-clock {
-      text-align: center;
       font-size: 1.5em;
       font-weight: 500;
       background-color: transparent;
-      display: inline-block;
       color: palette.$primaryTextColor;
-    }
-    h2 {
+      h2 {
         margin: 0;
         white-space: nowrap;
+        text-align: center;
+      }
     }
   `
 })

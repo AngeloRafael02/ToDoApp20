@@ -33,6 +33,9 @@ import { DropdownDataService } from './services/dropdown-data/dropdown-data';
   `,
   styles: `
     .container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       padding-left: 5%;
       padding-right: 5%;
     }
