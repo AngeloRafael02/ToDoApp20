@@ -1,43 +1,16 @@
 import express from 'express';
-import { pool } from '../database'
+import { queryHelper } from '../database'
 
 export const utilsRouter = express.Router();
 
-utilsRouter.get('/categories',async (req,res)=> {
-    try{
-        const result = await pool.query('SELECT id, cat FROM categories;');
-        res.json(result.rows);
-    } catch (error){
-        console.error('Database Query Error:', error);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'Failed to retrieve data from database.' 
-        });
-    }
+utilsRouter.get('/categories', async (req,res)=> {
+    res.json(queryHelper(`SELECT id, cat FROM categories;`));
 });
 
-utilsRouter.get('/status',async (req,res)=> {
-    try{
-        const result = await pool.query('SELECT id, stat FROM conditions;');
-        res.json(result.rows);
-    } catch (error){
-        console.error('Database Query Error:', error);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'Failed to retrieve data from database.' 
-        });
-    }
+utilsRouter.get('/status', async (req,res)=> {
+    res.json(queryHelper(`SELECT id, stat FROM conditions;`));
 });
 
-utilsRouter.get('/threats',async (req,res)=> {
-    try{
-        const result = await pool.query('SELECT id, level FROM threats;');
-        res.json(result.rows);
-    } catch (error){
-        console.error('Database Query Error:', error);
-        res.status(500).json({ 
-            status: 'error', 
-            message: 'Failed to retrieve data from database.' 
-        });
-    }
+utilsRouter.get('/threats', async (req,res)=> {
+    res.json(queryHelper(`SELECT id, level FROM threats;`));
 });
