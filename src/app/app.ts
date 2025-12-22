@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { Clock } from './components/clock/clock';
 import { TaskTable } from './components/task-table/task-table';
+import { Stats } from './components/stats/stats';
 import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
 import { DropdownDataService } from './services/dropdown-data/dropdown-data';
@@ -23,11 +24,13 @@ import { DropdownDataService } from './services/dropdown-data/dropdown-data';
     MatTabsModule,
     MatGridListModule,
     Clock,
-    TaskTable
+    TaskTable,
+    Stats,
   ],
   template: `
     <div class="container">
       <app-clock></app-clock>
+      <stats></stats>
       <task-table></task-table>
     </div>
   `,

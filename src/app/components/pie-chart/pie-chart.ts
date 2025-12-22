@@ -1,5 +1,5 @@
 
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID, OnChanges, SimpleChanges } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import { chartDataInterface } from '../../interfaces/misc.interface';
@@ -8,12 +8,12 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
   selector: 'pie-chart',
   standalone: true,
   template: `
-    <div style="width: 400px; height: 400px;">
+    <div style="width: 300px; height: 300px;">
       <canvas #pieCanvas></canvas>
     </div>
   `
 })
-export class PieChart implements AfterViewInit {
+export class PieChart implements AfterViewInit, OnChanges {
   @ViewChild('pieCanvas') private pieCanvas!: ElementRef;
   @Input() data: chartDataInterface[] = [];
   
@@ -21,6 +21,13 @@ export class PieChart implements AfterViewInit {
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     Chart.register(...registerables);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['data'] && this.chart) {
+      this.chart.destroy();
+      this.createChart();
+    }
   }
 
   ngAfterViewInit(): void {

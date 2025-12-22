@@ -92,7 +92,7 @@ export class BackendService {
       case 'categories':
         miscAPIpath += `/catGrouped/${id}`;
         break;
-      case 'Status':
+      case 'status':
         miscAPIpath += `/statGrouped/${id}`;
         break;
       case 'threat level':
