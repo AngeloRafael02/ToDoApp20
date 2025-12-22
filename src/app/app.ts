@@ -30,6 +30,7 @@ import { DropdownDataService } from './services/dropdown-data/dropdown-data';
   template: `
     <div class="container">
       <app-clock></app-clock>
+      <br>
       <stats></stats>
       <task-table></task-table>
     </div>
