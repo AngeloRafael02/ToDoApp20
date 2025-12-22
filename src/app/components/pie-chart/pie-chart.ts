@@ -51,7 +51,18 @@ export class PieChart implements AfterViewInit, OnChanges {
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true
+        maintainAspectRatio: true,
+        plugins: {
+          legend: {
+            display: true,
+            labels: {
+              color: '#ffffff',
+              font: {
+                size: 14
+              }
+            }
+          }
+        }
       }
     });
   }
