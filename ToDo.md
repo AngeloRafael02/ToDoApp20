@@ -16,10 +16,10 @@
     - Fix POST and PUT Request (might be a NestJS Refactor, need further testing)
 
 ## pieChart Component
-- Create PieChart Wrapper Component, that takes data as props/@Input (use chart.js and ng2-charts)
+- Create PieChart Wrapper Component, that takes data as props/@Input (use chart.js and ng2-charts) - DONE
 
-### task-charts Component
-- create carts dor Cat, Stat, and Threat Level
+### stats Component
+- create carts dor Cat, Stat, and Threat Level - DONE
 
 ### server
 - explore server.ts data fetching with (pg + TypeORM)
