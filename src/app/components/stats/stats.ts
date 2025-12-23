@@ -34,17 +34,12 @@ import { messageInterface } from '../../interfaces/message.interface';
   styles: `
     @use '../../styles/pallete.scss' as pallete;
 
-    mat-expansion-panel {
-      --mat-expansion-container-background-color: pallete.$color2;
-    }
-
-    mat-expansion-panel.mat-expanded {
-      --mat-expansion-container-background-color: pallete.$color2;
-      --mat-expansion-header-hover-state-layer-color: rgba(0,0,0,0.04);
+    mat-expansion-panel, mat-expansion-panel-header {
+      background-color: pallete.$color1;
     }
 
     p {
-      color:white;
+      color: pallete.$primaryTextColor;
     }
 
     .stats-div{
