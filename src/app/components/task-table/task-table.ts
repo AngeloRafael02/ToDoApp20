@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/utils/string/string';
@@ -18,6 +19,7 @@ import { Modal } from '../modal/modal';
     CommonModule,
     MatTableModule,
     MatButtonModule,
+    MatIconModule,
     Modal,
     TaskForm
   ],
@@ -29,7 +31,10 @@ import { Modal } from '../modal/modal';
           <h2>{{title}} Tasks Table</h2>
           <p>A list of all {{title | lowercase}} tasks.</p>
           <div>
-            <button mat-flat-button (click)="openTaskForm('create')">New Task</button>
+            <button mat-flat-button (click)="openTaskForm('create')">
+              <mat-icon aria-hidden="false" aria-label="Add Task" fontIcon="add box"></mat-icon>
+              New Task
+            </button>
           </div>
         </caption>
 
@@ -38,10 +43,19 @@ import { Modal } from '../modal/modal';
               <th mat-header-cell *matHeaderCellDef>  {{ col }} </th>
               @if (col == 'Options') {
                 <td mat-cell *matCellDef="let element"> 
-                  <div  style="display: flex;">
-                    <button mat-flat-button color="primary">Finish</button>
-                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">Update</button>
-                    <button mat-flat-button color="success">Delete</button>
+                  <div>
+                    <button mat-flat-button color="primary">
+                      <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
+                      Finish
+                    </button>
+                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">
+                      <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
+                      Update
+                    </button>
+                    <button mat-flat-button color="success">
+                      <mat-icon aria-hidden="false" aria-label="Delete Task" fontIcon="delete"></mat-icon>
+                      Delete
+                    </button>
                   </div>
                 </td>
               } @else {
@@ -86,7 +100,7 @@ import { Modal } from '../modal/modal';
           &:nth-child(9),
           &:nth-child(10),
           &:nth-child(11) ~ th,
-          &:nth-child(11) ~ td{ /* Using the parent selector '&' */
+          &:nth-child(11) ~ td{
             display: none;
           }
         }
@@ -95,11 +109,14 @@ import { Modal } from '../modal/modal';
         }
         td{
           border: 1px solid black;
-          button{
-            width: 50px; 
+          div {
+            button{
             margin-left:5px;
+            padding-left:4%;
+            padding-right:4%;
           }
         }
+      }
     }  
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
