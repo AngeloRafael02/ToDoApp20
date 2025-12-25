@@ -1,33 +1,42 @@
+import { Response } from 'express';
 import { Pool } from 'pg';
+require('dotenv').config();
 
 export const pool = new Pool({
-  connectionString: process.env['DATABASE_URL'],
+  connectionString: process.env['DATABASE_URL'] as string,
 });
 
-export const queryHelper = async (
-  query:string, 
+/**
+ * Helper function to handle database queries and standard responses
+ * @param { string } query - The SQL string to execute
+ * @param { Response } res - The Express response object
+ * @param { unknown[] } params - Query Parameters
+ * @param { boolean } expectEmpty - if empty must not return error 404
+ */
+export const query = async (
+  res:Response,
+  query:string,
   params:unknown[] = [],
-  expectEmpty:boolean = false
+  expectEmpty:boolean = false 
 ) => {
-  try {
-    const result = await pool.query(query, params);
-    if (expectEmpty && result.rows.length === 0) {
-      return { 
-        status: 'error', 
-        message: `Request not found.` 
-      }
-    } else {
-      return {
-        status:'success',
-        count:result.rowCount,
-        data:result.rows
-      }
-      
+    try {
+        const result = await pool.query(query, params);
+        if (expectEmpty === true && result.rows.length === 0) {
+            res.status(404).json({ 
+                status: 'error', 
+                message: 'Request not found.' 
+            });
+        }
+        res.status(200).json({
+            status: 'success',
+            count: result.rowCount,
+            data: result.rows
+        });
+    } catch (error) {
+        console.error("Database Error:", error);
+        res.status(500).json({ 
+            status: 'error', 
+            message: 'Internal Server Error' 
+        });
     }
-  } catch (error) {
-    return { 
-      status: 'error', 
-      message: 'An error occurred while fetching the task.' 
-    }
-  }
-}
+};

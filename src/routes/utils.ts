@@ -1,16 +1,16 @@
-import express from 'express';
-import { queryHelper } from '../database'
+import { Router, Request, Response }from 'express';
+import { query } from '../database'
 
-export const utilsRouter = express.Router();
+export const utilsRouter = Router();
 
-utilsRouter.get('/categories', async (req,res)=> {
-    res.json(queryHelper(`SELECT id, cat FROM categories;`));
+utilsRouter.get('/categories', async (req:Request,res:Response)=> {
+    query(res,`SELECT id, cat FROM categories`)
 });
 
-utilsRouter.get('/status', async (req,res)=> {
-    res.json(queryHelper(`SELECT id, stat FROM conditions;`));
+utilsRouter.get('/status', async (req:Request,res:Response)=> {
+    query(res,`SELECT id, stat FROM conditions;`);
 });
 
-utilsRouter.get('/threats', async (req,res)=> {
-    res.json(queryHelper(`SELECT id, level FROM threats;`));
+utilsRouter.get('/threats', async (req:Request,res:Response)=> {
+    query(res,`SELECT id, level FROM threats;`);
 });

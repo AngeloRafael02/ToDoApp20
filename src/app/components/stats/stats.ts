@@ -68,7 +68,6 @@ export class Stats implements OnInit {
     this.backendService.getChartData(this.id,'categories').subscribe(data => {
       if (!this.isErrorMessage(data)){
         this.catData = data;
-        console.log(data)
       } else {
         alert(data.message);
       }
@@ -76,7 +75,6 @@ export class Stats implements OnInit {
     this.backendService.getChartData(this.id,'status').subscribe(data => {
       if (!this.isErrorMessage(data)){
         this.statsData = data;
-        console.log(data)
       } else {
         alert(data.message);
       }
@@ -84,7 +82,6 @@ export class Stats implements OnInit {
     this.backendService.getChartData(this.id,'threat level').subscribe(data => {
       if (!this.isErrorMessage(data)){
         this.threatsData = data;
-        console.log(data)
       } else {
         alert(data.message);
       }

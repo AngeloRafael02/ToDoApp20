@@ -1,35 +1,19 @@
-import express from 'express';
-import { queryHelper } from '../database'
+import { Router, Request, Response }from 'express';
+import { query } from '../database'
 
-export const taskRouter = express.Router();
+export const taskRouter = Router();
 
-taskRouter.get('/tasks:id',async (req, res) => {
+taskRouter.get('/tasks:id',async (req:Request, res:Response) => {
     const { id } = req.params;
-    res.json(
-        queryHelper(
-            `SELECT * FROM task_view WHERE "UID" = $1 AND "Status" NOT IN('Finished','Cancelled');`,
-            [id],
-            true
-        )
-    );
+    query(res, `SELECT * FROM task_view WHERE "UID" = $1 AND "Status" NOT IN('Finished','Cancelled');`, [id], true)
 });
 
-taskRouter.get('/task/:id', async (req, res) => {
+taskRouter.get('/task/:id', async (req:Request, res:Response) => {
     const { id } = req.params;
-    res.json(
-        queryHelper(
-            'SELECT * FROM task_view WHERE id = $1 LIMIT 1;',
-            [id]
-        )
-    );
+    query(res, 'SELECT * FROM task_view WHERE id = $1 LIMIT 1;', [id], true)
 });
 
-taskRouter.get('/columns/:table', async (req, res) => {
+taskRouter.get('/columns/:table', async (req:Request, res:Response) => {
     const { table } = req.params;
-    res.json(
-        queryHelper(
-            ` SELECT column_name FROM information_schema.columns WHERE table_name = $1 `,
-            [table]
-        )
-    );
+    query(res,`SELECT column_name FROM information_schema.columns WHERE table_name = $1`,[table])
 });
