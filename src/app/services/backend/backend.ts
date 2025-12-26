@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { taskInterface,taskViewInterface } from '../../interfaces/task.interface';
-import { categoriesInterface,conditionInterface,threatInterface } from '../../interfaces/forms.interface';
 import { chartDataInterface } from '../../interfaces/misc.interface';
 import { environment } from '../../../environments/environment';
 import { messageInterface } from '../../interfaces/message.interface';
@@ -27,29 +26,13 @@ export class BackendService {
     private http:HttpClient
   ) { }
 
-  public getDropdownItems(option:string){
-    switch (option){
-      case 'categories':
-        return this.http.get<categoriesInterface[]>(`${this.miscAPIpath}/allCat`)
-          .pipe(catchError((error: HttpErrorResponse) => {
-            console.error(this.errorMsg(option), error);
-            return this.http.get<categoriesInterface[]>(`${this.miscBackupPath}/categories.json`);
-          }));
-      case 'status':
-        return this.http.get<conditionInterface[]>(`${this.miscAPIpath}/allCond`)
-          .pipe(catchError((error:HttpErrorResponse)=> {
-            console.error(this.errorMsg(option), error);
-            return this.http.get<conditionInterface[]>(`${this.miscBackupPath}/conditions.json`);
-          }))
-      case 'threat level':
-        return this.http.get<threatInterface[]>(`${this.miscAPIpath}/allThreats`)
-          .pipe(catchError((error:HttpErrorResponse) => {
-            console.error(this.errorMsg(option), error);
-            return this.http.get<threatInterface[]>(`${this.miscBackupPath}/threat-level.json`);
-          }));
-      default: 
-        return this.http.get<messageInterface>(`${this.miscBackupPath}/error.json`);
-    }    
+  public getDropdownOptions<T>(option: string): Observable<{ status: string; data: T }> {
+    return this.http.get<{ status: string; data: T }>(`/utils/${option}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error(this.errorMsg(option), error);
+        return of({ status: 'error', data: [] as unknown as T });
+      })
+    );
   }
 
   public getTasks(id:number, table:string = 'current'){

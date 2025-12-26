@@ -5,8 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTabsModule } from '@angular/material/tabs';
-import { Observable, Subscription } from 'rxjs';
-import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription,forkJoin } from 'rxjs';
 
 import { Clock } from './components/clock/clock';
 import { TaskTable } from './components/task-table/task-table';
@@ -73,30 +72,21 @@ export class App implements OnInit, OnDestroy {
     this.titleService.setTitle(pageTitle);
     this.metaService.addTags(tags);
     
-    this.loadDropdownItem('categories', 'categories');
-    this.loadDropdownItem('status', 'statuses');
-    this.loadDropdownItem('threat level', 'threatLevels');
+    forkJoin({
+      categories: this.backend.getDropdownOptions<categoriesInterface[]>('categories'),
+      status: this.backend.getDropdownOptions<conditionInterface[]>('status'),
+      threats: this.backend.getDropdownOptions<threatInterface[]>('threats')
+    }).subscribe({
+      next: (result) => {
+        this.dropdownService.setCategories(result.categories.data);
+        this.dropdownService.setStatuses(result.status.data);
+        this.dropdownService.setThreatLevels(result.threats.data);
+      },
+      error: (err) => console.error('Failed to load dropdowns', err)
+    })
   }
 
   ngOnDestroy(): void {
     this.dropdownSubscriptions.forEach(sub => sub.unsubscribe());
-  }
-
-  private loadDropdownItem<T>(serviceOption: string, propertyName: keyof App): void {
-    const itemObservable = this.backend.getDropdownItems(serviceOption) as Observable<T[]>;
-    const sub = itemObservable.subscribe({
-      next: (data: T[]) => {
-          if (propertyName === 'categories') {
-              this.dropdownService.setCategories(data as categoriesInterface[]);
-          } else if (propertyName === 'statuses') {
-              this.dropdownService.setStatuses(data as conditionInterface[]);
-          } else if (propertyName === 'threatLevels') {
-              this.dropdownService.setThreatLevels(data as threatInterface[]);
-          }
-          //console.log(`${serviceOption} loaded:`, data);
-      },
-      error: (err: HttpErrorResponse) => console.error(`Error fetching ${serviceOption}:`, err)
-    });
-    this.dropdownSubscriptions.push(sub);
   }
 }

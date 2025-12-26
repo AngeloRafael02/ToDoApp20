@@ -20,3 +20,10 @@ export interface threatInterface {
     id:number
     level:string
 }
+
+export interface ssrResObj {
+    status:string,
+    count?:number,
+    message?:string,
+    data:categoriesInterface[] | threatInterface[] | conditionInterface[]
+}
