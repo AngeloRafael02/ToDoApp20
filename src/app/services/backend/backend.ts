@@ -4,7 +4,6 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { taskInterface,taskViewInterface } from '../../interfaces/task.interface';
-import { chartDataInterface } from '../../interfaces/misc.interface';
 import { environment } from '../../../environments/environment';
 import { messageInterface } from '../../interfaces/message.interface';
 
@@ -69,26 +68,13 @@ export class BackendService {
       }));
   }
 
-  public getChartData(id:number, option:string){
-    let miscAPIpath:string = this.miscAPIpath;
-    switch (option){
-      case 'categories':
-        miscAPIpath += `/catGrouped/${id}`;
-        break;
-      case 'status':
-        miscAPIpath += `/statGrouped/${id}`;
-        break;
-      case 'threat level':
-        miscAPIpath += `/threatGrouped/${id}`;
-        break;
-      default: 
-        break;
-    }
-    return this.http.get<chartDataInterface[]>(miscAPIpath)
-      .pipe(catchError((error:HttpErrorResponse) => {
+  public getChartData<T>(id:number,option:string):Observable<{status:string; data:T}>{
+    return this.http.get<{ status: string; data: T }>(`/charts/${option}/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
         console.error(this.errorMsg(option), error);
-        return this.http.get<messageInterface>(`${this.miscBackupPath}/threat-level.json`);
-      }));
+        return of({status:'error', data:[] as unknown as T});
+      })
+    )
   }
 
   public addTask(taskObj:taskInterface):Observable<any>{

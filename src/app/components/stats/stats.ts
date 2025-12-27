@@ -1,11 +1,11 @@
 import { Component,OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatExpansionModule} from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { forkJoin } from 'rxjs';
 
 import { PieChart } from '../pie-chart/pie-chart';
 import { BackendService } from '../../services/backend/backend';
-import { chartDataInterface, chartDataOrMessage } from '../../interfaces/misc.interface';
-import { messageInterface } from '../../interfaces/message.interface';
+import { chartDataInterface } from '../../interfaces/misc.interface';
 
 @Component({
   selector: 'stats',
@@ -65,30 +65,17 @@ export class Stats implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.backendService.getChartData(this.id,'categories').subscribe(data => {
-      if (!this.isErrorMessage(data)){
-        this.catData = data;
-      } else {
-        alert(data.message);
-      }
-    });
-    this.backendService.getChartData(this.id,'status').subscribe(data => {
-      if (!this.isErrorMessage(data)){
-        this.statsData = data;
-      } else {
-        alert(data.message);
-      }
-    });
-    this.backendService.getChartData(this.id,'threat level').subscribe(data => {
-      if (!this.isErrorMessage(data)){
-        this.threatsData = data;
-      } else {
-        alert(data.message);
-      }
-    });
-  }
-
-  private isErrorMessage(obj:chartDataOrMessage):obj is messageInterface {
-    return 'message' in obj && typeof (obj as messageInterface).message === 'string';
+    forkJoin({
+      categories: this.backendService.getChartData<chartDataInterface[]>(this.id,'categories'),
+      status: this.backendService.getChartData<chartDataInterface[]>(this.id,'status'),
+      threats: this.backendService.getChartData<chartDataInterface[]>(this.id,'threats'),
+    }).subscribe({
+      next: (result) => {
+        this.catData = result.categories.data;
+        this.statsData = result.status.data;
+        this.threatsData = result.threats.data;
+      },
+      error: (err) => console.error('Failed to load chart data', err)
+    })
   }
 }
