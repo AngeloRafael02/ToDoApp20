@@ -13,7 +13,7 @@
 - make it Modal - DONE
 - Create template - DONE
 - use component for creating and editing tasks - DONE
-    - Fix POST and PUT Request (might be a NestJS Refactor, need further testing)
+    - Fix POST and PUT Request
 
 ## pieChart Component
 - Create PieChart Wrapper Component, that takes data as props/@Input (use chart.js and ng2-charts) - DONE
@@ -22,7 +22,7 @@
 - create carts dor Cat, Stat, and Threat Level - DONE
 
 ### server
-- explore server.ts data fetching with (pg + TypeORM)
+- explore server.ts data fetching with (pg)
 
 ### misc
 - create git Hook to check if console commands are in any file
