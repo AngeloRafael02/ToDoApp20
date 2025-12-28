@@ -133,6 +133,16 @@ export class TaskTable implements OnInit, AfterContentChecked {
   public isModalOpen:boolean = false;
   public modalMode:'create'|'edit' = 'create';
 
+  private headersOrderMapping = [
+    "Title", 
+    "Description", 
+    "Deadline", 
+    "Category", 
+    "Priority", 
+    "Status", 
+    "Threat Level", 
+  ]
+
   constructor(
     public stringService:String,
     public backendService:BackendService,
@@ -140,27 +150,21 @@ export class TaskTable implements OnInit, AfterContentChecked {
     public styleService:Style,
     private cdr: ChangeDetectorRef
   ){
-    this.backendService.getColumnHeaders('task_view').subscribe(data => {
-      this.taskColumns = data;
+    this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
+      this.taskColumns = object.data.map(obj => obj.column_name)
+      this.headersOrderMapping.forEach((item,index)=>{
+        this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
+      })
       this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10)
     });
   }
 
-  private isErrorMessage(obj:tasksOrMessage):obj is messageInterface {
-    return 'message' in obj && typeof (obj as messageInterface).message === 'string';
-  }
-
   ngOnInit(): void {
-    this.backendService.getTasks(1).subscribe(data => {
-      if (!this.isErrorMessage(data)){
-        this.tasks = data;
-        this.tasksSource.data = this.tasks;
-      } else {
-        alert(data.message);
-      }
+    this.backendService.getTableTasks<taskViewInterface[]>(1,1).subscribe(data => {
+      this.tasks = data.data;
+      this.tasksSource.data = this.tasks;
     })
   }
-
   
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();

@@ -24,7 +24,7 @@ export const query = async (
         if (expectEmpty === true && result.rows.length === 0) {
             res.status(404).json({ 
                 status: 'error', 
-                message: 'Request not found.' 
+                data: ['Request not found.']
             });
         }
         res.status(200).json({
@@ -36,7 +36,7 @@ export const query = async (
         console.error("Database Error:", error);
         res.status(500).json({ 
             status: 'error', 
-            message: 'Internal Server Error' 
+            data: ['Internal Server Error'] 
         });
     }
 };

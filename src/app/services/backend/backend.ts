@@ -3,9 +3,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
-import { taskInterface,taskViewInterface } from '../../interfaces/task.interface';
+import { taskInterface } from '../../interfaces/task.interface';
 import { environment } from '../../../environments/environment';
-import { messageInterface } from '../../interfaces/message.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +12,7 @@ import { messageInterface } from '../../interfaces/message.interface';
 export class BackendService {
 
   private nestJS:string = environment.nestJS_url;
-  private backupJSONPath:string = `/assets/data`;
-  private miscAPIpath:string = `${this.nestJS}/misc`;
-  private taskJSONpath:string = `${this.nestJS}/task`;
-  private miscBackupPath:string = `${this.backupJSONPath}/misc`;
+
   private errorMsg = (option:string) => {
     return `API GET failed for ${option}. Falling back to local JSON.`
   }
@@ -34,38 +30,22 @@ export class BackendService {
     );
   }
 
-  public getTasks(id:number, table:string = 'current'){
-    let API_URL_Path:string = this.taskJSONpath;
-    switch (table){
-      case 'current':
-        API_URL_Path += `/all/${id}`;
-        break;
-      case 'cancelled':
-        API_URL_Path += `/allCancelled/${id}`;
-        break;
-      case 'finsihed':
-        API_URL_Path += `/allFinished/${id}`;
-        break;
-      default: 
-        break;
-    }
-    return this.http.get<taskViewInterface[]>(API_URL_Path)
-      .pipe(catchError((error:HttpErrorResponse) => {
-        console.error(this.errorMsg(table), error);
-        return this.http.get<messageInterface>(`${this.miscBackupPath}/error.json`);
-      }));
+  public getTableTasks<T>(id:number, status:number = 1): Observable<{ status: string; data: T }> {
+    return this.http.get<{ status: string; data: T }>(`/tasks/all/${status}/${id}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error(this.errorMsg(`${status} tasks`), error);
+        return of({ status: 'error', data: [] as unknown as T });
+      })
+    );
   }
 
-  public getOneTaskByID(id:number):Observable<taskViewInterface>{
-    return this.http.get<taskViewInterface>(`${this.nestJS}/task/${id}`)
-  }
-
-  public getColumnHeaders(table:string):Observable<string[]>{
-    return this.http.get<string[]>(`${this.miscAPIpath}/col/${table}`)
-      .pipe(catchError((error:HttpErrorResponse)=> {
-        console.error(this.errorMsg(table), error);
-        return this.http.get<string[]>(`${this.miscBackupPath}/columns.json`);
-      }));
+  public getHeaders<T>(table:string):Observable<{status:string; data:T}> {
+    return this.http.get<{ status: string; data: T }>(`/tasks/columns/${table}`).pipe(
+      catchError((error: HttpErrorResponse) => {
+        console.error(this.errorMsg(`${table} headers`), error);
+        return of({status:'error', data:[] as unknown as T});
+      })
+    );
   }
 
   public getChartData<T>(id:number,option:string):Observable<{status:string; data:T}>{
@@ -74,7 +54,7 @@ export class BackendService {
         console.error(this.errorMsg(option), error);
         return of({status:'error', data:[] as unknown as T});
       })
-    )
+    );
   }
 
   public addTask(taskObj:taskInterface):Observable<any>{

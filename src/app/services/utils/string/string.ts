@@ -17,9 +17,20 @@ export class String {
     return result;
   }
 
+  public rearrangeArrayItem(arr: string[], targetValue: string, newIndex: number): string[] {
+  const currentIndex = arr.indexOf(targetValue);
+  if (currentIndex === -1) {
+    return arr;
+  }
+  
+  const [removedItem] = arr.splice(currentIndex, 1);
+  arr.splice(newIndex, 0, removedItem);
+  return arr;
+}
+
   public capitalizeFirstLetter(str:string):string {
     if (str.length === 0) {
-      return ""; // Handle empty strings
+      return "";
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   }

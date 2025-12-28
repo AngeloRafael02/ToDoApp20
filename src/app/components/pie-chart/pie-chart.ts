@@ -17,7 +17,7 @@ export class PieChart implements AfterViewInit, OnChanges {
   @ViewChild('pieCanvas') private pieCanvas!: ElementRef;
   @Input() data: chartDataInterface[] = [];
   
-  chart: any;
+  public chart?: Chart<'pie', number[], string>;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     Chart.register(...registerables);
