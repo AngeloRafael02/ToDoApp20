@@ -60,7 +60,7 @@ import { Modal } from '../modal/modal';
                 </td>
               } @else {
                 <td mat-cell *matCellDef="let element"> 
-                  {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element.ID) : element[col] }} 
+                  {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element.deadline) : element[col] }} 
                 </td>
               }
             </ng-container>
@@ -195,7 +195,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
         console.log('Create new task:', taskData);
       }
     }
-  this.isModalOpen = false;
+    this.isModalOpen = false;
   }
 
   public deadlineFormatHelper(deadline:string):string{
