@@ -196,16 +196,17 @@ export class TaskForm implements OnInit {
       cat_id:[1,Validators.required],
       prio:[null, Validators.min(0)],
       threat_id:[1, Validators.required],
-      stat_id:[1, Validators.required],
+      stat_id: [{ value: 1, disabled: true }, Validators.required],
       created_at:[new Date(),Validators.required],
       last_edited:[new Date(),Validators.required],
-      deadline:[''],
+      deadline:[null],
       owner_id:[1]
     });
   }
 
   public patchForm(): void {
     if (this.task && this.taskForm) {
+      this.taskForm.get('stat_id')?.enable();
       this.taskForm.patchValue({
         id:this.task.ID,
         title: this.task.Title,
@@ -227,7 +228,6 @@ export class TaskForm implements OnInit {
 
   public onSubmit(): void {
     if (this.taskForm.valid) {
-        console.log('Task Data:', this.taskForm.value);
         this.snackBar.open('Task submitted successfully!', 'Dismiss', {
             duration: 3000,
             verticalPosition: 'top'
@@ -256,10 +256,10 @@ export class TaskForm implements OnInit {
           cat_id: 1,
           prio: null,
           threat_id: 1,
-          stat_id: 1,
+          stat_id: { value: 1, disabled: true },
           created_at: new Date(),
           last_edited: new Date(),
-          deadline: "",
+          deadline: null,
           owner_id: 1
       });
       this.taskForm.markAsPristine();
