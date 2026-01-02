@@ -4,14 +4,11 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { taskInterface } from '../../interfaces/task.interface';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
-
-  private nestJS:string = environment.nestJS_url;
 
   private errorMsg = (option:string) => {
     return `API GET failed for ${option}. Falling back to local JSON.`
@@ -57,20 +54,12 @@ export class BackendService {
     );
   }
 
-  public addTask(taskObj:taskInterface):Observable<any>{
-    return this.http.post(`${this.nestJS}/task`, taskObj);
+  public addTask(taskObj: taskInterface): Observable<taskInterface> {
+    return this.http.post<taskInterface>(`/tasks/new`, { task: taskObj });
   }
 
-  public updateOneTask(taskObj:taskInterface, ID:number):Observable<any>{
-    return this.http.put(`${this.nestJS}/task/${ID}`, taskObj);
-  }
-
-  public finishOneTask(ID:number): Observable<any> {
-    return this.http.put(`${this.nestJS}/task/finish/${ID}`,{});
-  }
-
-  public deleteOneTask(taskID:number): Observable<any> {
-    return this.http.delete(`${this.nestJS}/task/${taskID}`);
+  public updateOneTask(taskObj: taskInterface, ID: number): Observable<any> {
+    return this.http.put(`/tasks/update/${ID}`, { task: taskObj });
   }
 }
 

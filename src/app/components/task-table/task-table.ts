@@ -8,8 +8,7 @@ import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/utils/string/string';
 import { Date } from '../../services/utils/date/date';
 import { Style } from '../../services/utils/style/style';
-import { taskInterface, tasksOrMessage, taskViewInterface } from '../../interfaces/task.interface';
-import { messageInterface } from '../../interfaces/message.interface';
+import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
 
@@ -160,10 +159,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
   }
 
   ngOnInit(): void {
-    this.backendService.getTableTasks<taskViewInterface[]>(1,1).subscribe(data => {
-      this.tasks = data.data;
-      this.tasksSource.data = this.tasks;
-    })
+    this.refreshTable();
   }
   
   ngAfterContentChecked(): void {
@@ -185,17 +181,42 @@ export class TaskTable implements OnInit, AfterContentChecked {
     }
   }
 
-  public closeTaskForm(taskData:taskInterface): void {
+  public closeTaskForm(taskData: taskInterface): void {
     if (taskData) {
       if (taskData.id) {
-        this.backendService.updateOneTask(taskData,taskData.id as number)
-        console.log('Update existing task:', taskData);
+        this.backendService.updateOneTask(taskData, taskData.id as number).subscribe({
+          next: () => {
+            this.refreshTable();
+            this.isModalOpen = false;
+          },
+          error: (err) => console.error('Update failed', err)
+        });
       } else {
-        this.backendService.addTask(taskData);
-        console.log('Create new task:', taskData);
+        this.backendService.addTask(taskData).subscribe({
+          next: () => {
+            this.refreshTable();
+            this.isModalOpen = false;
+          },
+          error: (err) => console.error('Creation failed', err)
+        });
       }
+    } else {
+      this.isModalOpen = false;
     }
-    this.isModalOpen = false;
+  }
+
+  public refreshTable(): void {
+    this.backendService.getTableTasks<taskViewInterface[]>(1, 1).subscribe({
+      next: (data) => {
+        this.tasks = data.data;
+        this.tasksSource.data = this.tasks;
+        this.cdr.markForCheck(); 
+        console.log('Table refreshed successfully');
+      },
+      error: (err) => {
+        console.error('Error refreshing table:', err);
+      }
+    });
   }
 
   public deadlineFormatHelper(deadline:string):string{

@@ -237,7 +237,7 @@ export class TaskForm implements OnInit {
             duration: 3000,
             verticalPosition: 'top'
         });
-        this.taskSubmitted.emit(this.taskForm.value);
+        this.taskSubmitted.emit(this.taskForm.getRawValue());
         this.resetForm();
     } else {
         this.taskForm.markAllAsTouched();
