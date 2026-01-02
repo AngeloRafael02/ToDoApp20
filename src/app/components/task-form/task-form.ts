@@ -154,7 +154,12 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
         </mat-dialog-actions>
     </form>
   `,
-  styles: ``
+  styles: `
+    mat-dialog-content {
+        overflow: hidden !important;
+        max-height: none !important; 
+    }
+  `
 })
 export class TaskForm implements OnInit {
 
