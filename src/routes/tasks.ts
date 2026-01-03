@@ -38,7 +38,7 @@ taskRouter.post(`/new`, async (req:Request, res:Response)=> {
             `, values);
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: error});
+        res.status(500).json({ error: error });
     }
 });
 
@@ -61,6 +61,26 @@ taskRouter.put(`/update/:id`, async (req:Request, res:Response) => {
         );
         res.status(200).json(updateTask.rows[0]);
     } catch (error) {
-        res.status(500).json({ error: error});
+        res.status(500).json({ error: error });
+    }
+});
+
+taskRouter.put(`/finish`, async (req:Request, res:Response) => {
+    try {
+        const { id } = req.body;
+        const finishTask = await pool.query(`UPDATE task SET stat_id = 3 WHERE id = $1`,[id]);
+        res.status(200).json(finishTask.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error });
+    }
+});
+
+taskRouter.delete(`/delete`, async (req:Request, res:Response) => {
+    try {
+        const id = req.query['id'];
+        await pool.query('DELETE FROM task WHERE id = $1', [id]);
+        res.status(204).json({ message: "Task was deleted!" });
+    } catch (err) {
+        res.status(500).json({ error: err });
     }
 });

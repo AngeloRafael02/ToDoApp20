@@ -43,7 +43,7 @@ import { Modal } from '../modal/modal';
               @if (col == 'Options') {
                 <td mat-cell *matCellDef="let element"> 
                   <div>
-                    <button mat-flat-button color="primary">
+                    <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
                       Finish
                     </button>
@@ -51,7 +51,7 @@ import { Modal } from '../modal/modal';
                       <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
                       Update
                     </button>
-                    <button mat-flat-button color="success">
+                    <button mat-flat-button color="success" (click)="deleteTask(element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Delete Task" fontIcon="delete"></mat-icon>
                       Delete
                     </button>
@@ -132,7 +132,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
   public isModalOpen:boolean = false;
   public modalMode:'create'|'edit' = 'create';
 
-  private headersOrderMapping = [
+  private headersOrderMapping:string[] = [
     "Title", 
     "Description", 
     "Deadline", 
@@ -216,6 +216,20 @@ export class TaskTable implements OnInit, AfterContentChecked {
       error: (err) => {
         console.error('Error refreshing table:', err);
       }
+    });
+  }
+
+  public deleteTask(id:number) {
+    this.backendService.deleteOneTask(id).subscribe({
+      next:(data)=> this.refreshTable(),
+      error: (err) => console.error(`Error Deleteing task`, err)
+    });
+  }
+
+  public finishTask(id:number) {
+    this.backendService.finishOneTask(id).subscribe({
+      next: (data) => this.refreshTable(), 
+      error: (err) => console.error('Error Completing Task', err)
     });
   }
 

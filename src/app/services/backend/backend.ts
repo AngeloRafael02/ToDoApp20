@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
@@ -60,6 +60,15 @@ export class BackendService {
 
   public updateOneTask(taskObj: taskInterface, ID: number): Observable<any> {
     return this.http.put(`/tasks/update/${ID}`, { task: taskObj });
+  }
+
+  public finishOneTask(id:number) {
+    return this.http.put(`tasks/finish`,{ id:id });
+  }
+
+  public deleteOneTask(id:number){
+    let params = new HttpParams().set('id', id.toString());
+    return this.http.delete(`tasks/delete/`,{ params:params });
   }
 }
 
