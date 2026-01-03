@@ -5,18 +5,11 @@ import { Injectable } from '@angular/core';
 })
 export class Date {
 
-  public DateUndefinedConverter(value:Date | undefined):string{
-    if (value) {
-      return value.toString();
+  public dateFormatHelper(deadline: string | null | undefined): string {
+    if (!deadline || deadline.trim() === '') {
+      return '';
     }
-    return "1970-01-01";
+    return deadline.toString().slice(0, 10);
   }
 
-  public dateFormatHelper(deadline:string):string{
-    if (deadline == null){
-      return  '';
-    } else {
-      return deadline || deadline.trim() !== '' ? deadline.toString().slice(0,10) : '';
-    }
-  }
 }

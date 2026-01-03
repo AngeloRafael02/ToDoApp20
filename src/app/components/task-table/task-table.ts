@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked, inject } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -59,7 +59,7 @@ import { Modal } from '../modal/modal';
                 </td>
               } @else {
                 <td mat-cell *matCellDef="let element"> 
-                  {{ col == 'Deadline' || col == 'Created At' ? deadlineFormatHelper(element.deadline) : element[col] }} 
+                  {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col].toString()) : element[col].toString() }} 
                 </td>
               }
             </ng-container>
@@ -140,12 +140,11 @@ export class TaskTable implements OnInit, AfterContentChecked {
     "Priority", 
     "Status", 
     "Threat Level", 
-  ]
+  ];
 
   constructor(
     public stringService:String,
     public backendService:BackendService,
-    public dateService:Date,
     public styleService:Style,
     private cdr: ChangeDetectorRef
   ){
@@ -157,6 +156,8 @@ export class TaskTable implements OnInit, AfterContentChecked {
       this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10)
     });
   }
+
+  public dateService = inject(Date)
 
   ngOnInit(): void {
     this.refreshTable();
@@ -222,19 +223,15 @@ export class TaskTable implements OnInit, AfterContentChecked {
   public deleteTask(id:number) {
     this.backendService.deleteOneTask(id).subscribe({
       next:(data)=> this.refreshTable(),
-      error: (err) => console.error(`Error Deleteing task`, err)
+      error: (err) => console.error(`Error Deleteing task`, err);
     });
   }
 
   public finishTask(id:number) {
     this.backendService.finishOneTask(id).subscribe({
       next: (data) => this.refreshTable(), 
-      error: (err) => console.error('Error Completing Task', err)
+      error: (err) => console.error('Error Completing Task', err);
     });
-  }
-
-  public deadlineFormatHelper(deadline:string):string{
-    return this.dateService.dateFormatHelper(deadline);
   }
 
   public evaluateDate(row:taskViewInterface):string {
