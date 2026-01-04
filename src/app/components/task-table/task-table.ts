@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
+import { ViewChild, AfterViewInit } from '@angular/core';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked, inject } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -19,6 +22,8 @@ import { Modal } from '../modal/modal';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
+    MatSortModule,
+    MatPaginatorModule,
     Modal,
     TaskForm
   ],
@@ -39,8 +44,8 @@ import { Modal } from '../modal/modal';
 
           @for (col of taskColumns; track col) {
             <ng-container [matColumnDef]="col">
-              <th mat-header-cell *matHeaderCellDef>  {{ col }} </th>
               @if (col == 'Options') {
+                <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
                 <td mat-cell *matCellDef="let element"> 
                   <div>
                     <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
@@ -58,6 +63,7 @@ import { Modal } from '../modal/modal';
                   </div>
                 </td>
               } @else {
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
                 <td mat-cell *matCellDef="let element"> 
                   {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col].toString()) : element[col].toString() }} 
                 </td>
@@ -72,6 +78,7 @@ import { Modal } from '../modal/modal';
             <td class="mat-cell" [attr.colSpan]="taskColumns.length">No data found.</td>
           </tr>
         </table>
+        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of tasks"></mat-paginator>
 
         <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
           <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm($event)"></task-form>
@@ -107,7 +114,6 @@ import { Modal } from '../modal/modal';
           background-color: tbl.$headerColor;
         }
         td{
-          border: 1px solid black;
           div {
             button{
             margin-left:5px;
@@ -117,10 +123,24 @@ import { Modal } from '../modal/modal';
         }
       }
     }  
+
+    mat-paginator {
+      border: 2px solid black;
+      border-top: 1px solid black;
+    }
+
+    ::ng-deep .mat-sort-header-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskTable implements OnInit, AfterContentChecked {
+
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   public title:string = 'Current';
 
@@ -149,11 +169,16 @@ export class TaskTable implements OnInit, AfterContentChecked {
     private cdr: ChangeDetectorRef
   ){
     this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
-      this.taskColumns = object.data.map(obj => obj.column_name)
+      this.taskColumns = object.data.map(obj => obj.column_name);
+
       this.headersOrderMapping.forEach((item,index)=>{
         this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
-      })
-      this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10)
+      });
+      this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10);
+
+      this.tasksSource.sortingDataAccessor = (item, property) => {
+        return (item as any)[property];
+      };
     });
   }
 
@@ -211,6 +236,8 @@ export class TaskTable implements OnInit, AfterContentChecked {
       next: (data) => {
         this.tasks = data.data;
         this.tasksSource.data = this.tasks;
+        this.tasksSource.sort = this.sort;
+        this.tasksSource.paginator = this.paginator;
         this.cdr.markForCheck(); 
         console.log('Table refreshed successfully');
       },
@@ -223,14 +250,14 @@ export class TaskTable implements OnInit, AfterContentChecked {
   public deleteTask(id:number) {
     this.backendService.deleteOneTask(id).subscribe({
       next:(data)=> this.refreshTable(),
-      error: (err) => console.error(`Error Deleteing task`, err);
+      error: (err) => console.error(`Error Deleteing task`, err)
     });
   }
 
   public finishTask(id:number) {
     this.backendService.finishOneTask(id).subscribe({
       next: (data) => this.refreshTable(), 
-      error: (err) => console.error('Error Completing Task', err);
+      error: (err) => console.error('Error Completing Task', err)
     });
   }
 
