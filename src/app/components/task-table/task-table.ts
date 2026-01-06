@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ViewChild, AfterViewInit } from '@angular/core';
+import { ViewChild } from '@angular/core';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked, inject } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/utils/string/string';
@@ -24,29 +26,33 @@ import { Modal } from '../modal/modal';
     MatIconModule,
     MatSortModule,
     MatPaginatorModule,
+    MatInputModule,
+    MatFormFieldModule,
     Modal,
     TaskForm
   ],
   template: `
     <div class="tableContainer">
       <table mat-table [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
-
         <caption>
           <h2>{{title}} Tasks Table</h2>
           <p>A list of all {{title | lowercase}} tasks.</p>
           <div>
+            <mat-form-field style="margin-bottom: -1.25em;">
+              <mat-label>Filter</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Filter" #input>
+            </mat-form-field>
             <button mat-flat-button (click)="openTaskForm('create')">
               <mat-icon aria-hidden="false" aria-label="Add Task" fontIcon="add box"></mat-icon>
               New Task
             </button>
           </div>
         </caption>
-
           @for (col of taskColumns; track col) {
             <ng-container [matColumnDef]="col">
               @if (col == 'Options') {
                 <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
-                <td mat-cell *matCellDef="let element"> 
+                <td mat-cell *matCellDef="let element">
                   <div>
                     <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
@@ -64,8 +70,8 @@ import { Modal } from '../modal/modal';
                 </td>
               } @else {
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
-                <td mat-cell *matCellDef="let element"> 
-                  {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col].toString()) : element[col].toString() }} 
+                <td mat-cell *matCellDef="let element">
+                  {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col].toString()) : element[col].toString() }}
                 </td>
               }
             </ng-container>
@@ -75,8 +81,11 @@ import { Modal } from '../modal/modal';
           <tr mat-row *matRowDef="let row; columns: taskColumns;" [ngClass]="evaluateDate(row)"></tr>
 
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colSpan]="taskColumns.length">No data found.</td>
+            <td class="mat-cell" [attr.colSpan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
+              No data found.
+            </td>
           </tr>
+
         </table>
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of tasks"></mat-paginator>
 
@@ -95,25 +104,26 @@ import { Modal } from '../modal/modal';
           caption-side: top;
           color:pallete.$primaryTextColor;
           padding-top: 0.5rem;
-          padding-bottom: 0.5rem;
+          padding-bottom: -1rem;
           div {
             display: flex;
+            gap: 1rem;
           }
         }
         th,td {
           text-align: center;
-          &:first-child,
+          &:first-child:not(.no-data-cell),
           &:nth-child(9),
           &:nth-child(10),
           &:nth-child(11) ~ th,
-          &:nth-child(11) ~ td{
+          &:nth-child(11) ~ td {
             display: none;
           }
         }
-        th{
+        th {
           background-color: tbl.$headerColor;
         }
-        td{
+        td {
           div {
             button{
             margin-left:5px;
@@ -122,7 +132,7 @@ import { Modal } from '../modal/modal';
           }
         }
       }
-    }  
+    }
 
     mat-paginator {
       border: 2px solid black;
@@ -144,7 +154,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
 
   public title:string = 'Current';
 
-  private tasks:taskViewInterface[] = [] 
+  private tasks:taskViewInterface[] = []
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
   public selectedTask: taskViewInterface | undefined;
@@ -153,13 +163,13 @@ export class TaskTable implements OnInit, AfterContentChecked {
   public modalMode:'create'|'edit' = 'create';
 
   private headersOrderMapping:string[] = [
-    "Title", 
-    "Description", 
-    "Deadline", 
-    "Category", 
-    "Priority", 
-    "Status", 
-    "Threat Level", 
+    "Title",
+    "Description",
+    "Deadline",
+    "Category",
+    "Priority",
+    "Status",
+    "Threat Level",
   ];
 
   constructor(
@@ -187,7 +197,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
   ngOnInit(): void {
     this.refreshTable();
   }
-  
+
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
@@ -198,7 +208,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
     this.selectedTask = undefined;
 
     if (mode === 'edit') {
-      this.selectedTask = this.tasks.find(task => task.ID === id); 
+      this.selectedTask = this.tasks.find(task => task.ID === id);
       if (this.selectedTask) {
         console.log('Selected Task for Edit:', this.selectedTask);
       } else {
@@ -238,7 +248,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
         this.tasksSource.data = this.tasks;
         this.tasksSource.sort = this.sort;
         this.tasksSource.paginator = this.paginator;
-        this.cdr.markForCheck(); 
+        this.cdr.markForCheck();
         console.log('Table refreshed successfully');
       },
       error: (err) => {
@@ -256,12 +266,18 @@ export class TaskTable implements OnInit, AfterContentChecked {
 
   public finishTask(id:number) {
     this.backendService.finishOneTask(id).subscribe({
-      next: (data) => this.refreshTable(), 
+      next: (data) => this.refreshTable(),
       error: (err) => console.error('Error Completing Task', err)
     });
   }
 
   public evaluateDate(row:taskViewInterface):string {
     return this.styleService.RowColorPerDeadline(row.Deadline);
+  }
+
+  public applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.tasksSource.filter = filterValue.trim().toLowerCase();
+    this.cdr.markForCheck();
   }
 }

@@ -50,7 +50,7 @@ export class App implements OnInit, OnDestroy {
   public categories: categoriesInterface[] | null = null;
   public statuses: conditionInterface[] | null = null;
   public threatLevels: threatInterface[] | null = null;
-  
+
   private dropdownSubscriptions: Subscription[] = [];
 
   constructor (
@@ -67,11 +67,11 @@ export class App implements OnInit, OnDestroy {
     const tags: MetaDefinition[] = [
       { name: 'description', content: 'To-Do-App in Angular 20 with SSR.' },
       { property: 'og:title', content: pageTitle},
-      { rel: 'canonical', href: canonicalUrl } 
+      { rel: 'canonical', href: canonicalUrl }
     ];
     this.titleService.setTitle(pageTitle);
     this.metaService.addTags(tags);
-    
+
     forkJoin({
       categories: this.backend.getDropdownOptions<categoriesInterface[]>('categories'),
       status: this.backend.getDropdownOptions<conditionInterface[]>('status'),
