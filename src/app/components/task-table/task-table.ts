@@ -79,6 +79,16 @@ import { Modal } from '../modal/modal';
 
           <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
           <tr mat-row *matRowDef="let row; columns: taskColumns;" [ngClass]="evaluateDate(row)"></tr>
+          <ng-container matColumnDef="footer">
+            <td mat-footer-cell *matFooterCellDef [attr.colspan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
+              <div class="footer-wrapper">
+                <strong>Total Tasks: {{ tasksSource.data.length }}</strong>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of tasks"></mat-paginator>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
 
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" [attr.colSpan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
@@ -87,7 +97,6 @@ import { Modal } from '../modal/modal';
           </tr>
 
         </table>
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of tasks"></mat-paginator>
 
         <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
           <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm($event)"></task-form>
@@ -110,6 +119,12 @@ import { Modal } from '../modal/modal';
             gap: 1rem;
           }
         }
+        tr {
+          .mat-footer-row {
+          font-weight: bold;
+          background-color: #f5f5f5;
+        }
+        }
         th,td {
           text-align: center;
           &:first-child:not(.no-data-cell),
@@ -124,6 +139,12 @@ import { Modal } from '../modal/modal';
           background-color: tbl.$headerColor;
         }
         td {
+          .mat-footer-cell {
+            padding: 0 16px;
+            background-color: #f5f5f5;
+            border: 1px solid black;
+          }
+
           div {
             button{
             margin-left:5px;
@@ -134,15 +155,29 @@ import { Modal } from '../modal/modal';
       }
     }
 
+    .footer-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
     mat-paginator {
       border: 2px solid black;
       border-top: 1px solid black;
+      background: transparent !important;
+      border: none !important;
     }
 
     ::ng-deep .mat-sort-header-container {
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    ::ng-deep .mat-mdc-paginator-container {
+      min-height: auto !important;
+      padding: 0 !important;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
