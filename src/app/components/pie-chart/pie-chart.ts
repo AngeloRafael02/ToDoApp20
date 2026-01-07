@@ -16,7 +16,8 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
 export class PieChart implements AfterViewInit, OnChanges {
   @ViewChild('pieCanvas') private pieCanvas!: ElementRef;
   @Input() data: chartDataInterface[] = [];
-  
+  @Input() chartTitle: string = '';
+
   public chart?: Chart<'pie', number[], string>;
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
@@ -53,8 +54,19 @@ export class PieChart implements AfterViewInit, OnChanges {
         responsive: true,
         maintainAspectRatio: true,
         plugins: {
+          title: {
+            display: !!this.chartTitle,
+            text: this.chartTitle,
+            color: '#ffffff',
+            font: {
+              size: 18,
+              weight: 'bold'
+            },
+            padding: { top: 10, bottom: 20 }
+          },
           legend: {
             display: true,
+            position: 'bottom',
             labels: {
               color: '#ffffff',
               font: {
@@ -84,7 +96,7 @@ export class PieChart implements AfterViewInit, OnChanges {
 /* To use this Component, import Component and interface then do the code below
  * template:
  * <pie-chart [data]="salesData" title="Sales Distribution"></pie-chart>
- * 
+ *
  * data structure example:
  * public salesData: chartDataInterface[] = [
     { name: 'Electronics', value: 450 },
