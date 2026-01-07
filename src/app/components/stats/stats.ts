@@ -15,38 +15,44 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
     PieChart
   ],
   template: `
-    <mat-expansion-panel  (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)"> 
-      <mat-expansion-panel-header>
-        <mat-panel-title> 
-          <p>Tasks Statistics</p> 
-        </mat-panel-title>
-        <mat-panel-description>
-          <p>{{panelOpenState() ? 'Show' : 'Hide'}} Stats</p>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <div class="stats-div">
-        <pie-chart [data]="(catData)" title="Tasks Grouped by Categories"></pie-chart>
-        <pie-chart [data]="(statsData)" title="Tasks Grouped by Status"></pie-chart>
-        <pie-chart [data]="(threatsData)" title="Tasks Grouped by Threat levels"></pie-chart>
-      </div>
-    </mat-expansion-panel>
+    <div class="stats-wrapper">
+      <mat-expansion-panel  (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <p>Tasks Statistics</p>
+          </mat-panel-title>
+          <mat-panel-description>
+            <p>{{panelOpenState() ? 'Show' : 'Hide'}} Stats</p>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <div class="stats-div">
+          <pie-chart [data]="(catData)" chartTitle="Grouped by Categories"></pie-chart>
+          <pie-chart [data]="(statsData)" chartTitle="Grouped by Status"></pie-chart>
+          <pie-chart [data]="(threatsData)" chartTitle="Grouped by Threat Levels"></pie-chart>
+        </div>
+      </mat-expansion-panel>
+    </div>
+
   `,
   styles: `
     @use '../../styles/pallete.scss' as pallete;
 
-    mat-expansion-panel, mat-expansion-panel-header {
-      background-color: pallete.$color1;
-    }
-
-    p {
-      color: pallete.$primaryTextColor;
-    }
-
-    .stats-div{
-      display: flex;
-      justify-content: space-between;
-      padding-top:1%;
-      padding-bottom:1%;
+    .stats-wrapper {
+      box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
+      -webkit-box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
+      -moz-box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
+      mat-expansion-panel, mat-expansion-panel-header {
+        background-color: pallete.$color1;
+        p {
+          color: pallete.$primaryTextColor;
+        }
+      }
+      .stats-div{
+        display: flex;
+        justify-content: space-between;
+        padding-top:1%;
+        padding-bottom:1%;
+      }
     }
   `
 })

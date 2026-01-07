@@ -141,7 +141,7 @@ import { Modal } from '../modal/modal';
         td {
           .mat-footer-cell {
             padding: 0 16px;
-            background-color: #f5f5f5;
+            background-color: transparent;
             border: 1px solid black;
           }
 
