@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ViewChild } from '@angular/core';
+import { AfterViewInit, Input, ViewChild } from '@angular/core';
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked, inject } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -145,7 +145,6 @@ import { Modal } from '../modal/modal';
             background-color: transparent;
             border: 1px solid black;
           }
-
           div {
             button{
             margin-left:5px;
@@ -183,18 +182,17 @@ import { Modal } from '../modal/modal';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements OnInit, AfterContentChecked {
+export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @Input() status:number = 0;
 
   public title:string = 'Current';
-
   private tasks:taskViewInterface[] = []
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
   public selectedTask: taskViewInterface | undefined;
-
   public isModalOpen:boolean = false;
   public modalMode:'create'|'edit' = 'create';
 
@@ -212,6 +210,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
     public tasksService:TaskStoreService,
     public stringService:StringService,
     public backendService:BackendService,
+    public dateService:DateService,
     public styleService:StyleService,
     private cdr: ChangeDetectorRef
   ) {
@@ -227,8 +226,6 @@ export class TaskTable implements OnInit, AfterContentChecked {
     });
   }
 
-  public dateService = inject(DateService)
-
   ngOnInit(): void {
     this.refreshTable();
   }
@@ -236,6 +233,12 @@ export class TaskTable implements OnInit, AfterContentChecked {
   ngAfterContentChecked(): void {
     this.cdr.detectChanges();
   }
+
+  ngAfterViewInit(): void {
+    this.tasksSource.sort = this.sort;
+    this.tasksSource.paginator = this.paginator;
+  }
+
 
   public openTaskForm(mode:'create'|'edit' = 'create', id:number = 0) {
     this.isModalOpen = true;
@@ -276,7 +279,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
   }
 
   public refreshTable(): void {
-    this.backendService.getTableTasks<taskViewInterface[]>(1).subscribe({
+    this.backendService.getTableTasks<taskViewInterface[]>(1,this.status).subscribe({
       next: (data) => {
         this.tasks = data.data;
         this.tasksSource.data = this.tasks;
