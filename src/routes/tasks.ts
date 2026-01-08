@@ -3,9 +3,17 @@ import { pool,query } from '../database'
 
 export const taskRouter = Router();
 
-taskRouter.get('/all/:status/:id',async (req:Request, res:Response) => {
-    const { status,id } = req.params;
-    query(res, `SELECT * FROM task_view WHERE "UID" = $1 AND "SID" = $2`, [id,status], true);
+taskRouter.get('/all/:status/:id', async (req: Request, res: Response) => {
+  const { status, id } = req.params;
+  let sql = `SELECT * FROM task_view WHERE "UID" = $1`;
+  const params: unknown[] = [id];
+
+  if (status !== '0') {
+      sql += ` AND "SID" = $2`;
+      params.push(status);
+  }
+
+  await query(res, sql, params, true);
 });
 
 taskRouter.get('/one/:id', async (req:Request, res:Response) => {
@@ -22,18 +30,18 @@ taskRouter.post(`/new`, async (req:Request, res:Response)=> {
     try {
         const { task } = req.body;
         const values = [
-            task.title, 
+            task.title,
             task.note || null,
-            task.cat_id, 
+            task.cat_id,
             task.prio,
-            task.stat_id, 
+            task.stat_id,
             task.threat_id,
-            task.deadline || null, 
+            task.deadline || null,
             task.owner_id
         ];
         const result = await pool.query(`
-            INSERT INTO task ( title, note, cat_id, prio, stat_id, threat_id, deadline, owner_id ) 
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+            INSERT INTO task ( title, note, cat_id, prio, stat_id, threat_id, deadline, owner_id )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             RETURNING *;
             `, values);
         res.status(201).json(result.rows[0]);
@@ -47,14 +55,14 @@ taskRouter.put(`/update/:id`, async (req:Request, res:Response) => {
         const { id } = req.params;
         const { task } = req.body;
         const updateTask = await pool.query(
-            `UPDATE task 
-                SET title = $1, 
+            `UPDATE task
+                SET title = $1,
                     note = $2,
                     cat_id = $3,
-                    prio = $4, 
-                    stat_id = $5, 
-                    threat_id = $6, 
-                    deadline = $7, 
+                    prio = $4,
+                    stat_id = $5,
+                    threat_id = $6,
+                    deadline = $7,
                     owner_id = $8
             WHERE id = $9 RETURNING *`,
             [ task.title, task.note, task.cat_id, task.prio, task.stat_id, task.threat_id, task.deadline, task.owner_id, id  ]

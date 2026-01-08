@@ -10,9 +10,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { BackendService} from '../../services/backend/backend';
-import { String } from '../../services/utils/string/string';
+import { StringService } from '../../services/utils/string/string';
 import { DateService } from '../../services/utils/date/date';
-import { Style } from '../../services/utils/style/style';
+import { StyleService } from '../../services/utils/style/style';
+import { TaskStoreService } from '../../services/tasks-store/task-store';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
@@ -71,7 +72,7 @@ import { Modal } from '../modal/modal';
               } @else {
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
                 <td mat-cell *matCellDef="let element">
-                  {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col].toString()) : element[col].toString() }}
+                  {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col]) : element[col] }}
                 </td>
               }
             </ng-container>
@@ -208,19 +209,18 @@ export class TaskTable implements OnInit, AfterContentChecked {
   ];
 
   constructor(
-    public stringService:String,
+    public tasksService:TaskStoreService,
+    public stringService:StringService,
     public backendService:BackendService,
-    public styleService:Style,
+    public styleService:StyleService,
     private cdr: ChangeDetectorRef
-  ){
+  ) {
     this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
       this.taskColumns = object.data.map(obj => obj.column_name);
-
       this.headersOrderMapping.forEach((item,index)=>{
         this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
       });
       this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10);
-
       this.tasksSource.sortingDataAccessor = (item, property) => {
         return (item as any)[property];
       };
@@ -241,7 +241,6 @@ export class TaskTable implements OnInit, AfterContentChecked {
     this.isModalOpen = true;
     this.modalMode = mode;
     this.selectedTask = undefined;
-
     if (mode === 'edit') {
       this.selectedTask = this.tasks.find(task => task.ID === id);
       if (this.selectedTask) {
@@ -277,7 +276,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
   }
 
   public refreshTable(): void {
-    this.backendService.getTableTasks<taskViewInterface[]>(1, 1).subscribe({
+    this.backendService.getTableTasks<taskViewInterface[]>(1).subscribe({
       next: (data) => {
         this.tasks = data.data;
         this.tasksSource.data = this.tasks;
