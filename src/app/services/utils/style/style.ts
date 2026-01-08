@@ -3,19 +3,19 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class Style {
+export class StyleService {
 
   public ModifyThreatLevelCellColor(threat:string){
     switch (threat){
-      case 'Low': 
+      case 'Low':
         return 'greenCell';
-      case 'Medium': 
+      case 'Medium':
         return 'yellowCell';
-      case 'High': 
+      case 'High':
         return 'greenCell';
-      case 'Alarming': 
+      case 'Alarming':
         return 'redCell';
-      case 'Inevitable': 
+      case 'Inevitable':
         return 'aquaCell';
       default: return 'whiteCell'
     }
@@ -23,21 +23,21 @@ export class Style {
 
   public ModifyStatusCellColor(status:string) {
     switch (status){
-      case 'Unfinished': 
+      case 'Unfinished':
         return 'greyCell';
-      case 'In Progress': 
+      case 'In Progress':
         return 'yellowCell';
-      case 'Finished': 
+      case 'Finished':
         return 'greenCell';
-      case 'Cancelled': 
+      case 'Cancelled':
         return 'redCell';
-      case 'Delayed': 
+      case 'Delayed':
         return 'aquaCell';
-      case 'Continuous': 
+      case 'Continuous':
         return 'lightblueCell';
-      case 'On Hold': 
+      case 'On Hold':
         return 'coralCell';
-      case 'Speculation': 
+      case 'Speculation':
         return 'bluevioletCell';
       default: return 'whiteCell'
     }
@@ -48,14 +48,14 @@ export class Style {
     if (dateString == null) {
       return 'whiteRow';
     }
-    
+
     const inputDate:Date = new Date(dateString);
     inputDate.setHours(0, 0, 0, 0);
     const today:Date = new Date();
     today.setHours(0, 0, 0, 0);
     const timeDifference:number = today.getTime() - inputDate.getTime();
     const daysDifference:number = timeDifference / (1000 * 60 * 60 * 24);
-  
+
     if (daysDifference === 0) {
       return 'redRow';
     } else if (daysDifference >= -5 && daysDifference < 0) {

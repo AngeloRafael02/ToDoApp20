@@ -25,8 +25,4 @@ export class DropdownDataService {
   public setThreatLevels(data: threatInterface[]): void {
     this.threatLevelsSubject.next(data);
   }
-  
-  public getCategoriesSync(): categoriesInterface[] | null {
-    return this.categoriesSubject.getValue();
-  }
 }

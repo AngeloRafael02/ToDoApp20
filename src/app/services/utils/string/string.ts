@@ -3,8 +3,8 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class String {
-  
+export class StringService {
+
   public insertArrayAtIndex(mainArray:string[], insertArray:string[], index:number):string[] {
     if (index < 0 || index > mainArray.length) {
       return mainArray;
@@ -22,7 +22,7 @@ export class String {
   if (currentIndex === -1) {
     return arr;
   }
-  
+
   const [removedItem] = arr.splice(currentIndex, 1);
   arr.splice(newIndex, 0, removedItem);
   return arr;
@@ -34,5 +34,5 @@ export class String {
     }
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
-  
+
 }

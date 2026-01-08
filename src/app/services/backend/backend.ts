@@ -27,7 +27,7 @@ export class BackendService {
     );
   }
 
-  public getTableTasks<T>(id:number, status:number = 1): Observable<{ status: string; data: T }> {
+  public getTableTasks<T>(id:number, status:number = 0): Observable<{ status: string; data: T }> {
     return this.http.get<{ status: string; data: T }>(`/tasks/all/${status}/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error(this.errorMsg(`${status} tasks`), error);

@@ -79,7 +79,7 @@ export class PieChart implements AfterViewInit, OnChanges {
     });
   }
 
-  public generateHexArray(count:number):string[] {
+  private generateHexArray(count:number):string[] {
     const hexChars = '0123456789ABCDEF';
     const result = [];
     for (let i = 0; i < count; i++) {
