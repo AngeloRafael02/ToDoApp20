@@ -7,6 +7,7 @@
 - Make Rows Data appear on task-table component - DONE
 - implement Table scss for better theme styling - DONE
 - Add Sorting and Pagination on task-table component - DONE
+- Make table component use @input to take dynamic inputs
 - Make Table Mobile friendly
 
 ### Main App Router
