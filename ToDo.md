@@ -27,6 +27,11 @@
 ### stats Component
 - create carts dor Cat, Stat, and Threat Level - DONE
 
+### Services
+- create account/user service/store to store all user credentials
+- create allTasks serve to store all tassk, filter/sort on client side
+
+
 ### server
 - explore server.ts data fetching with (pg) - DONE
 
