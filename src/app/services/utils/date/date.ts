@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class Date {
+export class DateService {
 
   public dateFormatHelper(deadline: string | null | undefined): string {
     if (!deadline || deadline.trim() === '') {

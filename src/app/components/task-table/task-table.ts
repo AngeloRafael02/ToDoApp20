@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 
 import { BackendService} from '../../services/backend/backend';
 import { String } from '../../services/utils/string/string';
-import { Date } from '../../services/utils/date/date';
+import { DateService } from '../../services/utils/date/date';
 import { Style } from '../../services/utils/style/style';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
@@ -227,7 +227,7 @@ export class TaskTable implements OnInit, AfterContentChecked {
     });
   }
 
-  public dateService = inject(Date)
+  public dateService = inject(DateService)
 
   ngOnInit(): void {
     this.refreshTable();
