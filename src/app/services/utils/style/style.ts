@@ -5,67 +5,50 @@ import { Injectable } from '@angular/core';
 })
 export class StyleService {
 
-  public ModifyThreatLevelCellColor(threat:string){
-    switch (threat){
-      case 'Low':
-        return 'greenCell';
-      case 'Medium':
-        return 'yellowCell';
-      case 'High':
-        return 'greenCell';
-      case 'Alarming':
-        return 'redCell';
-      case 'Inevitable':
-        return 'aquaCell';
-      default: return 'whiteCell'
-    }
-  }
+  public categoryCellColors:string[] = [
+   "#8EECF5",
+   "#98F5E1",
+   "#90DFB4",
+   "#B9FBC0",
+   "#FBF8CC",
+   "#FDE4CF",
+   "#FFCFD2",
+   "#F1C0E8",
+   "#CFBAF0",
+   "#A3C4F3",
+  ];
 
-  public ModifyStatusCellColor(status:string) {
-    switch (status){
-      case 'Unfinished':
-        return 'greyCell';
-      case 'In Progress':
-        return 'yellowCell';
-      case 'Finished':
-        return 'greenCell';
-      case 'Cancelled':
-        return 'redCell';
-      case 'Delayed':
-        return 'aquaCell';
-      case 'Continuous':
-        return 'lightblueCell';
-      case 'On Hold':
-        return 'coralCell';
-      case 'Speculation':
-        return 'bluevioletCell';
-      default: return 'whiteCell'
-    }
-  }
+  public statusCellColors:string[] = [
+    "#BFBFBF",
+    "#FBF8CC",
+    "#90DFB4",
+    "#FFCFD2",
+    "#FDE4CF",
+    "#8EECF5",
+    "#F1C0E8",
+    "#CFBAF0",
+  ];
 
-  public RowColorPerDeadline(date:Date){
-    const dateString:Date = date
-    if (dateString == null) {
-      return 'whiteRow';
-    }
+  public threatCellColors:string[] = [
+    "#B9FBC0",
+    "#FBF8CC",
+    "#FDE4CF",
+    "#FFCFD2",
+    "#A9A9A9",
+  ];
 
-    const inputDate:Date = new Date(dateString);
-    inputDate.setHours(0, 0, 0, 0);
-    const today:Date = new Date();
+  public RowColorPerDeadline(dateInput: any): string {
+    if (!dateInput) return '#F5F5F5';
+    const deadline = new Date(dateInput);
+    deadline.setHours(0, 0, 0, 0);
+    const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const timeDifference:number = today.getTime() - inputDate.getTime();
-    const daysDifference:number = timeDifference / (1000 * 60 * 60 * 24);
+    const diffTime = deadline.getTime() - today.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-    if (daysDifference === 0) {
-      return 'redRow';
-    } else if (daysDifference >= -5 && daysDifference < 0) {
-      return 'orangeRow';
-    } else if (daysDifference < -5) {
-      return 'greenRow';
-    } else if (daysDifference >= 1) {
-      return 'blackRow';
-    } else {
-      return 'whiteRow';
-    }
+    if (diffDays < 0)  return '#BFBFBF';
+    if (diffDays === 0) return '#FCDEF0';
+    if (diffDays <= 5)  return '#FCE8D2';
+    return '#D6ECD2';
   }
 }

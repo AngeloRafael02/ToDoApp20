@@ -71,7 +71,7 @@ import { Modal } from '../modal/modal';
                 </td>
               } @else {
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
-                <td mat-cell *matCellDef="let element">
+                <td mat-cell *matCellDef="let element" [style.backgroundColor]="getCellSpecificColor(col, element)">
                   {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col]) : element[col] }}
                 </td>
               }
@@ -79,7 +79,8 @@ import { Modal } from '../modal/modal';
           }
 
           <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
-          <tr mat-row *matRowDef="let row; columns: taskColumns;" [ngClass]="evaluateDate(row)"></tr>
+          <tr mat-row *matRowDef="let row; columns: taskColumns;" [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"></tr>
+
           <ng-container matColumnDef="footer">
             <td mat-footer-cell *matFooterCellDef [attr.colspan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
               <div class="footer-wrapper">
@@ -308,13 +309,35 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
     });
   }
 
-  public evaluateDate(row:taskViewInterface):string {
-    return this.styleService.RowColorPerDeadline(row.Deadline);
-  }
-
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.tasksSource.filter = filterValue.trim().toLowerCase();
     this.cdr.markForCheck();
+  }
+
+  public getCellColor(col: string, element: any): string | null {
+    const colorMaps: Record<string, { key: string, colors: string[] }> = {
+      'Category':     { key: 'CID', colors: this.styleService.categoryCellColors },
+      'Status':       { key: 'SID', colors: this.styleService.statusCellColors },
+      'Threat Level': { key: 'TID', colors: this.styleService.threatCellColors }
+    };
+    const config = colorMaps[col];
+    return config ? config.colors[element[config.key] - 1] : null;
+  }
+
+  public getCellSpecificColor(col: string, element: any): string | null {
+    const config: Record<string, { idKey: string, colors: string[] }> = {
+      'Category':     { idKey: 'CID', colors: this.styleService.categoryCellColors },
+      'Status':       { idKey: 'SID', colors: this.styleService.statusCellColors },
+      'Threat Level': { idKey: 'TID', colors: this.styleService.threatCellColors }
+    };
+
+    const settings = config[col];
+    if (settings) {
+      const idValue = element[settings.idKey];
+      return settings.colors[idValue - 1] || null;
+    }
+
+    return null;
   }
 }
