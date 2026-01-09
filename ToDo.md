@@ -7,9 +7,12 @@
 - Make Rows Data appear on task-table component - DONE
 - implement Table scss for better theme styling - DONE
 - Add Sorting and Pagination on task-table component - DONE
-- Color Task Row Depending on Deadline
-- Color Category, Status , And therat Level Cells depending on level
+- Color Task Row Depending on Deadline - DONE
+- Color Category, Status , And therat Level Cells depending on level - DONE
 - Make table component use @input to take dynamic inputs
+
+## TABLE REDESIGN
+- make table only have Title Description Deadline, Options. Hide everything else in an expandable row below
 - Make Table Mobile friendly
 
 ### Main App Router
@@ -28,6 +31,7 @@
 
 ### stats Component
 - create carts dor Cat, Stat, and Threat Level - DONE
+- Make mobile friendly, add side arrows to swtich between graphs
 
 ### Services
 - create account/user service/store to store all user credentials
