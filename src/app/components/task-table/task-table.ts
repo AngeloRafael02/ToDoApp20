@@ -16,6 +16,8 @@ import { StyleService } from '../../services/utils/style/style';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 
 @Component({
   selector: 'task-table',
@@ -186,9 +188,9 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @Input() status:number = 0;
 
   public title:string = 'Current';
+  private status:number = 0;
   private tasks:taskViewInterface[] = []
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
@@ -211,22 +213,27 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
     public backendService:BackendService,
     public dateService:DateService,
     public styleService:StyleService,
-    private cdr: ChangeDetectorRef
+    public dropdownService:DropdownDataService,
+    private cdr: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private router: Router,
   ) {
-    this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
-      this.taskColumns = object.data.map(obj => obj.column_name);
-      this.headersOrderMapping.forEach((item,index)=>{
-        this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
-      });
-      this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10);
-      this.tasksSource.sortingDataAccessor = (item, property) => {
-        return (item as any)[property];
-      };
-    });
+    this.title = this.route.snapshot.paramMap.get('status') || 'Current';
+    this.setupHeaders()
+    this.dropdownService.statuses$.subscribe(statuses => {
+    if (statuses) {
+      const match = statuses.find(s => s.stat.toLowerCase() === this.title.toLowerCase());
+      if (match) {
+        this.status = match.id;
+        this.refreshTable();
+      } else {
+        this.router.navigate(['/Error'], { skipLocationChange: true });
+      }
+    }
+  });
   }
 
   ngOnInit(): void {
-    this.refreshTable();
   }
 
   ngAfterContentChecked(): void {
@@ -275,6 +282,19 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
     } else {
       this.isModalOpen = false;
     }
+  }
+
+  public setupHeaders() {
+    this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
+      this.taskColumns = object.data.map(obj => obj.column_name);
+      this.headersOrderMapping.forEach((item,index)=>{
+        this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
+      });
+      this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10);
+      this.tasksSource.sortingDataAccessor = (item, property) => {
+        return (item as any)[property];
+      };
+    });
   }
 
   public refreshTable(): void {

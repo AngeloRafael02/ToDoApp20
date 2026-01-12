@@ -4,19 +4,18 @@ import { Title, Meta, MetaDefinition } from '@angular/platform-browser';
 import { Subscription,forkJoin } from 'rxjs';
 
 import { Clock } from './components/clock/clock';
-import { TaskTable } from './components/task-table/task-table';
 import { Stats } from './components/stats/stats';
 import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
 import { DropdownDataService } from './services/dropdown-data/dropdown-data';
 import { taskViewInterface } from './interfaces/task.interface';
-
+import { TaskRouter } from './components/table-router/task-router';
 @Component({
   selector: 'app-root',
   imports: [
     RouterModule,
     Clock,
-    TaskTable,
+    TaskRouter,
     Stats,
   ],
   template: `
@@ -24,7 +23,7 @@ import { taskViewInterface } from './interfaces/task.interface';
       <app-clock></app-clock>
       <br>
       <stats></stats>
-      <task-table></task-table>
+      <task-router></task-router>
     </div>
   `,
   styles: `
