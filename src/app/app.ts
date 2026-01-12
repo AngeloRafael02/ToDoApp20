@@ -9,7 +9,6 @@ import { Stats } from './components/stats/stats';
 import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
 import { DropdownDataService } from './services/dropdown-data/dropdown-data';
-import { TaskStoreService } from './services/tasks-store/task-store';
 import { taskViewInterface } from './interfaces/task.interface';
 
 @Component({
@@ -53,7 +52,6 @@ export class App implements OnInit, OnDestroy {
     private metaService: Meta,
     private backend: BackendService,
     private dropdownService: DropdownDataService,
-    private taskStore: TaskStoreService,
   ) {}
 
   ngOnInit(): void {
@@ -71,7 +69,6 @@ export class App implements OnInit, OnDestroy {
       this.dropdownService.categories$.subscribe(val => this.categories = val),
       this.dropdownService.statuses$.subscribe(val => this.statuses = val),
       this.dropdownService.threatLevels$.subscribe(val => this.threatLevels = val),
-      this.taskStore.allTasks$.subscribe(val => this.allTasks = val )
     );
   }
 
@@ -80,13 +77,11 @@ export class App implements OnInit, OnDestroy {
       categories: this.backend.getDropdownOptions<categoriesInterface[]>('categories'),
       status: this.backend.getDropdownOptions<conditionInterface[]>('status'),
       threats: this.backend.getDropdownOptions<threatInterface[]>('threats'),
-      tasks: this.backend.getTableTasks<taskViewInterface[]>(1),
     }).subscribe({
       next: (result) => {
         this.dropdownService.setCategories(result.categories.data);
         this.dropdownService.setStatuses(result.status.data);
         this.dropdownService.setThreatLevels(result.threats.data);
-        this.taskStore.setAllTasks(result.tasks.data);
       },
       error: (err) => console.error('Failed to load dropdowns', err)
     });

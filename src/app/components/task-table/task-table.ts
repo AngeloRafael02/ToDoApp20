@@ -13,7 +13,6 @@ import { BackendService} from '../../services/backend/backend';
 import { StringService } from '../../services/utils/string/string';
 import { DateService } from '../../services/utils/date/date';
 import { StyleService } from '../../services/utils/style/style';
-import { TaskStoreService } from '../../services/tasks-store/task-store';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
@@ -208,7 +207,6 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
   ];
 
   constructor(
-    public tasksService:TaskStoreService,
     public stringService:StringService,
     public backendService:BackendService,
     public dateService:DateService,
