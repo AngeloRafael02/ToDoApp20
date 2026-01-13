@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Input, ViewChild } from '@angular/core';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, AfterContentChecked, inject } from '@angular/core';
+import { AfterViewInit, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, ChangeDetectorRef, } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
@@ -130,13 +130,6 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
         }
         th,td {
           text-align: center;
-          &:first-child:not(.no-data-cell),
-          &:nth-child(9),
-          &:nth-child(10),
-          &:nth-child(11) ~ th,
-          &:nth-child(11) ~ td {
-            display: none;
-          }
         }
         th {
           background-color: tbl.$headerColor;
@@ -184,7 +177,7 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
+export class TaskTable implements  AfterViewInit {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -221,24 +214,18 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
     this.title = this.route.snapshot.paramMap.get('status') || 'Current';
     this.setupHeaders()
     this.dropdownService.statuses$.subscribe(statuses => {
-    if (statuses) {
-      const match = statuses.find(s => s.stat.toLowerCase() === this.title.toLowerCase());
-      if (match) {
-        this.status = match.id;
-        this.refreshTable();
-      } else {
-        this.router.navigate(['/Error'], { skipLocationChange: true });
+      if (statuses) {
+        const match = statuses.find(s => s.stat.toLowerCase() === this.title.toLowerCase());
+        if (match) {
+          this.status = match.id;
+          this.refreshTable();
+        } else {
+          this.router.navigate(['/Error'], { skipLocationChange: true });
+        }
       }
-    }
-  });
+    });
   }
 
-  ngOnInit(): void {
-  }
-
-  ngAfterContentChecked(): void {
-    this.cdr.detectChanges();
-  }
 
   ngAfterViewInit(): void {
     this.tasksSource.sort = this.sort;
@@ -286,14 +273,16 @@ export class TaskTable implements OnInit, AfterContentChecked, AfterViewInit {
 
   public setupHeaders() {
     this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
-      this.taskColumns = object.data.map(obj => obj.column_name);
-      this.headersOrderMapping.forEach((item,index)=>{
-        this.taskColumns = this.stringService.rearrangeArrayItem(this.taskColumns,item,index+1)
+      let columns = object.data.map(obj => obj.column_name);
+      this.headersOrderMapping.forEach((item, index) => {
+        columns = this.stringService.rearrangeArrayItem(columns, item, index);
       });
-      this.taskColumns = this.stringService.insertArrayAtIndex(this.taskColumns,["Options"],10);
+      this.taskColumns = columns.slice(1, 7);
+      this.taskColumns.push("Options");
       this.tasksSource.sortingDataAccessor = (item, property) => {
         return (item as any)[property];
       };
+      this.cdr.markForCheck();
     });
   }
 
