@@ -63,7 +63,8 @@ taskRouter.put(`/update/:id`, async (req:Request, res:Response) => {
                     stat_id = $5,
                     threat_id = $6,
                     deadline = $7,
-                    owner_id = $8
+                    owner_id = $8,
+                    last_edited = CURRENT_TIMESTAMP
             WHERE id = $9 RETURNING *`,
             [ task.title, task.note, task.cat_id, task.prio, task.stat_id, task.threat_id, task.deadline, task.owner_id, id  ]
         );
@@ -76,7 +77,7 @@ taskRouter.put(`/update/:id`, async (req:Request, res:Response) => {
 taskRouter.put(`/finish`, async (req:Request, res:Response) => {
     try {
         const { id } = req.body;
-        const finishTask = await pool.query(`UPDATE task SET stat_id = 3 WHERE id = $1`,[id]);
+        const finishTask = await pool.query(`UPDATE task SET stat_id = 3, last_edited = CURRENT_TIMESTAMP WHERE id = $1`,[id]);
         res.status(200).json(finishTask.rows[0]);
     } catch (error) {
         res.status(500).json({ error: error });
