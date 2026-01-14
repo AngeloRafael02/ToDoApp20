@@ -35,7 +35,7 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
   ],
   template: `
     <div class="tableContainer">
-      <table mat-table [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
+      <table mat-table multiTemplateDataRows [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
         <caption>
           <h2>{{title}} Tasks Table</h2>
           <p>A list of all {{title | lowercase}} tasks.</p>
@@ -72,15 +72,27 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
                 </td>
               } @else {
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ col }} </th>
-                <td mat-cell *matCellDef="let element" [style.backgroundColor]="getCellSpecificColor(col, element)">
+                <td mat-cell *matCellDef="let element">
                   {{ col === 'Deadline' ? dateService.dateFormatHelper(element[col]) : element[col] }}
                 </td>
               }
             </ng-container>
           }
 
-          <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
-          <tr mat-row *matRowDef="let row; columns: taskColumns;" [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"></tr>
+          <ng-container matColumnDef="expandedDetail">
+            <td mat-cell *matCellDef="let element" [attr.colspan]="taskColumns.length">
+              <div class="detail-container" [class.expanded]="expandedTask === element">
+                <div class="detail-content">
+                  <div class="detail-grid">
+                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Category', element)"><strong>Category:</strong> {{ element.Category }}</div>
+                    <div class="detail-item" [style.backgroundColor]="styleService.PriorityColor(+element.Priority)"><strong>Priority:</strong> {{ element.Priority }}</div>
+                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Status', element)"><strong>Status:</strong> {{ element.Status }}</div>
+                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Threat Level', element)"><strong>Threat Level:</strong> {{ element['Threat Level'] }}</div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </ng-container>
 
           <ng-container matColumnDef="footer">
             <td mat-footer-cell *matFooterCellDef [attr.colspan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
@@ -91,6 +103,13 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
             </td>
           </ng-container>
 
+          <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
+          <tr mat-row *matRowDef="let row; columns: taskColumns;"
+            class="element-row"
+            [class.expanded-row]="expandedTask === row"
+            (click)="toggleRow(row)"
+            [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
           <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
 
           <tr class="mat-row" *matNoDataRow>
@@ -110,8 +129,9 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
     @use '../../styles/pallete.scss' as pallete;
     @use '../../styles/table-colors.scss' as tbl;
 
-    table,th,td   {
-        border: 1px solid black;
+    table  {
+        margin-top:1rem;
+        border: 2px solid black;
         caption {
           caption-side: top;
           color:pallete.$primaryTextColor;
@@ -124,21 +144,33 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
         }
         tr {
           .mat-footer-row {
-          font-weight: bold;
-          background-color: #f5f5f5;
-        }
+            font-weight: bold;
+            border-top: 1px solid black;
+          }
         }
         th,td {
           text-align: center;
+          border-left: 0.5px solid black;
+          border-right: 0.5px solid black;
         }
         th {
+          border-bottom: 2px solid black;
           background-color: tbl.$headerColor;
         }
         td {
+          border-top: 0.5px solid black;
           .mat-footer-cell {
             padding: 0 16px;
-            background-color: transparent;
-            border: 1px solid black;
+          }
+          .footer-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            mat-paginator {
+              background: transparent;
+              border: none;
+            }
           }
           div {
             button{
@@ -150,29 +182,48 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
       }
     }
 
-    .footer-wrapper {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-    }
-
-    mat-paginator {
-      border: 2px solid black;
-      border-top: 1px solid black;
-      background: transparent !important;
-      border: none !important;
-    }
-
     ::ng-deep .mat-sort-header-container {
       display: flex;
       justify-content: center;
       align-items: center;
     }
 
-    ::ng-deep .mat-mdc-paginator-container {
-      min-height: auto !important;
-      padding: 0 !important;
+    .detail-row {
+      height: 0;
+    }
+
+    .detail-container  {
+      overflow: hidden;
+      display: flex;
+      transition: max-height 0.3s ease-out, opacity 0.2s ease;
+      max-height: 0;
+      opacity: 0;
+      background-color: #fafafa;
+      .detail-content{
+        width: 100%;
+        .detail-grid {
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          gap: 20px;
+          font-size: 0.9rem;
+          .detail-item {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+          }
+        }
+      }
+    }
+
+    .detail-container.expanded {
+      max-height: 200px;
+      opacity: 1;
+      padding: 15px;
+    }
+
+    .element-row {
+      cursor: pointer;
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -188,6 +239,7 @@ export class TaskTable implements  AfterViewInit {
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
   public selectedTask: taskViewInterface | undefined;
+  public expandedTask: taskViewInterface | null = null;
   public isModalOpen:boolean = false;
   public modalMode:'create'|'edit' = 'create';
 
@@ -277,13 +329,18 @@ export class TaskTable implements  AfterViewInit {
       this.headersOrderMapping.forEach((item, index) => {
         columns = this.stringService.rearrangeArrayItem(columns, item, index);
       });
-      this.taskColumns = columns.slice(1, 7);
+      this.taskColumns = columns.slice(0, 3);
       this.taskColumns.push("Options");
       this.tasksSource.sortingDataAccessor = (item, property) => {
         return (item as any)[property];
       };
       this.cdr.markForCheck();
     });
+  }
+
+  public toggleRow(task: taskViewInterface) {
+    this.expandedTask = this.expandedTask === task ? null : task;
+    this.cdr.markForCheck();
   }
 
   public refreshTable(): void {
@@ -320,16 +377,6 @@ export class TaskTable implements  AfterViewInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.tasksSource.filter = filterValue.trim().toLowerCase();
     this.cdr.markForCheck();
-  }
-
-  public getCellColor(col: string, element: any): string | null {
-    const colorMaps: Record<string, { key: string, colors: string[] }> = {
-      'Category':     { key: 'CID', colors: this.styleService.categoryCellColors },
-      'Status':       { key: 'SID', colors: this.styleService.statusCellColors },
-      'Threat Level': { key: 'TID', colors: this.styleService.threatCellColors }
-    };
-    const config = colorMaps[col];
-    return config ? config.colors[element[config.key] - 1] : null;
   }
 
   public getCellSpecificColor(col: string, element: any): string | null {
