@@ -3,6 +3,7 @@ import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFOR
 import { isPlatformBrowser } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import { chartDataInterface } from '../../interfaces/misc.interface';
+import { StyleService } from '../../services/utils/style/style';
 
 @Component({
   selector: 'pie-chart',
@@ -20,7 +21,10 @@ export class PieChart implements AfterViewInit, OnChanges {
 
   public chart?: Chart<'pie', number[], string>;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+  constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private styleService:StyleService
+  ) {
     Chart.register(...registerables);
   }
 
@@ -40,14 +44,17 @@ export class PieChart implements AfterViewInit, OnChanges {
   public createChart():void {
     const labels = this.data.map(item => item.name);
     const values = this.data.map(item => item.value);
-
+    console.log(JSON.stringify({
+      labels:labels,
+      values:values
+    }))
     this.chart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: {
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: this.generateHexArray(this.data.length),
+          backgroundColor: this.PieSliceColors(this.chartTitle)
         }]
       },
       options: {
@@ -90,6 +97,18 @@ export class PieChart implements AfterViewInit, OnChanges {
       result.push(color);
     }
     return result;
+  }
+
+  private PieSliceColors(title:string):string[] {
+    if (title === 'Categories') {
+      return this.styleService.categoryCellColors;
+    } else if (title === 'Status') {
+      return this.styleService.statusCellColors;
+    } else if (title === 'Threat Levels') {
+      return this.styleService.threatCellColors;
+    } else  {
+      return this.generateHexArray(this.data.length)
+    }
   }
 }
 

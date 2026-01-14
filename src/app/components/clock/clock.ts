@@ -5,21 +5,31 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
   selector: 'app-clock',
   imports: [DatePipe],
   template: `
-    <div class="digital-clock">
-      <h2>{{ currentTime() | date:'EEEE MMM d, y HH:mm:ss z' }}</h2>
+<div class="digital-clock">
+      <div class="date-row">{{ currentTime() | date:'EEEE, MMM d, y' }}</div>
+      <div class="time-row">{{ currentTime() | date:'HH:mm:ss z' }}</div>
     </div>
   `,
   styles: `
-  @use '../../styles/pallete.scss' as palette;
+    @use '../../styles/pallete.scss' as palette;
     .digital-clock {
-      font-size: 1.5em;
+      margin: 1rem;
       font-weight: 500;
       background-color: transparent;
       color: palette.$primaryTextColor;
-      h2 {
-        margin: 0;
+      display: flex;
+      gap: 10px;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      .date-row {
+        font-size: 1.3rem;
+        opacity: 0.8;
+      }
+      .time-row {
+        font-size: 1.8rem;
         white-space: nowrap;
-        text-align: center;
+        margin-top: 0.2rem;
       }
     }
   `
