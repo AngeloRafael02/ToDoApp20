@@ -1,29 +1,16 @@
-export interface dialogDataInterface{
-    allCat:categoriesInterface[]
-    allCond:conditionInterface[],
-    allThr:threatInterface[],
-    option:string,
-    ID:number
+export interface dropdownInterfaceBase {
+  id:number
+  color:string
 }
 
-export interface conditionInterface {
-    id:number
-    stat:string
+export interface conditionInterface extends dropdownInterfaceBase {
+  stat:string
 }
 
-export interface categoriesInterface {
-    id:number
+export interface categoriesInterface extends dropdownInterfaceBase {
     cat:string
 }
 
-export interface threatInterface {
-    id:number
+export interface threatInterface extends dropdownInterfaceBase {
     level:string
-}
-
-export interface ssrResObj {
-    status:string,
-    count?:number,
-    message?:string,
-    data:categoriesInterface[] | threatInterface[] | conditionInterface[]
 }

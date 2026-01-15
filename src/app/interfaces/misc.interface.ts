@@ -1,8 +1,5 @@
-import { messageInterface } from "./message.interface"
-
 export interface chartDataInterface{
     name:string
     value:number
+    Color?:string
 }
-
-export type chartDataOrMessage = chartDataInterface[] | messageInterface

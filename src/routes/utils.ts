@@ -4,13 +4,13 @@ import { query } from '../database'
 export const utilsRouter = Router();
 
 utilsRouter.get('/categories', async (req:Request,res:Response)=> {
-    query(res,`SELECT id, cat FROM categories`)
+    query(res,`SELECT id, cat, color FROM categories`)
 });
 
 utilsRouter.get('/status', async (req:Request,res:Response)=> {
-    query(res,`SELECT id, stat FROM conditions;`);
+    query(res,`SELECT id, stat, color FROM conditions;`);
 });
 
 utilsRouter.get('/threats', async (req:Request,res:Response)=> {
-    query(res,`SELECT id, level FROM threats;`);
+    query(res,`SELECT id, level, color FROM threats;`);
 });

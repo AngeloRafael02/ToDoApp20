@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { BackendService} from '../../services/backend/backend';
 import { StringService } from '../../services/utils/string/string';
@@ -16,8 +17,8 @@ import { StyleService } from '../../services/utils/style/style';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
-import { ActivatedRoute, Router } from '@angular/router';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
+import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 
 @Component({
   selector: 'task-table',
@@ -235,6 +236,9 @@ export class TaskTable implements  AfterViewInit {
 
   public title:string = 'Current';
   private status:number = 0;
+  private categories: categoriesInterface[] = [];
+  private statuses: conditionInterface[] = [];
+  private threatLevels: threatInterface[] = [];
   private tasks:taskViewInterface[] = []
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
@@ -265,6 +269,7 @@ export class TaskTable implements  AfterViewInit {
   ) {
     this.title = this.route.snapshot.paramMap.get('status') || 'Current';
     this.setupHeaders()
+    this.dropdownService.categories$.subscribe(data => this.categories = data || []);
     this.dropdownService.statuses$.subscribe(statuses => {
       if (statuses) {
         const match = statuses.find(s => s.stat.toLowerCase() === this.title.toLowerCase());
@@ -276,6 +281,7 @@ export class TaskTable implements  AfterViewInit {
         }
       }
     });
+    this.dropdownService.threatLevels$.subscribe(data => this.threatLevels = data || []);
   }
 
 
@@ -380,18 +386,25 @@ export class TaskTable implements  AfterViewInit {
   }
 
   public getCellSpecificColor(col: string, element: any): string | null {
-    const config: Record<string, { idKey: string, colors: string[] }> = {
-      'Category':     { idKey: 'CID', colors: this.styleService.categoryCellColors },
-      'Status':       { idKey: 'SID', colors: this.styleService.statusCellColors },
-      'Threat Level': { idKey: 'TID', colors: this.styleService.threatCellColors }
-    };
-
-    const settings = config[col];
-    if (settings) {
-      const idValue = element[settings.idKey];
-      return settings.colors[idValue - 1] || null;
+    let sourceArray: any[] = [];
+    let idValue: number;
+    switch (col) {
+      case 'Category':
+        sourceArray = this.categories;
+        idValue = element.CID;
+        break;
+      case 'Status':
+        sourceArray = this.statuses;
+        idValue = element.SID;
+        break;
+      case 'Threat Level':
+        sourceArray = this.threatLevels;
+        idValue = element.TID;
+        break;
+      default:
+        return null;
     }
-
-    return null;
+    const match = sourceArray.find(item => item.id === idValue);
+    return match ? `#${match.color}` : null;
   }
 }

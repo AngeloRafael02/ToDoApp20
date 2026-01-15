@@ -1,9 +1,10 @@
-
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
+import { Subscription, combineLatest } from 'rxjs';
+
 import { chartDataInterface } from '../../interfaces/misc.interface';
-import { StyleService } from '../../services/utils/style/style';
+import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 
 @Component({
   selector: 'pie-chart',
@@ -14,22 +15,40 @@ import { StyleService } from '../../services/utils/style/style';
     </div>
   `
 })
-export class PieChart implements AfterViewInit, OnChanges {
+export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('pieCanvas') private pieCanvas!: ElementRef;
   @Input() data: chartDataInterface[] = [];
   @Input() chartTitle: string = '';
 
   public chart?: Chart<'pie', number[], string>;
+  private subscription: Subscription = new Subscription();
+  private colorMap: Record<string, string> = {};
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private styleService:StyleService
+    private dropdownService: DropdownDataService
   ) {
     Chart.register(...registerables);
+    this.initializeColorMap();
+  }
+
+  private initializeColorMap(): void {
+    const sub = combineLatest([
+      this.dropdownService.categories$,
+      this.dropdownService.statuses$,
+      this.dropdownService.threatLevels$
+    ]).subscribe(([cats, stats, threats]) => {
+      this.colorMap = {};
+      cats?.forEach(c => this.colorMap[c.cat] = `#${c.color}`);
+      stats?.forEach(s => this.colorMap[s.stat] = `#${s.color}`);
+      threats?.forEach(t => this.colorMap[t.level] = `#${t.color}`);
+      if (this.chart) this.updateChartColors();
+    });
+    this.subscription.add(sub);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data'] && this.chart) {
+    if ((changes['data'] || changes['chartTitle']) && this.chart) {
       this.chart.destroy();
       this.createChart();
     }
@@ -41,20 +60,28 @@ export class PieChart implements AfterViewInit, OnChanges {
     }
   }
 
-  public createChart():void {
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  private updateChartColors(): void {
+    if (this.chart) {
+      this.chart.data.datasets[0].backgroundColor = this.getPieSliceColors();
+      this.chart.update();
+    }
+  }
+
+  public createChart(): void {
     const labels = this.data.map(item => item.name);
     const values = this.data.map(item => item.value);
-    console.log(JSON.stringify({
-      labels:labels,
-      values:values
-    }))
+
     this.chart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
       data: {
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: this.PieSliceColors(this.chartTitle)
+          backgroundColor: this.getPieSliceColors()
         }]
       },
       options: {
@@ -65,62 +92,26 @@ export class PieChart implements AfterViewInit, OnChanges {
             display: !!this.chartTitle,
             text: this.chartTitle,
             color: '#ffffff',
-            font: {
-              size: 18,
-              weight: 'bold'
-            },
+            font: { size: 18, weight: 'bold' },
             padding: { top: 10, bottom: 20 }
           },
           legend: {
             display: true,
             position: 'bottom',
-            labels: {
-              color: '#ffffff',
-              font: {
-                size: 14
-              }
-            }
+            labels: { color: '#ffffff', font: { size: 14 } }
           }
         }
       }
     });
   }
 
-  private generateHexArray(count:number):string[] {
-    const hexChars = '0123456789ABCDEF';
-    const result = [];
-    for (let i = 0; i < count; i++) {
-      let color = '#';
-      for (let j = 0; j < 6; j++) {
-        color += hexChars[Math.floor(Math.random() * 16)];
-      }
-      result.push(color);
-    }
-    return result;
+  private getPieSliceColors(): string[] {
+    return this.data.map(item => {
+      return this.colorMap[item.name] || this.generateRandomHex();
+    });
   }
 
-  private PieSliceColors(title:string):string[] {
-    if (title === 'Categories') {
-      return this.styleService.categoryCellColors;
-    } else if (title === 'Status') {
-      return this.styleService.statusCellColors;
-    } else if (title === 'Threat Levels') {
-      return this.styleService.threatCellColors;
-    } else  {
-      return this.generateHexArray(this.data.length)
-    }
+  private generateRandomHex(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
   }
 }
-
-/* To use this Component, import Component and interface then do the code below
- * template:
- * <pie-chart [data]="salesData" title="Sales Distribution"></pie-chart>
- *
- * data structure example:
- * public salesData: chartDataInterface[] = [
-    { name: 'Electronics', value: 450 },
-    { name: 'Groceries', value: 200 },
-    { name: 'Apparel', value: 150 },
-    { name: 'Home Decor', value: 100 }
-  ];
- */

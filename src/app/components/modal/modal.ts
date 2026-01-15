@@ -11,26 +11,26 @@ import { MatButtonModule } from '@angular/material/button';
     MatDialogModule
   ],
   template: `
-    <ng-template> 
+    <ng-template>
       <h2 mat-dialog-title>
         {{ title }}
         <button mat-icon-button mat-dialog-close aria-label="Close dialog">
           <mat-icon>close</mat-icon>
         </button>
       </h2>
-  
+
       <mat-dialog-content>
         <ng-content></ng-content>
       </mat-dialog-content>
-  
+
       <mat-dialog-actions align="end">
       </mat-dialog-actions>
     </ng-template>
   `,
   styles: `
     button {
-      position: absolute; 
-      top: 12px; 
+      position: absolute;
+      top: 12px;
       right: 8px;
     }
   `,
