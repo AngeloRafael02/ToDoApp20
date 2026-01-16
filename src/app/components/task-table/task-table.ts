@@ -8,6 +8,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDividerModule } from '@angular/material/divider';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { BackendService} from '../../services/backend/backend';
@@ -31,6 +33,8 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
     MatPaginatorModule,
     MatInputModule,
     MatFormFieldModule,
+    MatChipsModule,
+    MatDividerModule,
     Modal,
     TaskForm
   ],
@@ -59,15 +63,15 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
                   <div>
                     <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
-                      Finish
+                      <span class="button-text">Finish</span>
                     </button>
                     <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
-                      Update
+                      <span class="button-text">Update</span>
                     </button>
-                    <button mat-flat-button color="success" (click)="deleteTask(element['ID'])">
+                    <button mat-flat-button color="success" (click)="requestDelete(element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Delete Task" fontIcon="delete"></mat-icon>
-                      Delete
+                      <span class="button-text">Delete</span>
                     </button>
                   </div>
                 </td>
@@ -84,11 +88,15 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
             <td mat-cell *matCellDef="let element" [attr.colspan]="taskColumns.length">
               <div class="detail-container" [class.expanded]="expandedTask === element">
                 <div class="detail-content">
-                  <div class="detail-grid">
-                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Category', element)"><strong>Category:</strong> {{ element.Category }}</div>
-                    <div class="detail-item" [style.backgroundColor]="styleService.PriorityColor(+element.Priority)"><strong>Priority:</strong> {{ element.Priority }}</div>
-                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Status', element)"><strong>Status:</strong> {{ element.Status }}</div>
-                    <div class="detail-item" [style.backgroundColor]="getCellSpecificColor('Threat Level', element)"><strong>Threat Level:</strong> {{ element['Threat Level'] }}</div>
+                  <mat-chip-set aria-label="Fish selection">
+                    <mat-chip [style.backgroundColor]="getCellSpecificColor('Category', element)">{{ element.Category }}</mat-chip>
+                    <mat-chip [style.backgroundColor]="styleService.PriorityColor(+element.Priority)">Priority: {{ element.Priority == null ? 'None' : element.Priority}}</mat-chip>
+                    <mat-chip [style.backgroundColor]="getCellSpecificColor('Status', element)">{{ element.Status }}</mat-chip>
+                    <mat-chip [style.backgroundColor]="getCellSpecificColor('Threat Level', element)">{{ element['Threat Level'] }}</mat-chip>
+                  </mat-chip-set>
+                  <mat-divider></mat-divider>
+                  <div>
+                    <strong>Description: </strong>{{element.Description}}
                   </div>
                 </div>
               </div>
@@ -109,8 +117,9 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
             class="element-row"
             [class.expanded-row]="expandedTask === row"
             (click)="toggleRow(row)"
-            [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
+            [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"
+            [style.Height.rem]="3"></tr>
+          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row" ></tr>
           <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
 
           <tr class="mat-row" *matNoDataRow>
@@ -121,8 +130,20 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
 
         </table>
 
-        <modal [title]="'New Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
+        <modal [title]="stringService.titlecase(formModalMode) + ' Task'" [visible]="isModalOpen" (close)="isModalOpen = false">
           <task-form [task]="selectedTask" (taskSubmitted)="closeTaskForm($event)"></task-form>
+        </modal>
+
+        <modal [title]="'Confirm Deletion'" [visible]="isDeleteModalOpen" (close)="cancelDelete()">
+          <div style="padding: 1rem 0;">
+            <p>Are you sure you want to delete this task? This action cannot be undone and will be removed permanently.</p>
+          </div>
+          <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button mat-button (click)="cancelDelete()">Cancel</button>
+            <button mat-button (click)="confirmDelete()">
+              Confirm Delete
+            </button>
+          </div>
         </modal>
     </div>
   `,
@@ -202,29 +223,34 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
       background-color: #fafafa;
       .detail-content{
         width: 100%;
-        .detail-grid {
-          display: flex;
-          justify-content: space-around;
-          align-items: center;
-          gap: 20px;
-          font-size: 0.9rem;
-          .detail-item {
-            padding: 5px 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-          }
-        }
+        text-align:left;
       }
     }
 
     .detail-container.expanded {
-      max-height: 200px;
+      max-height: 1000px;
       opacity: 1;
       padding: 15px;
+      overflow-y: visible;
     }
 
     .element-row {
       cursor: pointer;
+    }
+
+    @media (max-width: 600px) {
+      .button-text {
+        display: none;
+      }
+
+      table td div button {
+        min-width: 40px;
+        margin-left: 2px;
+      }
+
+      th, td {
+        padding: 2px !important;
+      }
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -234,18 +260,27 @@ export class TaskTable implements  AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  public title:string = 'Current';
+  public title:string = 'Unfinished';
   private status:number = 0;
+
   private categories: categoriesInterface[] = [];
   private statuses: conditionInterface[] = [];
   private threatLevels: threatInterface[] = [];
+
+  // Table State
   private tasks:taskViewInterface[] = []
   public taskColumns:string[] = [];
   public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
-  public selectedTask: taskViewInterface | undefined;
+
+  //Expanded Row State
   public expandedTask: taskViewInterface | null = null;
+  //Form Modal State
   public isModalOpen:boolean = false;
-  public modalMode:'create'|'edit' = 'create';
+  public formModalMode:'create'|'edit' = 'create';
+    public selectedTask: taskViewInterface | undefined;
+  //Delete Modal States
+  public isDeleteModalOpen: boolean = false;
+  public taskIdToDelete: number | null = null;
 
   private headersOrderMapping:string[] = [
     "Title",
@@ -267,7 +302,7 @@ export class TaskTable implements  AfterViewInit {
     private route: ActivatedRoute,
     private router: Router,
   ) {
-    this.title = this.route.snapshot.paramMap.get('status') || 'Current';
+    this.title = this.route.snapshot.paramMap.get('status') || 'Unfinished';
     this.setupHeaders()
     this.dropdownService.categories$.subscribe(data => this.categories = data || []);
     this.dropdownService.statuses$.subscribe(statuses => {
@@ -290,10 +325,9 @@ export class TaskTable implements  AfterViewInit {
     this.tasksSource.paginator = this.paginator;
   }
 
-
   public openTaskForm(mode:'create'|'edit' = 'create', id:number = 0) {
     this.isModalOpen = true;
-    this.modalMode = mode;
+    this.formModalMode = mode;
     this.selectedTask = undefined;
     if (mode === 'edit') {
       this.selectedTask = this.tasks.find(task => task.ID === id);
@@ -337,6 +371,7 @@ export class TaskTable implements  AfterViewInit {
       });
       this.taskColumns = columns.slice(0, 3);
       this.taskColumns.push("Options");
+      this.taskColumns.splice(1,1) //remove Description column
       this.tasksSource.sortingDataAccessor = (item, property) => {
         return (item as any)[property];
       };
@@ -362,13 +397,6 @@ export class TaskTable implements  AfterViewInit {
       error: (err) => {
         console.error('Error refreshing table:', err);
       }
-    });
-  }
-
-  public deleteTask(id:number) {
-    this.backendService.deleteOneTask(id).subscribe({
-      next:(data)=> this.refreshTable(),
-      error: (err) => console.error(`Error Deleteing task`, err)
     });
   }
 
@@ -406,5 +434,27 @@ export class TaskTable implements  AfterViewInit {
     }
     const match = sourceArray.find(item => item.id === idValue);
     return match ? `#${match.color}` : null;
+  }
+
+  public requestDelete(id: number) {
+    this.taskIdToDelete = id;
+    this.isDeleteModalOpen = true;
+  }
+
+  public confirmDelete() {
+    if (this.taskIdToDelete !== null) {
+      this.backendService.deleteOneTask(this.taskIdToDelete).subscribe({
+        next: () => {
+          this.refreshTable();
+          this.cancelDelete();
+        },
+        error: (err) => console.error(`Error deleting task`, err)
+      });
+    }
+  }
+
+  public cancelDelete() {
+    this.isDeleteModalOpen = false;
+    this.taskIdToDelete = null;
   }
 }
