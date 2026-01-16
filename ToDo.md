@@ -5,19 +5,12 @@
 
 ### task-table Component
 - Make table component use @input to take dynamic inputs
-- make table only have Title Description Deadline, Options. Hide everything else in an expandable row below
-- Make Table Mobile friendly
-
-### Main App Router
-- Use Main App Router to see other tables group by status
-    - Transition with animations
 
 ### pieChart Component
 - Clicking on a Pie Slice should Filter the current table
 
 ### stats Component
 - data reacts depending on current table (Do this when multiple tables via router is created)
-- Make mobile friendly, add side arrows to swtich between graphs
 
 ### Services
 - create account/user service/store to store all user credentials
@@ -48,3 +41,7 @@
 - Create PieChart Wrapper Component, that takes data as props/@Input (use chart.js) - DONE
 - create charts dor Cat, Stat, and Threat Level - DONE
 - explore server.ts data fetching with (pg) - DONE
+- make table only have Title Description Deadline, Options. Hide everything else in an expandable row below - DONE
+- Make Table Mobile friendly - DONE
+- Make mobile friendly, add side arrows to swtich between graphs - DONE
+- Use Main App Router to see other tables group by status - DONE
