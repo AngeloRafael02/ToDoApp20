@@ -21,6 +21,7 @@
 - static instuctions and show what colored cell means
 
 ### Color-Config Component
+- Create Color Config Service to handle local Colors
 - In a tab with stats Component
 - Colors of Cells can be changed via a Color Mocal input, Changes are saved on the browser via localStorage (explicitly say it). current colors are default
 
