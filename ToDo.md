@@ -1,7 +1,7 @@
 # To Do
 
 ### Main App Component
-- use Angular material Tabs + Angular Router for swtiching between Charts and About Component
+- use Angular material Tabs + Angular Router for swtiching between Charts and About Component - IN PROGRESS
 
 ### task-table Component
 - Make table component use @input to take dynamic inputs
@@ -15,13 +15,13 @@
 ### Services
 - create account/user service/store to store all user credentials
 - create allTasks serve to store all tassk, filter/sort on client side
+- Create Color Config Service to handle local Colors
 
 ### About Component
 - Create About Component
 - static instuctions and show what colored cell means
 
 ### Color-Config Component
-- Create Color Config Service to handle local Colors
 - In a tab with stats Component
 - Colors of Cells can be changed via a Color Mocal input, Changes are saved on the browser via localStorage (explicitly say it). current colors are default
 

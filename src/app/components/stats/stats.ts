@@ -3,9 +3,11 @@ import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { forkJoin } from 'rxjs';
 
 import { PieChart } from '../pie-chart/pie-chart';
+import { ColorConfig } from '../color-config/color-config';
 import { BackendService } from '../../services/backend/backend';
 import { chartDataInterface } from '../../interfaces/misc.interface';
 
@@ -16,7 +18,9 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
     MatExpansionModule,
     MatButtonModule,
     MatIconModule,
-    PieChart
+    MatTabsModule,
+    PieChart,
+    ColorConfig
   ],
   template: `
     <div class="stats-wrapper">
@@ -29,19 +33,26 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
         </mat-expansion-panel-header>
 
         <div class="carousel-container">
-          <button mat-icon-button class="nav-btn left" (click)="scroll('left')">
-            <mat-icon>chevron_left</mat-icon>
-          </button>
+          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="custom-tab-group">
+            <mat-tab label="Charts">
+              <button mat-icon-button class="nav-btn left" (click)="scroll('left')">
+                <mat-icon>chevron_left</mat-icon>
+              </button>
 
-          <div class="stats-div" #scrollContainer>
-            <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories"></pie-chart></div>
-            <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status"></pie-chart></div>
-            <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels"></pie-chart></div>
-          </div>
+              <div class="stats-div" #scrollContainer>
+                <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories"></pie-chart></div>
+                <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status"></pie-chart></div>
+                <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels"></pie-chart></div>
+              </div>
 
-          <button mat-icon-button class="nav-btn right" (click)="scroll('right')">
-            <mat-icon>chevron_right</mat-icon>
-          </button>
+              <button mat-icon-button class="nav-btn right" (click)="scroll('right')">
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </mat-tab>
+            <mat-tab label="Config">
+              <color-config></color-config>
+            </mat-tab>
+          </mat-tab-group>
         </div>
       </mat-expansion-panel>
     </div>
@@ -63,10 +74,33 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
 
         .carousel-container {
           position: relative;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-
+          display: block;
+          width: 100%;
+          
+          .custom-tab-group {
+            ::ng-deep {
+              .mdc-tab:hover .mdc-tab__ripple {
+                background-color: pallete.$color3;
+              }
+              .mdc-tab--active {
+                background-color: pallete.$color3;      
+                border-radius: 4px 4px 0 0; 
+                .mdc-tab__text-label {
+                  color: pallete.$primaryTextColor;
+                }
+              }
+              .mdc-tab__text-label {
+                color: pallete.$primaryTextColor;
+              }
+              .mdc-tab--active .mdc-tab__text-label {
+                color: pallete.$primaryTextColor;
+              }
+              .mat-mdc-tab-indicator .mdc-tab-indicator__content--underline {
+                border-color: pallete.$primaryTextColor;
+              }
+            }
+          }
+          
           .stats-div {
             width: 100%;
             display: flex;
