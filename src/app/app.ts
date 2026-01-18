@@ -1,19 +1,17 @@
 import { Component, DOCUMENT, Inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { Title, Meta, MetaDefinition } from '@angular/platform-browser';
-import { Subscription,forkJoin } from 'rxjs';
+import { Subscription } from 'rxjs';
 
 import { Clock } from './components/clock/clock';
 import { Stats } from './components/stats/stats';
-import { BackendService } from './services/backend/backend';
 import { categoriesInterface, conditionInterface, threatInterface } from './interfaces/forms.interface';
 import { DropdownDataService } from './services/dropdown-data/dropdown-data';
 import { taskViewInterface } from './interfaces/task.interface';
 import { TaskRouter } from './components/table-router/task-router';
+
 @Component({
   selector: 'app-root',
   imports: [
-    RouterModule,
     Clock,
     TaskRouter,
     Stats,
@@ -49,14 +47,13 @@ export class App implements OnInit, OnDestroy {
     @Inject(DOCUMENT) private document: Document,
     private titleService: Title,
     private metaService: Meta,
-    private backend: BackendService,
     private dropdownService: DropdownDataService,
   ) {}
 
   ngOnInit(): void {
     this.setupMetadata();
     this.subscribeToStore();
-    this.fetchInitialData();
+    this.dropdownService.initializeDropdownData()
   }
 
   ngOnDestroy(): void {
@@ -69,21 +66,6 @@ export class App implements OnInit, OnDestroy {
       this.dropdownService.statuses$.subscribe(val => this.statuses = val),
       this.dropdownService.threatLevels$.subscribe(val => this.threatLevels = val),
     );
-  }
-
-  private fetchInitialData(): void {
-    forkJoin({
-      categories: this.backend.getDropdownOptions<categoriesInterface[]>('categories'),
-      status: this.backend.getDropdownOptions<conditionInterface[]>('status'),
-      threats: this.backend.getDropdownOptions<threatInterface[]>('threats'),
-    }).subscribe({
-      next: (result) => {
-        this.dropdownService.setCategories(result.categories.data);
-        this.dropdownService.setStatuses(result.status.data);
-        this.dropdownService.setThreatLevels(result.threats.data);
-      },
-      error: (err) => console.error('Failed to load dropdowns', err)
-    });
   }
 
   private setupMetadata(): void {

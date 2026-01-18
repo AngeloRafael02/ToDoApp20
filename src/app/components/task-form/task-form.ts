@@ -80,7 +80,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                         <mat-select formControlName="cat_id">
                             @if (categories$ | async; as categories) {
                                 @for (category of categories; track category.id) {
-                                    <mat-option [value]="category.id">{{category.cat}}</mat-option>
+                                    <mat-option [value]="category.id" [style.background-color]="'#'+category.color">{{category.cat}}</mat-option>
                                 }
                             } @else {
                                 <mat-option disabled>Loading categories...</mat-option>
@@ -117,7 +117,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                         <mat-select formControlName="threat_id">
                             @if (threats$ | async; as threats) {
                                 @for (threat of threats; track threat.id) {
-                                    <mat-option [value]="threat.id">{{threat.level}}</mat-option>
+                                    <mat-option [value]="threat.id" [style.background-color]="'#'+threat.color">{{threat.level}}</mat-option>
                                 }
                             } @else {
                                 <mat-option disabled>Loading threat levels...</mat-option>
@@ -135,7 +135,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                         <mat-select formControlName="stat_id">
                             @if (statuses$ | async; as statuses) {
                                 @for (status of statuses; track status.id) {
-                                    <mat-option [value]="status.id">{{status.stat}}</mat-option>
+                                    <mat-option [value]="status.id" [style.background-color]="'#'+status.color">{{status.stat}}</mat-option>
                                 }
                             } @else {
                                 <mat-option disabled>Loading statuses...</mat-option>

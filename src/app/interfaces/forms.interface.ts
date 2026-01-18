@@ -14,3 +14,5 @@ export interface categoriesInterface extends dropdownInterfaceBase {
 export interface threatInterface extends dropdownInterfaceBase {
     level:string
 }
+
+export type ConfigType = 'categories' | 'statuses' | 'threatLevels';

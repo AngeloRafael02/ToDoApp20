@@ -1,12 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
+import { FormsModule } from '@angular/forms'; // Added for ngModel
 
 @Component({
   selector: 'color-config-table',
+  standalone: true,
   imports: [
     CommonModule,
-    MatTableModule
+    MatTableModule,
+    FormsModule
   ],
   template: `
     <div class="table-card">
@@ -14,7 +17,7 @@ import { MatTableModule } from '@angular/material/table';
       <table mat-table [dataSource]="data || []" class="mat-elevation-z2">
         
         <ng-container matColumnDef="displayValue">
-          <th mat-header-cell *matHeaderCellDef> {{ title }} </th>
+          <th mat-header-cell *matHeaderCellDef>Value</th>
           <td mat-cell *matCellDef="let element"> 
             {{ element[displayKey] }} 
           </td>
@@ -24,8 +27,13 @@ import { MatTableModule } from '@angular/material/table';
           <th mat-header-cell *matHeaderCellDef> Color </th>
           <td mat-cell *matCellDef="let element"> 
             <div class="color-cell">
-              <span [style.background-color]="element.color ? '#' + element.color : 'transparent'"class="color-pill"></span>
-              <code>{{ element.color }}</code>
+              <input 
+                type="color" 
+                class="color-picker-input"
+                [ngModel]="formatHex(element.color)"
+                (ngModelChange)="onColorUpdate(element, $event)"
+              />
+              <code>#{{ element.color | lowercase }}</code>
             </div>
           </td>
         </ng-container>
@@ -50,32 +58,53 @@ import { MatTableModule } from '@angular/material/table';
         width: 100%; 
         border-radius: 4px; 
         overflow: hidden;
-        tr {
-          border: 1px solid black;
-        }
       }
       .color-cell { 
         display: flex; 
         align-items: center; 
+        gap: 10px;
       }
-      .color-pill {
-        display: inline-block;
-        width: 16px; height: 16px;
-        border-radius: 4px; margin-right: 10px;
+      .color-picker-input {
+        appearance: none;
+        -webkit-appearance: none;
         border: 1px solid rgba(0,0,0,0.1);
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        background: none;
+        padding: 0;
+        border-radius: 4px;
+        
+        &::-webkit-color-swatch-wrapper { padding: 0; }
+        &::-webkit-color-swatch { 
+          border: none; 
+          border-radius: 3px; 
+        }
       }
       code { 
         font-size: 0.85rem; 
         color: #666; 
       }
     }
-
   `],
 })
 export class ColorConfigTable {
-  @Input() data: unknown[] | null = [];
+  @Input() data: any[] | null = [];
   @Input() title: string = '';
   @Input() displayKey: string = '';
+  
+  @Output() colorChange = new EventEmitter<{ row: any, newColor: string }>();
 
   displayedColumns: string[] = ['displayValue', 'color'];
+
+  public formatHex(color: string): string {
+    if (!color) return '#000000';
+    return color.startsWith('#') ? color : `#${color}`;
+  }
+
+  public onColorUpdate(element: any, newHexWithHash: string): void {
+    const cleanHex = newHexWithHash.replace('#', '');
+    element.color = cleanHex;
+    this.colorChange.emit({ row: element, newColor: cleanHex });
+  }
 }

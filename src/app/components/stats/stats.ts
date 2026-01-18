@@ -177,6 +177,8 @@ export class Stats implements OnInit {
     })
   }
 
+  
+
   public scroll(direction: 'left' | 'right') {
     const distance = 320;
     this.scrollContainer.nativeElement.scrollBy({
