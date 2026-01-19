@@ -1,4 +1,4 @@
-import { Component,ElementRef,OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
@@ -72,19 +72,24 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
           color: pallete.$primaryTextColor;
         }
 
+::ng-deep .mat-mdc-tab-body-content {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
         .carousel-container {
           position: relative;
           display: block;
           width: 100%;
-          
+
           .custom-tab-group {
             ::ng-deep {
               .mdc-tab:hover .mdc-tab__ripple {
                 background-color: pallete.$color3;
               }
               .mdc-tab--active {
-                background-color: pallete.$color3;      
-                border-radius: 4px 4px 0 0; 
+                background-color: pallete.$color3;
+                border-radius: 4px 4px 0 0;
                 .mdc-tab__text-label {
                   color: pallete.$primaryTextColor;
                 }
@@ -100,9 +105,9 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
               }
             }
           }
-          
+
           .stats-div {
-            width: 100%;
+            width: 95%;
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
@@ -124,12 +129,19 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
 
           .nav-btn {
             position: absolute;
-            z-index: 10;
-            background: transparent;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.3);
             color: white;
+            border-radius: 50%;
 
-            &.left { left: 0; }
-            &.right { right: 0; }
+            &.left { left: 5px; }
+            &.right { right: 5px; }
+
+            &:hover {
+              background: rgba(0, 0, 0, 0.5);
+            }
           }
         }
       }
@@ -159,6 +171,7 @@ export class Stats implements OnInit {
   public readonly panelOpenState = signal(false);
 
   constructor(
+    private cdr: ChangeDetectorRef,
     private backendService:BackendService
   ){}
 
@@ -172,12 +185,11 @@ export class Stats implements OnInit {
         this.catData = result.categories.data;
         this.statsData = result.status.data;
         this.threatsData = result.threats.data;
+        this.cdr.detectChanges();
       },
       error: (err) => console.error('Failed to load chart data', err)
     })
   }
-
-  
 
   public scroll(direction: 'left' | 'right') {
     const distance = 320;

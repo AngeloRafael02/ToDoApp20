@@ -15,20 +15,20 @@ import { FormsModule } from '@angular/forms'; // Added for ngModel
     <div class="table-card">
       <h3>{{ title }}</h3>
       <table mat-table [dataSource]="data || []" class="mat-elevation-z2">
-        
+
         <ng-container matColumnDef="displayValue">
-          <th mat-header-cell *matHeaderCellDef>Value</th>
-          <td mat-cell *matCellDef="let element"> 
-            {{ element[displayKey] }} 
+          <th mat-header-cell *matHeaderCellDef> <strong>Value</strong> </th>
+          <td mat-cell *matCellDef="let element">
+            {{ element[displayKey] }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="color">
-          <th mat-header-cell *matHeaderCellDef> Color </th>
-          <td mat-cell *matCellDef="let element"> 
+          <th mat-header-cell *matHeaderCellDef> <strong>Color</strong> </th>
+          <td mat-cell *matCellDef="let element">
             <div class="color-cell">
-              <input 
-                type="color" 
+              <input
+                type="color"
                 class="color-picker-input"
                 [ngModel]="formatHex(element.color)"
                 (ngModelChange)="onColorUpdate(element, $event)"
@@ -46,22 +46,22 @@ import { FormsModule } from '@angular/forms'; // Added for ngModel
   styles: [`
     @use '../../styles/pallete.scss' as pallete;
 
-    .table-card { 
-      flex: 1; 
-      min-width: 500px; 
-      h3 { 
-        margin-bottom: 12px; 
+    .table-card {
+      flex: 1;
+      width: 300px;
+      h3 {
+        margin-bottom: 12px;
         color: pallete.$primaryTextColor;
-        font-size: 1.1rem; 
+        font-size: 1.1rem;
       }
-      table { 
-        width: 100%; 
-        border-radius: 4px; 
+      table {
+        width: 95%;
+        border-radius: 4px;
         overflow: hidden;
       }
-      .color-cell { 
-        display: flex; 
-        align-items: center; 
+      .color-cell {
+        display: flex;
+        align-items: center;
         gap: 10px;
       }
       .color-picker-input {
@@ -74,16 +74,22 @@ import { FormsModule } from '@angular/forms'; // Added for ngModel
         background: none;
         padding: 0;
         border-radius: 4px;
-        
+
         &::-webkit-color-swatch-wrapper { padding: 0; }
-        &::-webkit-color-swatch { 
-          border: none; 
-          border-radius: 3px; 
+        &::-webkit-color-swatch {
+          border: none;
+          border-radius: 3px;
         }
       }
-      code { 
-        font-size: 0.85rem; 
-        color: #666; 
+      code {
+        font-size: 0.85rem;
+        color: #666;
+      }
+    }
+    @media (min-width: 1024px) {
+      .table-card {
+        flex: 1;
+        width:500px;
       }
     }
   `],
@@ -92,7 +98,7 @@ export class ColorConfigTable {
   @Input() data: any[] | null = [];
   @Input() title: string = '';
   @Input() displayKey: string = '';
-  
+
   @Output() colorChange = new EventEmitter<{ row: any, newColor: string }>();
 
   displayedColumns: string[] = ['displayValue', 'color'];
