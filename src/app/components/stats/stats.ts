@@ -72,10 +72,10 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
           color: pallete.$primaryTextColor;
         }
 
-::ng-deep .mat-mdc-tab-body-content {
-  max-height: 350px;
-  overflow-y: auto;
-}
+        ::ng-deep .mat-mdc-tab-body-content {
+          max-height: 350px;
+          overflow-y: auto;
+        }
 
         .carousel-container {
           position: relative;

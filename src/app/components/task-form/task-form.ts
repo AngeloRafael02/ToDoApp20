@@ -31,10 +31,10 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
     ReactiveFormsModule,
   ],
   template: `
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()"> 
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
         <mat-dialog-content>
             <mat-grid-list cols="2" rowHeight="100px" gutterSize="10px">
-                
+
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Task</mat-label>
@@ -59,7 +59,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                         <mat-hint>MM/DD/YYYY</mat-hint>
                         <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
                         <mat-datepicker #picker3></mat-datepicker>
-                    </mat-form-field>    
+                    </mat-form-field>
                 </mat-grid-tile>
 
                 <mat-grid-tile colspan="2">
@@ -150,22 +150,22 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
             </mat-grid-list>
         </mat-dialog-content>
         <mat-dialog-actions>
-            <button mat-flat-button class="modalBTN" type="submit" [disabled]="taskForm.invalid">Submit</button> 
+            <button mat-flat-button class="modalBTN" type="submit" [disabled]="taskForm.invalid">Submit</button>
         </mat-dialog-actions>
     </form>
   `,
   styles: `
     mat-dialog-content {
         overflow: hidden !important;
-        max-height: none !important; 
+        max-height: none !important;
     }
   `
 })
 export class TaskForm implements OnInit {
 
   private _task: taskViewInterface | undefined;
-  
-  @Input() 
+
+  @Input()
   set task(taskData: taskViewInterface | undefined) {
     this._task = taskData;
     this.patchForm();
@@ -174,16 +174,16 @@ export class TaskForm implements OnInit {
     return this._task;
   }
 
-  @Output() 
+  @Output()
   public taskSubmitted: EventEmitter<taskInterface> = new EventEmitter();
 
   public taskForm!: FormGroup;
   public categories$: Observable<categoriesInterface[] | null>;
   public statuses$: Observable<conditionInterface[] | null>;
   public threats$: Observable<threatInterface[] | null>;
-  
+
   constructor(
-    private fb: FormBuilder, 
+    private fb: FormBuilder,
     private snackBar: MatSnackBar,
     private dropdownService:DropdownDataService
   ) {}
@@ -194,7 +194,7 @@ export class TaskForm implements OnInit {
     this.statuses$ = this.dropdownService.statuses$;
     this.threats$ = this.dropdownService.threatLevels$;
 
-    this.taskForm = this.fb.group({ 
+    this.taskForm = this.fb.group({
       id:[null],
       title:["", [Validators.required, Validators.maxLength(50)]],
       note:["",Validators.maxLength(255)],

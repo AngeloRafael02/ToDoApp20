@@ -19,7 +19,6 @@ import { TaskRouter } from './components/table-router/task-router';
   template: `
     <div class="container">
       <app-clock></app-clock>
-      <br>
       <stats></stats>
       <task-router></task-router>
     </div>
@@ -29,6 +28,7 @@ import { TaskRouter } from './components/table-router/task-router';
       display: flex;
       flex-direction: column;
       justify-content: center;
+      gap: 1rem;
       padding-left: 5%;
       padding-right: 5%;
     }

@@ -17,26 +17,26 @@ export const query = async (
   res:Response,
   query:string,
   params:unknown[] = [],
-  expectEmpty:boolean = false 
+  expectEmpty:boolean = false
 ) => {
     try {
         const result = await pool.query(query, params);
-        if (expectEmpty === true && result.rows.length === 0) {
-            res.status(404).json({ 
-                status: 'error', 
+        if (expectEmpty === false && result.rows.length === 0) {
+            return res.status(404).json({
+                status: 'error',
                 data: ['Request not found.']
             });
         }
-        res.status(200).json({
+        return res.status(200).json({
             status: 'success',
             count: result.rowCount,
             data: result.rows
         });
     } catch (error) {
         console.error("Database Error:", error);
-        res.status(500).json({ 
-            status: 'error', 
-            data: ['Internal Server Error'] 
+        return res.status(500).json({
+            status: 'error',
+            data: ['Internal Server Error']
         });
     }
 };

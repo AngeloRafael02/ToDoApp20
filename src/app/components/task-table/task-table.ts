@@ -21,6 +21,7 @@ import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'task-table',
@@ -157,7 +158,7 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
         caption {
           caption-side: top;
           color:pallete.$primaryTextColor;
-          padding-top: 0.5rem;
+          padding-top: -1rem;
           padding-bottom: -1rem;
           div {
             display: flex;
@@ -303,22 +304,14 @@ export class TaskTable implements  AfterViewInit {
     private router: Router,
   ) {
     this.title = this.route.snapshot.paramMap.get('status') || 'Unfinished';
+    this.route.params.subscribe(params => {
+      this.title = params['status'] || 'Unfinished';
+      this.updateTableData();
+    });
     this.setupHeaders()
     this.dropdownService.categories$.subscribe(data => this.categories = data || []);
-    this.dropdownService.statuses$.subscribe(statuses => {
-      if (statuses) {
-        const match = statuses.find(s => s.stat.toLowerCase() === this.title.toLowerCase());
-        if (match) {
-          this.status = match.id;
-          this.refreshTable();
-        } else {
-          this.router.navigate(['/Error'], { skipLocationChange: true });
-        }
-      }
-    });
     this.dropdownService.threatLevels$.subscribe(data => this.threatLevels = data || []);
   }
-
 
   ngAfterViewInit(): void {
     this.tasksSource.sort = this.sort;
@@ -456,5 +449,26 @@ export class TaskTable implements  AfterViewInit {
   public cancelDelete() {
     this.isDeleteModalOpen = false;
     this.taskIdToDelete = null;
+  }
+
+  private updateTableData() {
+    this.dropdownService.statuses$.pipe(take(1)).subscribe(statuses => {
+      if (!statuses) return;
+      const currentTitle = decodeURIComponent(this.title).toLowerCase();
+
+      if (currentTitle === 'all') {
+        this.status = 0;
+        this.refreshTable();
+        return;
+      }
+
+      const match = statuses.find(s => s.stat.toLowerCase() === currentTitle);
+      if (match) {
+        this.status = match.id;
+        this.refreshTable();
+      } else {
+        this.router.navigate(['/Error'], { skipLocationChange: true });
+      }
+    });
   }
 }
