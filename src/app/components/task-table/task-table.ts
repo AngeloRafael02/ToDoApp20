@@ -62,10 +62,12 @@ import { take } from 'rxjs';
                 <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
                 <td mat-cell *matCellDef="let element">
                   <div>
-                    <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
-                      <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
-                      <span class="button-text">Finish</span>
-                    </button>
+                    @if (title !== 'Finished') {
+                      <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
+                        <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
+                        <span class="button-text">Finish</span>
+                      </button>
+                    }
                     <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">
                       <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
                       <span class="button-text">Update</span>
