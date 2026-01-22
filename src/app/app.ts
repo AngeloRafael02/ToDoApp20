@@ -8,6 +8,7 @@ import { categoriesInterface, conditionInterface, threatInterface } from './inte
 import { DropdownDataService } from './services/dropdown-data/dropdown-data';
 import { taskViewInterface } from './interfaces/task.interface';
 import { TaskRouter } from './components/table-router/task-router';
+import { TasksService } from './services/tasks/tasks-service';
 
 @Component({
   selector: 'app-root',
@@ -48,6 +49,7 @@ export class App implements OnInit, OnDestroy {
     private titleService: Title,
     private metaService: Meta,
     private dropdownService: DropdownDataService,
+    private taskService:TasksService
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,7 @@ export class App implements OnInit, OnDestroy {
       this.dropdownService.statuses$.subscribe(val => this.statuses = val),
       this.dropdownService.threatLevels$.subscribe(val => this.threatLevels = val),
     );
+    this.taskService.queryAllTask(1)
   }
 
   private setupMetadata(): void {

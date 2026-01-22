@@ -22,6 +22,7 @@ import { Modal } from '../modal/modal';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { take } from 'rxjs';
+import { TasksService } from '../../services/tasks/tasks-service';
 
 @Component({
   selector: 'task-table',
@@ -301,6 +302,7 @@ export class TaskTable implements  AfterViewInit {
     public dateService:DateService,
     public styleService:StyleService,
     public dropdownService:DropdownDataService,
+    private taskService:TasksService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
@@ -380,19 +382,23 @@ export class TaskTable implements  AfterViewInit {
   }
 
   public refreshTable(): void {
-    this.backendService.getTableTasks<taskViewInterface[]>(1,this.status).subscribe({
+    let tempID:number = 0;
+    this.dropdownService.statuses$.subscribe({
       next: (data) => {
-        this.tasks = data.data;
+        let statusObj = data?.find(data=> data.id == this.status) 
+        tempID = (!statusObj) ? 0 : statusObj.id;
+        this.tasks = this.taskService.filteredTasks(tempID,'statuses')
         this.tasksSource.data = this.tasks;
         this.tasksSource.sort = this.sort;
         this.tasksSource.paginator = this.paginator;
         this.cdr.markForCheck();
         console.log('Table refreshed successfully');
       },
-      error: (err) => {
-        console.error('Error refreshing table:', err);
+        error: (err) => {
+          console.error('Error refreshing table:', err);
+        }
       }
-    });
+    )
   }
 
   public finishTask(id:number) {
