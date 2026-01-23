@@ -27,7 +27,7 @@ export class DropdownDataService {
   public categories$: Observable<categoriesInterface[] | null> = this.categoriesSubject.asObservable();
   public statuses$: Observable<conditionInterface[] | null> = this.statusesSubject.asObservable();
   public threatLevels$: Observable<threatInterface[] | null> = this.threatLevelsSubject.asObservable();
-  
+
   public setCategories(data: categoriesInterface[]): void {
     this.categoriesSubject.next(data);
     this.syncToStorage(this.STORAGE_KEYS.categories, data);
@@ -82,13 +82,13 @@ export class DropdownDataService {
 
   public updateColor(type: ConfigType, updatedRow: any): void {
     let currentData: any[] | null = null;
-    
+
     if (type === this.STORAGE_KEYS.categories) currentData = this.categoriesSubject.value;
     if (type === this.STORAGE_KEYS.statuses) currentData = this.statusesSubject.value;
     if (type === this.STORAGE_KEYS.threatLevels) currentData = this.threatLevelsSubject.value;
 
     if (currentData) {
-      const updatedData = currentData.map(item => 
+      const updatedData = currentData.map(item =>
         item.id === updatedRow.id ? { ...item, color: updatedRow.color } : item
       );
 
@@ -118,7 +118,7 @@ export class DropdownDataService {
       Object.values(this.STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
       this.categoriesSubject.next(null);
       this.statusesSubject.next(null);
-      this.threatLevelsSubject.next(null);      
+      this.threatLevelsSubject.next(null);
       console.warn('Dropdown Service: Local storage and state have been cleared.');
     }
   }

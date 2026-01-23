@@ -1,5 +1,7 @@
 import { AngularNodeAppEngine, createNodeRequestHandler, isMainModule, writeResponseToNodeResponse } from '@angular/ssr/node';
 import express from 'express';
+import compression from 'compression';
+import helmet from 'helmet';
 import { join } from 'node:path';
 
 import { utilsRouter } from './routes/utils';
@@ -11,6 +13,8 @@ const browserDistFolder = join(import.meta.dirname, '../browser');
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+app.use(compression());
+app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
