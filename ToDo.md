@@ -14,6 +14,7 @@
 ### Services
 - create account/user service/store to store all user credentials
 - create allTasks serve to store all tassk, filter/sort on client side
+- make dropDownDataService and tasksService use anyc localStorage
 
 ### Misc
 - create git Hook to check if console commands are in any file
