@@ -63,7 +63,7 @@ import { TasksService } from '../../services/tasks/tasks-service';
                 <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
                 <td mat-cell *matCellDef="let element">
                   <div>
-                    @if (title !== 'Finished') {
+                    @if (isTaskActive()) {
                       <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
                         <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
                         <span class="button-text">Finish</span>
@@ -479,4 +479,9 @@ export class TaskTable implements  AfterViewInit {
       }
     });
   }
+
+  public isTaskActive(): boolean {
+  const t = this.title.toLowerCase();
+  return t !== 'finished' && t !== 'cancelled' && t !== 'Continuous';
+}
 }
