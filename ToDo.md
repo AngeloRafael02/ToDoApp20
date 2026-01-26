@@ -1,5 +1,5 @@
 # To Do
-- implement accesibility features in Components
+- implement accesibility features in Components [read this](https://angular.dev/guide/animations)
 
 ### Main App Component
 - Add Animations for switching between charts
