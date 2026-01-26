@@ -3,8 +3,6 @@
 
 ### Main App Component
 - Add Animations for switching between charts
-### task-table Component
-- Make table component use @input to take dynamic inputs
 
 ### pieChart Component
 - Clicking on a Pie Slice should Filter the current table
@@ -17,7 +15,6 @@
 ### Services
 - create account/user service/store to store all user credentials
 - create allTasks serve to store all tassk, filter/sort on client side
-- make dropDownDataService and tasksService use anyc localStorage
 
 ### Misc
 - create git Hook to check if console commands are in any file
