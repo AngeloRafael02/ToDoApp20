@@ -1,4 +1,5 @@
 # To Do
+- implement accesibility features in Components
 
 ### Main App Component
 - Add Animations for switching between charts
@@ -9,6 +10,8 @@
 - Clicking on a Pie Slice should Filter the current table
 
 ### stats Component
+- add keybind to navigate though all the tabs
+- make tabs adjustable in position
 - data reacts depending on current table (Do this when multiple tables via router is created)
 
 ### Services

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, signal, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
@@ -24,7 +24,7 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
   ],
   template: `
     <div class="stats-wrapper">
-      <mat-expansion-panel (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
+      <mat-expansion-panel [expanded]="panelOpenState()" (opened)="panelOpenState.set(true)" (closed)="panelOpenState.set(false)">
         <mat-expansion-panel-header>
           <mat-panel-title><p>Tasks Statistics</p></mat-panel-title>
           <mat-panel-description>
@@ -175,6 +175,7 @@ export class Stats implements OnInit {
     private backendService:BackendService
   ){}
 
+
   ngOnInit(): void {
     forkJoin({
       categories: this.backendService.getChartData<chartDataInterface[]>(this.id,'categories'),
@@ -197,5 +198,13 @@ export class Stats implements OnInit {
       left: direction === 'left' ? -distance : distance,
       behavior: 'smooth'
     });
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  public handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.altKey && event.key.toLowerCase() === 'e') {
+      event.preventDefault();
+      this.panelOpenState.update(value => !value);
+    }
   }
 }
