@@ -1,8 +1,8 @@
 # To Do
-- implement accesibility features in Components [read this](https://angular.dev/guide/animations)
+- implement accesibility features in Components [read this](https://material.angular.dev/cdk/a11y/overview)
 
 ### Main App Component
-- Add Animations for switching between charts
+- Add Animations for switching between charts [read this](https://angular.dev/guide/animations)
 
 ### pieChart Component
 - Clicking on a Pie Slice should Filter the current table
@@ -10,11 +10,16 @@
 ### stats Component
 - add keybind to navigate though all the tabs
 - make tabs adjustable in position
-- data reacts depending on current table (Do this when multiple tables via router is created)
+- data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
+
+### task-table Component
+- Fix Table Update after Finish/Update/Delete, to autimatically react
+
+### About Component
+- create Component to teach basic function of the game
 
 ### Services
 - create account/user service/store to store all user credentials
-- create allTasks serve to store all tassk, filter/sort on client side
 
 ### Misc
 - create git Hook to check if console commands are in any file
@@ -40,3 +45,4 @@
 - Create Color Config Service to handle local Colors - DONE
 - In a tab with stats Component - DONE
 - Colors of Cells can be changed via a Color Mocal input, Changes are saved on the browser via localStorage (explicitly say it). current colors are default - DONE
+- create allTasks serve to store all tassk, filter/sort on client side - DONE
