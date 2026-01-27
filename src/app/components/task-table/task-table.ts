@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
 
 import { BackendService} from '../../services/backend/backend';
 import { StringService } from '../../services/utils/string/string';
@@ -23,6 +24,7 @@ import { DropdownDataService } from '../../services/dropdown-data/dropdown-data'
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { take } from 'rxjs';
 import { TasksService } from '../../services/tasks/tasks-service';
+import { A11yModule } from '@angular/cdk/a11y';
 
 @Component({
   selector: 'task-table',
@@ -37,6 +39,7 @@ import { TasksService } from '../../services/tasks/tasks-service';
     MatFormFieldModule,
     MatChipsModule,
     MatDividerModule,
+    A11yModule,
     Modal,
     TaskForm
   ],
@@ -45,11 +48,11 @@ import { TasksService } from '../../services/tasks/tasks-service';
       <table mat-table multiTemplateDataRows [dataSource]="tasksSource" matSort matSortActive="Deadline" matSortDirection="desc" class="mat-table mat-elevation-z8">
         <caption>
           <h2>{{title}} Tasks Table</h2>
-          <p>A list of all {{title | lowercase}} tasks.</p>
+          <p>A list of {{title | lowercase}} tasks.</p>
           <div>
             <mat-form-field style="margin-bottom: -1.25em;">
               <mat-label>Filter</mat-label>
-              <input matInput (keyup)="applyFilter($event)" placeholder="Filter" #input>
+              <input matInput (keyup)="applyFilter($event)" placeholder="e.g. Do Stuff" #input>
             </mat-form-field>
             <button mat-flat-button (click)="openTaskForm('create')">
               <mat-icon aria-hidden="false" aria-label="Add Task" fontIcon="add box"></mat-icon>
@@ -63,17 +66,17 @@ import { TasksService } from '../../services/tasks/tasks-service';
                 <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
                 <td mat-cell *matCellDef="let element">
                   <div>
-                    @if (isTaskActive()) {
-                      <button mat-flat-button color="primary" (click)="finishTask(element['ID'])">
+                    @if (element['SID'] !== 3) {
+                      <button mat-flat-button color="primary" (click)="finishTask(element['ID'])" [aria-label]="'Mark task ' + element.Title + ' as finished'">
                         <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
                         <span class="button-text">Finish</span>
                       </button>
                     }
-                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])">
+                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])" [aria-label]="'Update task ' + element.Title">
                       <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
                       <span class="button-text">Update</span>
                     </button>
-                    <button mat-flat-button color="success" (click)="requestDelete(element['ID'])">
+                    <button mat-flat-button color="success" (click)="requestDelete(element['ID'])" [aria-label]="'Delete task ' + element.Title">
                       <mat-icon aria-hidden="false" aria-label="Delete Task" fontIcon="delete"></mat-icon>
                       <span class="button-text">Delete</span>
                     </button>
@@ -118,12 +121,22 @@ import { TasksService } from '../../services/tasks/tasks-service';
 
           <tr mat-header-row *matHeaderRowDef="taskColumns; sticky: true "></tr>
           <tr mat-row *matRowDef="let row; columns: taskColumns;"
+            role="button"
             class="element-row"
             [class.expanded-row]="expandedTask === row"
+            [attr.aria-expanded]="expandedTask === row"
+            [attr.aria-controls]="'detail-' + row.ID"
+            tabindex="0"
+            (keydown.enter)="toggleRow(row)"
             (click)="toggleRow(row)"
             [style.backgroundColor]="styleService.RowColorPerDeadline(row.Deadline)"
             [style.Height.rem]="3"></tr>
-          <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row" ></tr>
+          <tr mat-row *matRowDef="let row;
+            columns: ['expandedDetail']"
+            class="detail-row"
+            [id]="'detail-' + row.ID"
+            role="region"
+            [attr.aria-hidden]="expandedTask !== row"></tr>
           <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
 
           <tr class="mat-row" *matNoDataRow>
@@ -385,7 +398,7 @@ export class TaskTable implements  AfterViewInit {
     let tempID:number = 0;
     this.dropdownService.statuses$.subscribe({
       next: (data) => {
-        let statusObj = data?.find(data=> data.id == this.status) 
+        let statusObj = data?.find(data=> data.id == this.status)
         tempID = (!statusObj) ? 0 : statusObj.id;
         this.tasks = this.taskService.filteredTasks(tempID,'statuses')
         this.tasksSource.data = this.tasks;
@@ -479,9 +492,4 @@ export class TaskTable implements  AfterViewInit {
       }
     });
   }
-
-  public isTaskActive(): boolean {
-  const t = this.title.toLowerCase();
-  return t !== 'finished' && t !== 'cancelled' && t !== 'Continuous';
-}
 }

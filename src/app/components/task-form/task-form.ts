@@ -7,18 +7,21 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDialogActions, MatDialogContent } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { A11yModule, LiveAnnouncer } from '@angular/cdk/a11y'
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
+import { StyleService } from './../../services/utils/style/style';
 
 @Component({
   selector: 'task-form',
   imports: [
     AsyncPipe,
+    A11yModule,
     MatDialogContent,
     MatDialogActions,
     MatButtonModule,
@@ -31,16 +34,17 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
     ReactiveFormsModule,
   ],
   template: `
-    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
         <mat-dialog-content>
             <mat-grid-list cols="2" rowHeight="100px" gutterSize="10px">
 
+                <!--Title-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Task</mat-label>
-                        <input matInput formControlName="title">
+                        <input matInput formControlName="title" placeholder="e.g. Fix login bug" [attr.aria-invalid]="hasError('title', 'required')">
                         @if(hasError('title', 'required')){
-                            <mat-error>
+                            <mat-error id="title-error">
                                 Task title is **required**.
                             </mat-error>
                         }
@@ -52,6 +56,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Deadline-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Deadline</mat-label>
@@ -62,10 +67,11 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Description-->
                 <mat-grid-tile colspan="2">
                     <mat-form-field [style.width.px]=440>
                         <mat-label>Description</mat-label>
-                        <textarea matInput formControlName="note" style="resize: none;"></textarea>
+                        <textarea matInput formControlName="note" style="resize: none;" [attr.aria-invalid]="hasError('note', 'required')"></textarea>
                         @if (hasError('note', 'required')) {
                             <mat-error>
                                 Description is **required**.
@@ -74,13 +80,14 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Category-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Category</mat-label>
-                        <mat-select formControlName="cat_id">
+                        <mat-select formControlName="cat_id" [attr.aria-invalid]="hasError('cat_id', 'required')">
                             @if (categories$ | async; as categories) {
                                 @for (category of categories; track category.id) {
-                                    <mat-option [value]="category.id" [style.background-color]="'#'+category.color">{{category.cat}}</mat-option>
+                                    <mat-option [value]="category.id" [style.background-color]="'#'+category.color" [style.color]="styleService.getContrastText(category.color)">{{category.cat}}</mat-option>
                                 }
                             } @else {
                                 <mat-option disabled>Loading categories...</mat-option>
@@ -94,27 +101,19 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Priority-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Priority</mat-label>
                         <input matInput type="number" min="0" formControlName="prio" placeholder="Enter a number">
-                        @if (hasError('prio', 'required') ) {
-                            <mat-error>
-                                Priority is **required**.
-                            </mat-error>
-                        }
-                        @if (hasError('prio', 'min')) {
-                            <mat-error>
-                                Priority must be a number greater than 0.
-                            </mat-error>
-                        }
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Threat Level-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Threat Level</mat-label>
-                        <mat-select formControlName="threat_id">
+                        <mat-select formControlName="threat_id" [attr.aria-invalid]="hasError('threat_id', 'required')">
                             @if (threats$ | async; as threats) {
                                 @for (threat of threats; track threat.id) {
                                     <mat-option [value]="threat.id" [style.background-color]="'#'+threat.color">{{threat.level}}</mat-option>
@@ -129,6 +128,7 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                     </mat-form-field>
                 </mat-grid-tile>
 
+                <!--Status-->
                 <mat-grid-tile colspan="1">
                     <mat-form-field>
                         <mat-label>Status</mat-label>
@@ -141,23 +141,29 @@ import { taskInterface, taskViewInterface } from '../../interfaces/task.interfac
                                 <mat-option disabled>Loading statuses...</mat-option>
                             }
                         </mat-select>
-                        @if(hasError('stat_id', 'required')){
-                            <mat-error>Status is **required**.</mat-error>
-                        }
                     </mat-form-field>
                 </mat-grid-tile>
 
             </mat-grid-list>
         </mat-dialog-content>
         <mat-dialog-actions>
-            <button mat-flat-button class="modalBTN" type="submit" [disabled]="taskForm.invalid">Submit</button>
+            <button mat-flat-button class="modalBTN" type="submit" [disabled]="taskForm.invalid" aria-label="Submit task form">Submit</button>
         </mat-dialog-actions>
     </form>
   `,
   styles: `
     mat-dialog-content {
-        overflow: hidden !important;
-        max-height: none !important;
+      overflow: hidden !important;
+      max-height: none !important;
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type=number] {
+        -moz-appearance: textfield;
+      }
     }
   `
 })
@@ -185,7 +191,9 @@ export class TaskForm implements OnInit {
   constructor(
     private fb: FormBuilder,
     private snackBar: MatSnackBar,
-    private dropdownService:DropdownDataService
+    private dropdownService:DropdownDataService,
+    private announcer: LiveAnnouncer,
+    public styleService:StyleService
   ) {}
 
   ngOnInit(): void {
@@ -232,19 +240,16 @@ export class TaskForm implements OnInit {
   }
 
   public onSubmit(): void {
+    const snackBarConfig:MatSnackBarConfig<any> = { duration: 3000, verticalPosition: 'top' }
     if (this.taskForm.valid) {
-        this.snackBar.open('Task submitted successfully!', 'Dismiss', {
-            duration: 3000,
-            verticalPosition: 'top'
-        });
+        this.announcer.announce('Task submitted successfully', 'polite');
+        this.snackBar.open('Task submitted successfully!', 'Dismiss', snackBarConfig);
         this.taskSubmitted.emit(this.taskForm.getRawValue());
         this.resetForm();
     } else {
         this.taskForm.markAllAsTouched();
-        this.snackBar.open('Please correct the errors in the form.', 'Dismiss', {
-            duration: 3000,
-            verticalPosition: 'top'
-        });
+        this.announcer.announce('Form contains errors. Please check required fields.', 'assertive');
+        this.snackBar.open('Please correct the errors in the form.', 'Dismiss', snackBarConfig );
     }
   }
 
