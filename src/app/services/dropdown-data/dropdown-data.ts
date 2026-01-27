@@ -3,6 +3,7 @@ import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
 import { categoriesInterface,conditionInterface,ConfigType,threatInterface } from '../../interfaces/forms.interface';
 import { isPlatformBrowser } from '@angular/common';
 import { BackendService } from '../backend/backend';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class DropdownDataService {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
+    private snackBar: MatSnackBar,
     private backendService:BackendService
   ) {}
 
@@ -54,7 +56,11 @@ export class DropdownDataService {
         this.setStatuses(result.status.data);
         this.setThreatLevels(result.threats.data);
       },
-      error: (err) => console.error('Failed to load dropdowns', err)
+      error: (err) => {
+        const message:string = 'Failed to load dropdowns';
+        this.snackBar.open(message, 'Dismiss', { duration: 3000, verticalPosition: 'top' });
+        console.error(message, err)
+      }
     });
   }
 
@@ -77,7 +83,6 @@ export class DropdownDataService {
     if (type === this.STORAGE_KEYS.statuses) return this.statusesSubject.getValue();
     if (type === this.STORAGE_KEYS.threatLevels) return this.threatLevelsSubject.getValue();
     return null;
-
   }
 
   public updateColor(type: ConfigType, updatedRow: any): void {
@@ -95,6 +100,7 @@ export class DropdownDataService {
       if (type === this.STORAGE_KEYS.categories) this.setCategories(updatedData);
       if (type === this.STORAGE_KEYS.statuses) this.setStatuses(updatedData);
       if (type === this.STORAGE_KEYS.threatLevels) this.setThreatLevels(updatedData);
+      this.snackBar.open('Color Update Succesfull!', 'Dismiss', { duration: 3000, verticalPosition: 'top' });
     }
   }
 

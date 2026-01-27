@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon'; // Added for nav buttons
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { delay, Observable } from 'rxjs';
 
 import { categoriesInterface, conditionInterface, ConfigType, threatInterface } from '../../interfaces/forms.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { ColorConfigTable } from '../color-config-table/color-config-table';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'color-config',
@@ -17,13 +19,13 @@ import { ColorConfigTable } from '../color-config-table/color-config-table';
     MatTableModule,
     MatButtonModule,
     MatIconModule,
+    MatTooltipModule,
     ColorConfigTable
   ],
   template: `
     <div class="dashboard-container">
       <div class="header-actions">
-        <button mat-flat-button color="warn" (click)="dataService.callAPIforData()">Reset to Default</button>
-        <span class="reset-note">*queries data online</span>
+        <button mat-flat-button color="warn" matTooltip="Queries data online" matTooltipPosition="right"  (click)="resetToDeafult()">Reset to Default</button>
       </div>
 
       <div class="carousel-wrapper">
@@ -126,6 +128,7 @@ export class ColorConfig implements OnInit, AfterViewInit {
   constructor(
     private cd: ChangeDetectorRef,
     public dataService: DropdownDataService,
+    private snackBar:MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -140,5 +143,10 @@ export class ColorConfig implements OnInit, AfterViewInit {
 
   onColorUpdate(type: ConfigType, row: any): void {
     this.dataService.updateColor(type, row);
+  }
+
+  public resetToDeafult(){
+    this.dataService.callAPIforData()
+    this.snackBar.open('Data reset to default!', 'Dismiss', { duration: 3000, verticalPosition: 'top' });
   }
 }

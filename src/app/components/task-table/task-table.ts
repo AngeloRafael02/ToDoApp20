@@ -65,18 +65,18 @@ import { A11yModule } from '@angular/cdk/a11y';
               @if (col == 'Options') {
                 <th mat-header-cell *matHeaderCellDef> {{ col }} </th>
                 <td mat-cell *matCellDef="let element">
-                  <div>
-                    @if (element['SID'] !== 3) {
+                  <div (click)="$event.stopPropagation()">
+                    @if (isActiveTask(element)) {
                       <button mat-flat-button color="primary" (click)="finishTask(element['ID'])" [aria-label]="'Mark task ' + element.Title + ' as finished'">
                         <mat-icon aria-hidden="false" aria-label="Finish Task" fontIcon="done"></mat-icon>
                         <span class="button-text">Finish</span>
                       </button>
                     }
-                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])" [aria-label]="'Update task ' + element.Title">
+                    <button mat-flat-button color="primary" (click)="openTaskForm('edit', element['ID'])" [aria-label]="'Update task: ' + element.Title">
                       <mat-icon aria-hidden="false" aria-label="Edit Task" fontIcon="edit"></mat-icon>
                       <span class="button-text">Update</span>
                     </button>
-                    <button mat-flat-button color="success" (click)="requestDelete(element['ID'])" [aria-label]="'Delete task ' + element.Title">
+                    <button mat-flat-button color="success" (click)="requestDelete(element['ID'])" [aria-label]="'Delete task:  ' + element.Title">
                       <mat-icon aria-hidden="false" aria-label="Delete Task" fontIcon="delete"></mat-icon>
                       <span class="button-text">Delete</span>
                     </button>
@@ -169,50 +169,50 @@ import { A11yModule } from '@angular/cdk/a11y';
     @use '../../styles/table-colors.scss' as tbl;
 
     table  {
-        margin-top:1rem;
-        border: 2px solid black;
-        caption {
-          caption-side: top;
-          color:pallete.$primaryTextColor;
-          padding-top: -1rem;
-          padding-bottom: -1rem;
-          div {
-            display: flex;
-            gap: 1rem;
+      margin-top:1rem;
+      border: 2px solid black;
+      caption {
+        caption-side: top;
+        color:pallete.$primaryTextColor;
+        padding-top: -1rem;
+        padding-bottom: -1rem;
+        div {
+          display: flex;
+          gap: 1rem;
+        }
+      }
+      tr {
+        .mat-footer-row {
+          font-weight: bold;
+          border-top: 1px solid black;
+        }
+      }
+      th,td {
+        text-align: center;
+        border-left: 0.5px solid black;
+        border-right: 0.5px solid black;
+      }
+      th {
+        border-bottom: 2px solid black;
+        background-color: tbl.$headerColor;
+      }
+      td {
+        border-top: 0.5px solid black;
+        .mat-footer-cell {
+          padding: 0 16px;
+        }
+        .footer-wrapper {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          mat-paginator {
+            background: transparent;
+            border: none;
           }
         }
-        tr {
-          .mat-footer-row {
-            font-weight: bold;
-            border-top: 1px solid black;
-          }
-        }
-        th,td {
-          text-align: center;
-          border-left: 0.5px solid black;
-          border-right: 0.5px solid black;
-        }
-        th {
-          border-bottom: 2px solid black;
-          background-color: tbl.$headerColor;
-        }
-        td {
-          border-top: 0.5px solid black;
-          .mat-footer-cell {
-            padding: 0 16px;
-          }
-          .footer-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            mat-paginator {
-              background: transparent;
-              border: none;
-            }
-          }
-          div {
-            button{
+        div {
+          button{
             margin-left:5px;
             padding-left:4%;
             padding-right:4%;
@@ -263,6 +263,15 @@ import { A11yModule } from '@angular/cdk/a11y';
       table td div button {
         min-width: 40px;
         margin-left: 2px;
+
+        mat-icon {
+          margin: 0 !important;
+          width: 24px;  /* Standard icon size */
+          height: 24px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
       }
 
       th, td {
@@ -491,5 +500,9 @@ export class TaskTable implements  AfterViewInit {
         this.router.navigate(['/Error'], { skipLocationChange: true });
       }
     });
+  }
+
+  public isActiveTask(element: taskViewInterface): boolean {
+    return element["SID"] !== 3 && element["SID"] !== 4;
   }
 }
