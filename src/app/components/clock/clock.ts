@@ -5,7 +5,7 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal } from '@angu
   selector: 'app-clock',
   imports: [DatePipe],
   template: `
-<div class="digital-clock">
+    <div class="digital-clock">
       <div class="date-row">{{ currentTime() | date:'EEEE, MMM d, y' }}</div>
       <div class="time-row">{{ currentTime() | date:'HH:mm:ss z' }}</div>
     </div>
