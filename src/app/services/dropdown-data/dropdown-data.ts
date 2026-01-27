@@ -1,9 +1,11 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { BehaviorSubject, forkJoin, Observable } from 'rxjs';
-import { categoriesInterface,conditionInterface,ConfigType,threatInterface } from '../../interfaces/forms.interface';
 import { isPlatformBrowser } from '@angular/common';
-import { BackendService } from '../backend/backend';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { BackendService } from '../backend/backend';
+import { snackbarConfig } from '../../config/snackbar.config';
+import { categoriesInterface,conditionInterface,ConfigType,threatInterface } from '../../interfaces/forms.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -58,7 +60,7 @@ export class DropdownDataService {
       },
       error: (err) => {
         const message:string = 'Failed to load dropdowns';
-        this.snackBar.open(message, 'Dismiss', { duration: 3000, verticalPosition: 'top' });
+        this.snackBar.open(message, 'Dismiss', snackbarConfig);
         console.error(message, err)
       }
     });
@@ -100,7 +102,7 @@ export class DropdownDataService {
       if (type === this.STORAGE_KEYS.categories) this.setCategories(updatedData);
       if (type === this.STORAGE_KEYS.statuses) this.setStatuses(updatedData);
       if (type === this.STORAGE_KEYS.threatLevels) this.setThreatLevels(updatedData);
-      this.snackBar.open('Color Update Succesfull!', 'Dismiss', { duration: 3000, verticalPosition: 'top' });
+      this.snackBar.open('Color Update Succesfull!', 'Dismiss', snackbarConfig);
     }
   }
 

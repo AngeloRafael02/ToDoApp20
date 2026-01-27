@@ -16,6 +16,7 @@ import { categoriesInterface, conditionInterface, threatInterface } from '../../
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { taskInterface, taskViewInterface } from '../../interfaces/task.interface';
 import { StyleService } from './../../services/utils/style/style';
+import { snackbarConfig } from '../../config/snackbar.config';
 
 @Component({
   selector: 'task-form',
@@ -240,16 +241,15 @@ export class TaskForm implements OnInit {
   }
 
   public onSubmit(): void {
-    const snackBarConfig:MatSnackBarConfig<any> = { duration: 3000, verticalPosition: 'top' }
     if (this.taskForm.valid) {
         this.announcer.announce('Task submitted successfully', 'polite');
-        this.snackBar.open('Task submitted successfully!', 'Dismiss', snackBarConfig);
+        this.snackBar.open('Task submitted successfully!', 'Dismiss', snackbarConfig);
         this.taskSubmitted.emit(this.taskForm.getRawValue());
         this.resetForm();
     } else {
         this.taskForm.markAllAsTouched();
         this.announcer.announce('Form contains errors. Please check required fields.', 'assertive');
-        this.snackBar.open('Please correct the errors in the form.', 'Dismiss', snackBarConfig );
+        this.snackBar.open('Please correct the errors in the form.', 'Dismiss', snackbarConfig );
     }
   }
 

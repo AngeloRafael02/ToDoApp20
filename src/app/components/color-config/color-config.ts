@@ -10,6 +10,7 @@ import { categoriesInterface, conditionInterface, ConfigType, threatInterface } 
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { ColorConfigTable } from '../color-config-table/color-config-table';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { snackbarConfig } from '../../config/snackbar.config';
 
 @Component({
   selector: 'color-config',
@@ -147,6 +148,6 @@ export class ColorConfig implements OnInit, AfterViewInit {
 
   public resetToDeafult(){
     this.dataService.callAPIforData()
-    this.snackBar.open('Data reset to default!', 'Dismiss', { duration: 3000, verticalPosition: 'top' });
+    this.snackBar.open('Data reset to default!', 'Dismiss', snackbarConfig);
   }
 }
