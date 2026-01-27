@@ -4,6 +4,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTabsModule } from '@angular/material/tabs';
+import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { forkJoin } from 'rxjs';
 
 import { PieChart } from '../pie-chart/pie-chart';
@@ -16,6 +17,7 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
   imports: [
     CommonModule,
     MatExpansionModule,
+    DragDropModule,
     MatButtonModule,
     MatIconModule,
     MatTabsModule,
@@ -33,25 +35,34 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
         </mat-expansion-panel-header>
 
         <div class="carousel-container">
-          <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start" class="custom-tab-group">
-            <mat-tab label="Charts">
-              <button mat-icon-button class="nav-btn left" (click)="scroll('left')">
-                <mat-icon>chevron_left</mat-icon>
-              </button>
+          <mat-tab-group cdkDropList cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)" mat-stretch-tabs="false" mat-align-tabs="start" class="custom-tab-group">
+            @for (tab of tabs; track tab) {
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span cdkDrag cdkDragPreviewClass="example-drag-tabs-preview" cdkDragRootElement=".mat-mdc-tab">
+                    {{tab}}
+                  </span>
+                </ng-template>
 
-              <div class="stats-div" #scrollContainer>
-                <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories"></pie-chart></div>
-                <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status"></pie-chart></div>
-                <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels"></pie-chart></div>
-              </div>
+                @if (tab === 'Charts') {
+                  <button mat-icon-button class="nav-btn left" (click)="scroll('left')">
+                    <mat-icon>chevron_left</mat-icon>
+                  </button>
 
-              <button mat-icon-button class="nav-btn right" (click)="scroll('right')">
-                <mat-icon>chevron_right</mat-icon>
-              </button>
-            </mat-tab>
-            <mat-tab label="Config">
-              <color-config></color-config>
-            </mat-tab>
+                  <div class="stats-div" #scrollContainer>
+                    <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories"></pie-chart></div>
+                    <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status"></pie-chart></div>
+                    <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels"></pie-chart></div>
+                  </div>
+
+                  <button mat-icon-button class="nav-btn right" (click)="scroll('right')">
+                    <mat-icon>chevron_right</mat-icon>
+                  </button>
+                } @else if (tab === 'Config') {
+                  <color-config></color-config>
+                }
+              </mat-tab>
+            }
           </mat-tab-group>
         </div>
       </mat-expansion-panel>
@@ -62,89 +73,98 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
 
     .stats-wrapper {
       border-radius: 25px;
-      box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
-      -webkit-box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
-      -moz-box-shadow: 0px 0px 49px 6px rgba(0,0,0,0.75);
-      mat-expansion-panel, mat-expansion-panel-header {
-        background-color: pallete.$color1;
+      box-shadow: 0px 0px 49px 6px rgba(0, 0, 0, 0.75);
 
+      mat-expansion-panel,
+      mat-expansion-panel-header {
+        background-color: pallete.$color1;
         p {
           color: pallete.$primaryTextColor;
         }
+      }
 
-        ::ng-deep .mat-mdc-tab-body-content {
+      ::ng-deep {
+        .mat-mdc-tab-body-content {
           max-height: 350px;
           overflow-y: auto;
         }
 
-        .carousel-container {
-          position: relative;
-          display: block;
-          width: 100%;
-
-          .custom-tab-group {
-            ::ng-deep {
-              .mdc-tab:hover .mdc-tab__ripple {
-                background-color: pallete.$color3;
-              }
-              .mdc-tab--active {
-                background-color: pallete.$color3;
-                border-radius: 4px 4px 0 0;
-                .mdc-tab__text-label {
-                  color: pallete.$primaryTextColor;
-                }
-              }
-              .mdc-tab__text-label {
-                color: pallete.$primaryTextColor;
-              }
-              .mdc-tab--active .mdc-tab__text-label {
-                color: pallete.$primaryTextColor;
-              }
-              .mat-mdc-tab-indicator .mdc-tab-indicator__content--underline {
-                border-color: pallete.$primaryTextColor;
-              }
-            }
+        .custom-tab-group {
+          .mdc-tab:hover .mdc-tab__ripple {
+            background-color: pallete.$color3;
           }
 
-          .stats-div {
-            width: 95%;
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            gap: 20px;
-            padding: 10px;
-
-            .chart-item {
-              scroll-snap-align: center;
-              width: 100%;
-              display: flex;
-              justify-content: center;
-            }
-
-            &::-webkit-scrollbar { display: none; }
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+          .mdc-tab--active {
+            background-color: pallete.$color3;
+            border-radius: 4px 4px 0 0;
           }
 
-          .nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 20;
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            border-radius: 50%;
+          .mdc-tab__text-label,
+          .mdc-tab--active .mdc-tab__text-label {
+            color: pallete.$primaryTextColor;
+          }
 
-            &.left { left: 5px; }
-            &.right { right: 5px; }
-
-            &:hover {
-              background: rgba(0, 0, 0, 0.5);
-            }
+          .mat-mdc-tab-indicator .mdc-tab-indicator__content--underline {
+            border-color: pallete.$primaryTextColor;
           }
         }
       }
+    }
+
+    .carousel-container {
+      position: relative;
+      display: block;
+      width: 100%;
+
+      .nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 20;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border-radius: 50%;
+
+        &.left { left: 5px; }
+        &.right { right: 5px; }
+        &:hover {
+          background: rgba(0, 0, 0, 0.5);
+        }
+
+        @media (min-width: 1024px) {
+          display: none;
+        }
+      }
+    }
+
+    .stats-div {
+      width: 100%;
+      display: flex;
+      flex-wrap: nowrap;
+      overflow: hidden;
+      gap: 10px;
+      padding: 10px 0;
+      justify-content: space-around;
+
+      .chart-item {
+        scroll-snap-align: center;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+
+        @media (min-width: 1024px) {
+          width: 30%;
+        }
+      }
+    }
+
+    .example-drag-tabs-preview.cdk-drag-animating {
+      transition: all 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+
+    .mat-mdc-tab.example-drag-tabs-preview {
+      outline: dashed 1px #ccc;
+      outline-offset: 4px;
     }
 
     @media (min-width: 1024px) {
@@ -167,6 +187,7 @@ export class Stats implements OnInit {
   public catData:chartDataInterface[] = [];
   public statsData:chartDataInterface[] = [];
   public threatsData:chartDataInterface[] = [];
+  public tabs = ['Charts', 'Config'];
 
   public readonly panelOpenState = signal(false);
 
@@ -198,6 +219,10 @@ export class Stats implements OnInit {
       left: direction === 'left' ? -distance : distance,
       behavior: 'smooth'
     });
+  }
+
+  public drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.tabs, event.previousIndex, event.currentIndex);
   }
 
   @HostListener('window:keydown', ['$event'])
