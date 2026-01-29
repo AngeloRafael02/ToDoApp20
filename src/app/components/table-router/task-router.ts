@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Router, RouterOutlet } from "@angular/router";
-import { Observable } from "rxjs";
+import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
+import { filter, Observable } from "rxjs";
 import { MatTabChangeEvent, MatTabsModule } from "@angular/material/tabs";
 import { CommonModule } from "@angular/common";
 
@@ -79,7 +79,11 @@ export class TaskRouter implements OnInit {
     this.statuses$.subscribe(tabs => {
       if (tabs) {
         this.currentTabs = tabs;
-        this.syncTabHighlight();
+        this.router.events.pipe(
+          filter(event => event instanceof NavigationEnd)
+        ).subscribe(() => {
+          this.syncTabHighlight();
+        });
       }
     });
   }
@@ -94,12 +98,14 @@ export class TaskRouter implements OnInit {
     }
   }
 
-  private syncTabHighlight() {
-    const currentPath = this.router.url.split('/').pop();
-    if (currentPath === 'all') {
+private syncTabHighlight() {
+    const url = this.router.url.toLowerCase();
+    if (url.includes('/All')) {
       this.activeTabIndex = 0;
     } else {
-      const index = this.currentTabs.findIndex(t => t.stat.toLowerCase() === currentPath);
+      const index = this.currentTabs.findIndex(t =>
+        url.includes(t.stat.toLowerCase())
+      );
       this.activeTabIndex = index !== -1 ? index + 1 : 0;
     }
   }
