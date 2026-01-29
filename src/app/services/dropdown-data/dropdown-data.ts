@@ -61,7 +61,7 @@ export class DropdownDataService {
       error: (err) => {
         const message:string = 'Failed to load dropdowns';
         this.snackBar.open(message, 'Dismiss', snackbarConfig);
-        console.error(message, err)
+        console.error(message, err);
       }
     });
   }
