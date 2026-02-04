@@ -5,9 +5,9 @@
 - Add Animations for switching between charts [read this](https://angular.dev/guide/animations)
 
 
+
 ### stats Component
 - add keybind to navigate though all the tabs
-
 - data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
 
 ### task-table Component

@@ -38,6 +38,8 @@ import { AboutComponent } from './components/about/about';
     </modal>
   `,
   styles: `
+    @use './styles/pallete.scss' as pallete;
+
     .container {
       display: flex;
       flex-direction: column;
@@ -52,6 +54,10 @@ import { AboutComponent } from './components/about/about';
         justify-content: left;
         align-items: center;
         gap: 0.5rem;
+
+        h1 {
+          color:pallete.$primaryTextColor;
+        }
 
         button {
           background-color: transparent;

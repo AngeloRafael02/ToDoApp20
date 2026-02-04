@@ -57,6 +57,9 @@ interface TaskPart {
       border:1px solid black;
       padding-left:1rem;
       padding-right:1rem;
+      ul {
+        padding-left:10px;
+      }
     }
   }
   `

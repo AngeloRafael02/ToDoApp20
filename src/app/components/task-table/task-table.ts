@@ -143,7 +143,7 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
             [id]="'detail-' + row.ID"
             role="region"
             [attr.aria-hidden]="expandedTask !== row"></tr>
-          <tr mat-footer-row *matFooterRowDef="['footer']; sticky: true"></tr>
+          <tr mat-footer-row *matFooterRowDef="['footer']; sticky: false"></tr>
 
           <tr class="mat-row" *matNoDataRow>
             <td class="mat-cell" [attr.colSpan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
