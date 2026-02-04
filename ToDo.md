@@ -4,16 +4,14 @@
 ### Main App Component
 - Add Animations for switching between charts [read this](https://angular.dev/guide/animations)
 
-### pieChart Component
-- Clicking on a Pie Slice should Filter the current table
 
 ### stats Component
 - add keybind to navigate though all the tabs
-- make tabs adjustable in position
+
 - data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
 
 ### task-table Component
-- Fix Table Update after Finish/Update/Delete, to autimatically react
+- Fix Table Update after Finish/Update/Delete, to automatically react
 
 ### About Component
 - create Component to teach basic function of the game
@@ -45,4 +43,6 @@
 - Create Color Config Service to handle local Colors - DONE
 - In a tab with stats Component - DONE
 - Colors of Cells can be changed via a Color Mocal input, Changes are saved on the browser via localStorage (explicitly say it). current colors are default - DONE
-- create allTasks serve to store all tassk, filter/sort on client side - DONE
+- create allTasks serve to store all task, filter/sort on client side - DONE
+- Clicking on a Pie Slice should Filter the current table - DONE
+- make tabs adjustable in position - DONE

@@ -1,9 +1,9 @@
-import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
+import { Component, Input, ViewChild, ElementRef, AfterViewInit, Inject, PLATFORM_ID, OnChanges, SimpleChanges, OnDestroy, EventEmitter, Output } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Chart, registerables } from 'chart.js';
 import { Subscription, combineLatest } from 'rxjs';
 
-import { chartDataInterface } from '../../interfaces/misc.interface';
+import { chartDataInterface, PieSliceInterface } from '../../interfaces/misc.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 
 @Component({
@@ -19,6 +19,7 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
   @ViewChild('pieCanvas') private pieCanvas!: ElementRef;
   @Input() data: chartDataInterface[] = [];
   @Input() chartTitle: string = '';
+  @Output() sliceClick = new EventEmitter<PieSliceInterface>();
 
   public chart?: Chart<'pie', number[], string>;
   private subscription: Subscription = new Subscription();
@@ -87,6 +88,18 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
       options: {
         responsive: true,
         maintainAspectRatio: true,
+        onClick: (event, elements) => {
+          if (elements.length > 0) {
+            const index = elements[0].index;
+            const sliceName = labels[index];
+            const sliceValue = values[index];
+            this.sliceClick.emit({
+              name: sliceName,
+              value: sliceValue,
+              chartTitle: this.chartTitle
+            });
+          }
+        },
         plugins: {
           title: {
             display: !!this.chartTitle,

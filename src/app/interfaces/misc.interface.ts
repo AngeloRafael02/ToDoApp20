@@ -3,3 +3,9 @@ export interface chartDataInterface{
     value:number
     Color?:string
 }
+
+export interface PieSliceInterface {
+  name: string;
+  value: number;
+  chartTitle: string;
+}

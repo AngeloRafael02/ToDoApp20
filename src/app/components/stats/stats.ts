@@ -10,7 +10,9 @@ import { forkJoin } from 'rxjs';
 import { PieChart } from '../pie-chart/pie-chart';
 import { ColorConfig } from '../color-config/color-config';
 import { BackendService } from '../../services/backend/backend';
-import { chartDataInterface } from '../../interfaces/misc.interface';
+import { chartDataInterface, PieSliceInterface } from '../../interfaces/misc.interface';
+import { Router } from '@angular/router';
+import { TableFilterService } from '../../services/table-filter/table-filter';
 
 @Component({
   selector: 'stats',
@@ -50,9 +52,9 @@ import { chartDataInterface } from '../../interfaces/misc.interface';
                   </button>
 
                   <div class="stats-div" #scrollContainer>
-                    <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories"></pie-chart></div>
-                    <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status"></pie-chart></div>
-                    <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels"></pie-chart></div>
+                    <div class="chart-item"><pie-chart [data]="catData" chartTitle="Categories" (sliceClick)="handleSliceClick($event)"></pie-chart></div>
+                    <div class="chart-item"><pie-chart [data]="statsData" chartTitle="Status" (sliceClick)="handleSliceClick($event)"></pie-chart></div>
+                    <div class="chart-item"><pie-chart [data]="threatsData" chartTitle="Threat Levels" (sliceClick)="handleSliceClick($event)"></pie-chart></div>
                   </div>
 
                   <button mat-icon-button class="nav-btn right" (click)="scroll('right')">
@@ -193,7 +195,9 @@ export class Stats implements OnInit {
 
   constructor(
     private cdr: ChangeDetectorRef,
-    private backendService:BackendService
+    private router: Router,
+    private backendService:BackendService,
+    private filterService:TableFilterService
   ){}
 
 
@@ -231,5 +235,18 @@ export class Stats implements OnInit {
       event.preventDefault();
       this.panelOpenState.update(value => !value);
     }
+  }
+
+  public handleSliceClick(event: PieSliceInterface) {
+    switch (event.chartTitle){
+      case 'Status':
+        this.router.navigateByUrl(`/Status/${event.name}`)
+        break;
+      case 'Categories':
+      case 'Threat Levels':
+        this.filterService.setFilter(event.name);
+        break
+    }
+    console.log(`Clicked ${event.name} in ${event.chartTitle}: ${event.value}`);
   }
 }

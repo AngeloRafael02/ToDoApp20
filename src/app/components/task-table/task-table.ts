@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { Component, ChangeDetectionStrategy, ChangeDetectorRef, } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -12,6 +12,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { ActivatedRoute, Router } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { A11yModule } from '@angular/cdk/a11y';
+import { Subscription, take } from 'rxjs';
 
 import { BackendService} from '../../services/backend/backend';
 import { StringService } from '../../services/utils/string/string';
@@ -22,9 +24,8 @@ import { TaskForm } from '../task-form/task-form';
 import { Modal } from '../modal/modal';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { categoriesInterface, conditionInterface, threatInterface } from '../../interfaces/forms.interface';
-import { take } from 'rxjs';
 import { TasksService } from '../../services/tasks/tasks-service';
-import { A11yModule } from '@angular/cdk/a11y';
+import { TableFilterService } from '../../services/table-filter/table-filter';
 
 @Component({
   selector: 'task-table',
@@ -53,6 +54,11 @@ import { A11yModule } from '@angular/cdk/a11y';
             <mat-form-field style="margin-bottom: -1.25em;">
               <mat-label>Filter</mat-label>
               <input matInput (keyup)="applyFilter($event)" placeholder="e.g. Do Stuff" #input>
+              @if (input.value) {
+                <button matSuffix mat-icon-button aria-label="Clear" (click)="clearFilter(input)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              }
             </mat-form-field>
             <button mat-flat-button (click)="openTaskForm('create')">
               <mat-icon aria-hidden="false" aria-label="Add Task" fontIcon="add box"></mat-icon>
@@ -281,10 +287,13 @@ import { A11yModule } from '@angular/cdk/a11y';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements  AfterViewInit {
+export class TaskTable implements  AfterViewInit, OnDestroy {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  @ViewChild('input') filterInput!: ElementRef<HTMLInputElement>;
+  private filterSubscription?: Subscription;
 
   public title:string = 'Unfinished';
   private status:number = 0;
@@ -328,6 +337,7 @@ export class TaskTable implements  AfterViewInit {
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
+    private filterService: TableFilterService
   ) {
     this.title = this.route.snapshot.paramMap.get('status') || 'Unfinished';
     this.route.params.subscribe(params => {
@@ -337,11 +347,18 @@ export class TaskTable implements  AfterViewInit {
     this.setupHeaders()
     this.dropdownService.categories$.subscribe(data => this.categories = data || []);
     this.dropdownService.threatLevels$.subscribe(data => this.threatLevels = data || []);
+    this.filterSubscription = this.filterService.filter$.subscribe(filterValue => {
+      this.applyExternalFilter(filterValue);
+    });
   }
 
   ngAfterViewInit(): void {
     this.tasksSource.sort = this.sort;
     this.tasksSource.paginator = this.paginator;
+  }
+
+  ngOnDestroy():void {
+    this.filterSubscription?.unsubscribe();
   }
 
   public openTaskForm(mode:'create'|'edit' = 'create', id:number = 0) {
@@ -379,6 +396,16 @@ export class TaskTable implements  AfterViewInit {
       }
     } else {
       this.isModalOpen = false;
+    }
+  }
+
+  private applyExternalFilter(value: string) {
+    if (this.tasksSource) {
+      this.tasksSource.filter = value.trim().toLowerCase();
+      if (this.filterInput) {
+        this.filterInput.nativeElement.value = value;
+      }
+      this.cdr.markForCheck();
     }
   }
 
@@ -433,6 +460,12 @@ export class TaskTable implements  AfterViewInit {
   public applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.tasksSource.filter = filterValue.trim().toLowerCase();
+    this.cdr.markForCheck();
+  }
+
+  public clearFilter(input: HTMLInputElement) {
+    input.value = '';
+    this.tasksSource.filter = '';
     this.cdr.markForCheck();
   }
 
