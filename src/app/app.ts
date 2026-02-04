@@ -33,7 +33,7 @@ import { AboutComponent } from './components/about/about';
       <stats></stats>
       <task-router></task-router>
     </div>
-    <modal [visible]="isAboutComponentVisible" [title]="'About'" (close)="isAboutComponentVisible=false">
+    <modal [visible]="isAboutComponentVisible" [title]="'About'" (close)="isAboutComponentVisible=false" [width]="'600px'">
       <about></about>
     </modal>
   `,
