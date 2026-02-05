@@ -92,8 +92,7 @@ export class TaskRouter implements OnInit {
     if (event.index === 0) {
       this.router.navigateByUrl(`/Status/All`);
     } else {
-      const selectedStat = this.currentTabs[event.index - 1].stat;
-      console.log(selectedStat)
+      const selectedStat = encodeURIComponent(this.currentTabs[event.index - 1].stat);
       this.router.navigateByUrl(`/Status/${selectedStat}`);
     }
   }
@@ -104,7 +103,7 @@ private syncTabHighlight() {
       this.activeTabIndex = 0;
     } else {
       const index = this.currentTabs.findIndex(t =>
-        url.includes(t.stat.toLowerCase())
+        url.includes(encodeURIComponent(t.stat).toLowerCase())
       );
       this.activeTabIndex = index !== -1 ? index + 1 : 0;
     }

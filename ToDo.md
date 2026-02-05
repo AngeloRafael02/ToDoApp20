@@ -4,17 +4,12 @@
 ### Main App Component
 - Add Animations for switching between charts [read this](https://angular.dev/guide/animations)
 
-
-
 ### stats Component
 - add keybind to navigate though all the tabs
 - data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
 
 ### task-table Component
 - Fix Table Update after Finish/Update/Delete, to automatically react
-
-### About Component
-- create Component to teach basic function of the game
 
 ### Services
 - create account/user service/store to store all user credentials
@@ -46,3 +41,4 @@
 - create allTasks serve to store all task, filter/sort on client side - DONE
 - Clicking on a Pie Slice should Filter the current table - DONE
 - make tabs adjustable in position - DONE
+- create Component to teach basic function of the game - DONE

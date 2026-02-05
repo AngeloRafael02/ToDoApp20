@@ -441,7 +441,6 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
         this.tasksSource.sort = this.sort;
         this.tasksSource.paginator = this.paginator;
         this.cdr.markForCheck();
-        console.log('Table refreshed successfully');
       },
         error: (err) => {
           console.error('Error refreshing table:', err);
@@ -518,7 +517,6 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
     this.dropdownService.statuses$.pipe(take(1)).subscribe(statuses => {
       if (!statuses) return;
       const currentTitle = decodeURIComponent(this.title).toLowerCase();
-
       if (currentTitle === 'all') {
         this.status = 0;
         this.refreshTable();
