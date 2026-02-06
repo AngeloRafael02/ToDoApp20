@@ -37,8 +37,27 @@ body {
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { 
-  margin: 0; 
-  font-family: Roboto, "Helvetica Neue", sans-serif; 
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
   background-color: pallete.$color1;
+}
+
+
+::view-transition-old(table-content) {
+  animation: 500ms ease-in-out both slide-out;
+}
+
+::view-transition-new(table-content) {
+  animation: 500ms ease-in-out both slide-in;
+}
+
+@keyframes slide-in {
+  from { transform: translateX(50px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slide-out {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-50px); opacity: 0; }
 }

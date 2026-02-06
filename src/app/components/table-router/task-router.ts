@@ -34,7 +34,9 @@ import { conditionInterface } from "../../interfaces/forms.interface";
       }
     </mat-tab-group>
 
-    <router-outlet></router-outlet>
+    <div class="content-transition-wrapper">
+      <router-outlet></router-outlet>
+    </div>
   </div>
   `,
   styles:`
@@ -61,6 +63,10 @@ import { conditionInterface } from "../../interfaces/forms.interface";
           border-color: pallete.$primaryTextColor;
         }
       }
+    }
+
+    .content-transition-wrapper {
+      view-transition-name: table-content;
     }
   `
 })
