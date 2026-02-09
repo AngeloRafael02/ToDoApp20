@@ -1,9 +1,6 @@
 # To Do
 - implement accesibility features in Components [read this](https://material.angular.dev/cdk/a11y/overview)
 
-### Main App Component
-- Add Animations for switching between charts [read this](https://angular.dev/guide/animations)
-
 ### stats Component
 - add keybind to navigate though all the tabs
 - data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
@@ -42,3 +39,4 @@
 - Clicking on a Pie Slice should Filter the current table - DONE
 - make tabs adjustable in position - DONE
 - create Component to teach basic function of the game - DONE
+- Add Animations for switching between charts [read this](https://angular.dev/guide/animations) - DONE
