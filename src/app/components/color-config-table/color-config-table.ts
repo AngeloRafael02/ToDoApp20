@@ -44,14 +44,12 @@ import { FormsModule } from '@angular/forms'; // Added for ngModel
     </div>
   `,
   styles: [`
-    @use '../../styles/pallete.scss' as pallete;
-
     .table-card {
       flex: 1;
       width: 300px;
       h3 {
         margin-bottom: 12px;
-        color: pallete.$primaryTextColor;
+        color: var(--app-primary-text);
         font-size: 1.1rem;
       }
       table {

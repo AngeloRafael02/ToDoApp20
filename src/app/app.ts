@@ -10,6 +10,8 @@ import { TasksService } from './services/tasks/tasks-service';
 import { MatButtonModule } from '@angular/material/button';
 import { Modal } from './components/modal/modal';
 import { AboutComponent } from './components/about/about';
+import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
+
 @Component({
   selector: 'app-root',
   imports: [
@@ -19,17 +21,22 @@ import { AboutComponent } from './components/about/about';
     TaskRouter,
     Stats,
     Modal,
-    AboutComponent
+    AboutComponent,
+    ThemeToggleComponent
   ],
   template: `
     <div class="container">
       <div class="header">
-        <h1>{{ title() }}</h1>
-        <button matMiniFab>
-          <mat-icon aria-hidden="false" aria-label="Web App Help" fontIcon="help" (click)="isAboutComponentVisible = true"></mat-icon>
-        </button>
+        <div>
+          <h1>{{ title() }}</h1>
+          <button matMiniFab>
+            <mat-icon aria-hidden="false" aria-label="Web App Help" fontIcon="help" (click)="isAboutComponentVisible = true"></mat-icon>
+          </button>
+        </div>
+        <app-clock></app-clock>
+        <theme-toggle></theme-toggle>
       </div>
-      <app-clock></app-clock>
+
       <stats></stats>
       <task-router></task-router>
     </div>
@@ -38,8 +45,6 @@ import { AboutComponent } from './components/about/about';
     </modal>
   `,
   styles: `
-    @use './styles/pallete.scss' as pallete;
-
     .container {
       display: flex;
       flex-direction: column;
@@ -51,18 +56,25 @@ import { AboutComponent } from './components/about/about';
       .header {
         display:flex;
         flex-direction: row;
-        justify-content: left;
+        justify-content: space-between;
         align-items: center;
         gap: 0.5rem;
 
         h1 {
-          color:pallete.$primaryTextColor;
+        }
+
+        div {
+          display:flex;
+          flex-direction: row;
+          justify-content: left;
+          align-items: center;
+          gap: 0.5rem;
         }
 
         button {
           background-color: transparent;
           box-shadow: none;
-          color:white;
+          color: var(--app-primary-text);
         }
       }
     }

@@ -71,17 +71,15 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
     </div>
   `,
   styles: `
-    @use '../../styles/pallete.scss' as pallete;
-
     .stats-wrapper {
       border-radius: 25px;
       box-shadow: 0px 0px 49px 6px rgba(0, 0, 0, 0.75);
 
       mat-expansion-panel,
       mat-expansion-panel-header {
-        background-color: pallete.$color1;
+        background-color: var(--app-color1);
         p {
-          color: pallete.$primaryTextColor;
+          color: var(--app-primary-text);
         }
       }
 
@@ -93,21 +91,21 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
 
         .custom-tab-group {
           .mdc-tab:hover .mdc-tab__ripple {
-            background-color: pallete.$color3;
+            background-color: var(--app-color3);
           }
 
           .mdc-tab--active {
-            background-color: pallete.$color3;
+            background-color: var(--app-color3);
             border-radius: 4px 4px 0 0;
           }
 
           .mdc-tab__text-label,
           .mdc-tab--active .mdc-tab__text-label {
-            color: pallete.$primaryTextColor;
+            color: var(--app-primary-text);
           }
 
           .mat-mdc-tab-indicator .mdc-tab-indicator__content--underline {
-            border-color: pallete.$primaryTextColor;
+            border-color: var(--app-primary-text);
           }
         }
       }

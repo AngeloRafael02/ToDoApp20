@@ -40,27 +40,26 @@ import { conditionInterface } from "../../interfaces/forms.interface";
   </div>
   `,
   styles:`
-    @use '../../styles/pallete.scss' as pallete;
     .custom-tab-group {
       ::ng-deep {
         .mdc-tab:hover .mdc-tab__ripple {
-          background-color: pallete.$color3;
+          background-color: var(--app-color3);
         }
         .mdc-tab--active {
-          background-color: pallete.$color3;
+          background-color: var(--app-color3);
           border-radius: 4px 4px 0 0;
           .mdc-tab__text-label {
-            color: pallete.$primaryTextColor;
+            color: var(--app-primary-text);
           }
         }
         .mdc-tab__text-label {
-          color: pallete.$primaryTextColor;
+          color: var(--app-primary-text);
         }
         .mdc-tab--active .mdc-tab__text-label {
-          color: pallete.$primaryTextColor;
+          color: var(--app-primary-text);
         }
         .mat-mdc-tab-indicator .mdc-tab-indicator__content--underline {
-          border-color: pallete.$primaryTextColor;
+          border-color: var(--app-primary-text);
         }
       }
     }

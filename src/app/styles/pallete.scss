@@ -1,10 +1,28 @@
+/* Palette SCSS variables - used to define theme-aware CSS custom properties in styles.scss.
+ * Use var(--app-color1), var(--app-color2), var(--app-color3), var(--app-color4),
+ * var(--app-primary-text), var(--app-secondary-text) in components for theme switching. */
 
-/* PALLETE */
+/* Current PALLETE (legacy/default) */
 $color1:#404258;
 $color2:#344955;
 $color3:#50727B;
 $color4:#78A083;
 
+/* DARK PALLETE */
+$dark-color1:#404258;
+$dark-color2:#344955;
+$dark-color3:#50727B;
+$dark-color4:#78A083;
+
+/* LIGHT PALLETE */
+$light-color1: #E2E8F0;
+$light-color2: #344955;
+$light-color3: #94A3B8;
+$light-color4: #B1C29E;
+
 /* Text Color */
 $primaryTextColor:whitesmoke;
 $secondaryTextColor:black;
+
+$primaryTextDark:black;
+$secondaryTextDark:whitesmoke;

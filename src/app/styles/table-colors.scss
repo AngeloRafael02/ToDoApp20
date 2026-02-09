@@ -1,7 +1,4 @@
-/* File Contains all Colors for Table cells */
-
-@use './pallete.scss' as pallete;
+/* File Contains all Colors for Table cells - use CSS vars for theme: --app-color4 etc. */
 
 /* Table */
-$borderColor:black;
-$headerColor:pallete.$color4;
+$borderColor: black;

@@ -117,7 +117,7 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
           </ng-container>
 
           <ng-container matColumnDef="footer">
-            <td mat-footer-cell *matFooterCellDef [attr.colspan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
+            <td mat-footer-cell *matFooterCellDef [attr.colspan]="taskColumns.length" class="footer-cell">
               <div class="footer-wrapper">
                 <strong>Total Tasks: {{ tasksSource.data.length }}</strong>
                 <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of tasks"></mat-paginator>
@@ -146,7 +146,7 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
           <tr mat-footer-row *matFooterRowDef="['footer']; sticky: false"></tr>
 
           <tr class="mat-row" *matNoDataRow>
-            <td class="mat-cell" [attr.colSpan]="taskColumns.length" style="color:pallete.$primaryTextColor; !important; display: table-cell !important;">
+            <td class="mat-cell no-data-cell" [attr.colSpan]="taskColumns.length">
               No data found.
             </td>
           </tr>
@@ -171,15 +171,12 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
     </div>
   `,
   styles: `
-    @use '../../styles/pallete.scss' as pallete;
-    @use '../../styles/table-colors.scss' as tbl;
-
     table  {
       margin-top:1rem;
       border: 2px solid black;
       caption {
         caption-side: top;
-        color:pallete.$primaryTextColor;
+        color: var(--app-primary-text);
         padding-top: -1rem;
         padding-bottom: -1rem;
         div {
@@ -200,10 +197,16 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
       }
       th {
         border-bottom: 2px solid black;
-        background-color: tbl.$headerColor;
+        background-color: var(--app-color4);
+      }
+      .footer-cell,
+      .no-data-cell {
+        color: var(--app-primary-text) !important;
+        display: table-cell !important;
       }
       td {
         border-top: 0.5px solid black;
+        color: black !important;
         .mat-footer-cell {
           padding: 0 16px;
         }

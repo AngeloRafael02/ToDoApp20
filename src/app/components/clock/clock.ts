@@ -26,13 +26,11 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal, HostListener
     </div>
   `,
   styles: `
-    @use '../../styles/pallete.scss' as palette;
-
     .digital-clock {
       margin: 1rem;
       font-weight: 500;
       background-color: transparent;
-      color: palette.$primaryTextColor;
+      color: var(--app-primary-text);
       display: flex;
       gap: 10px;
       flex-direction: column;
@@ -42,7 +40,7 @@ import { Component, OnInit, OnDestroy, Inject, PLATFORM_ID, signal, HostListener
 
       &:focus {
         border-radius: 8px;
-        box-shadow: 0 0 0 2px palette.$primaryTextColor;
+        box-shadow: 0 0 0 2px var(--app-primary-text);
       }
 
       .date-row {

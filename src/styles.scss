@@ -1,46 +1,63 @@
-
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 @use './app/styles/pallete.scss' as pallete;
 
+$my-primary: mat.$azure-palette;
+$my-tertiary: mat.$blue-palette;
+
+/* Theme-aware palette as CSS custom properties (light = default) */
+:root {
+  --app-color1: #{pallete.$light-color1};
+  --app-color2: #{pallete.$light-color2};
+  --app-color3: #{pallete.$light-color3};
+  --app-color4: #{pallete.$light-color4};
+  --app-primary-text: #{pallete.$primaryTextDark};
+  --app-secondary-text: #{pallete.$secondaryTextDark};
+}
+
+html.dark-mode {
+  --app-color1: #{pallete.$dark-color1};
+  --app-color2: #{pallete.$dark-color2};
+  --app-color3: #{pallete.$dark-color3};
+  --app-color4: #{pallete.$dark-color4};
+  --app-primary-text: #{pallete.$primaryTextColor};
+  --app-secondary-text: #{pallete.$secondaryTextColor};
+}
+
 html {
   @include mat.theme((
-    color: (
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
+    color: (primary: $my-primary, tertiary: $my-tertiary),
     typography: Roboto,
     density: 0,
   ));
+
+  &.dark-mode {
+    @include mat.theme((
+      color: (primary: $my-primary, tertiary: $my-tertiary, color-scheme: dark),
+    ));
+  }
 }
 
 body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
+  margin: 0;
+  height: 100%;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
-  margin: 0;
+  &.dark-mode {
+    color-scheme: dark;
+  }
 }
-/* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: pallete.$color1;
+  background-color: var(--app-color1);
 }
 
 
@@ -53,11 +70,11 @@ body {
 }
 
 @keyframes slide-in {
-  from { transform: translateX(50px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 @keyframes slide-out {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(-50px); opacity: 0; }
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-50px); opacity: 0; }
 }
