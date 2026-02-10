@@ -5,6 +5,7 @@ import { Subscription, combineLatest } from 'rxjs';
 
 import { chartDataInterface, PieSliceInterface } from '../../interfaces/misc.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
+import { ThemeService } from '../../services/theme/theme';
 
 @Component({
   selector: 'pie-chart',
@@ -27,10 +28,13 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    private dropdownService: DropdownDataService
+    private dropdownService: DropdownDataService,
+    private themeService: ThemeService
   ) {
     Chart.register(...registerables);
     this.initializeColorMap();
+    const themeSub = this.themeService.themeChanged$.subscribe(() => this.applyThemeToChart());
+    this.subscription.add(themeSub);
   }
 
   private initializeColorMap(): void {
@@ -72,9 +76,33 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
     }
   }
 
+  /** Reads the theme's primary text color from CSS (for title/legend). */
+  private getChartTextColor(): string {
+    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') return '#000000';
+    const value = getComputedStyle(document.documentElement).getPropertyValue('--app-primary-text').trim();
+    return value || '#000000';
+  }
+
+  private applyThemeToChart(): void {
+    if (!this.chart) return;
+
+    const color = this.getChartTextColor();
+    const opts = this.chart.options.plugins;
+
+    if (opts?.title) opts.title.color = color;
+    if (opts?.legend?.labels) {
+      opts.legend.labels.color = color;
+    }
+
+    this.chart.data.datasets[0].borderColor = color;
+
+    this.chart.update();
+  }
+
   public createChart(): void {
     const labels = this.data.map(item => item.name);
     const values = this.data.map(item => item.value);
+    const themeColor = this.getChartTextColor();
 
     this.chart = new Chart(this.pieCanvas.nativeElement, {
       type: 'pie',
@@ -82,8 +110,10 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
         labels: labels,
         datasets: [{
           data: values,
-          backgroundColor: this.getPieSliceColors()
-        }]
+          backgroundColor: this.getPieSliceColors(),
+          borderColor: themeColor,
+          borderWidth: 1,
+        }],
       },
       options: {
         responsive: true,
@@ -104,14 +134,19 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
           title: {
             display: !!this.chartTitle,
             text: this.chartTitle,
-            color: '#ffffff',
+            color: this.getChartTextColor(),
             font: { size: 18, weight: 'bold' },
             padding: { top: 10, bottom: 20 }
           },
           legend: {
             display: true,
             position: 'bottom',
-            labels: { color: '#ffffff', font: { size: 14 } }
+            labels:{
+              color: themeColor,
+              usePointStyle: false,
+              padding: 20,
+              font: { size:14 }
+            }
           }
         }
       }
