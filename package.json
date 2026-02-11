@@ -1,6 +1,7 @@
 {
   "name": "to-do-app20",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --verbose",
@@ -8,7 +9,8 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr": "node dist/ToDoApp20/server/server.mjs",
-    "auto:ssr": "npm run build && npm run serve:ssr"
+    "auto:ssr": "npm run build && npm run serve:ssr",
+    "prepare": "husky install"
   },
   "prettier": {
     "printWidth": 100,
@@ -59,6 +61,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "husky": "^8.0.0"
   }
 }
