@@ -12,6 +12,5 @@ describe('DateService', () => {
 
   it('should be created', () => {
     expect(service).toBeTruthy();
-    console.log('test')
   });
 });
