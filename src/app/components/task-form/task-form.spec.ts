@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TaskForm } from './task-form';
 
 describe('TaskForm', () => {
@@ -8,7 +8,10 @@ describe('TaskForm', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskForm]
+      imports: [TaskForm],
+      providers: [
+        provideZonelessChangeDetection()
+      ]
     })
     .compileComponents();
 

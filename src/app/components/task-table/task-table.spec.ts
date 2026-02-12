@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TaskTable } from './task-table';
 
 describe('TaskTable', () => {
@@ -8,7 +8,10 @@ describe('TaskTable', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskTable]
+      imports: [TaskTable],
+      providers: [
+        provideZonelessChangeDetection()
+      ]
     })
     .compileComponents();
 

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { Clock } from './clock';
 import { PLATFORM_ID } from '@angular/core';
 import { DatePipe } from '@angular/common';
@@ -11,6 +12,7 @@ describe('Clock', () => {
     await TestBed.configureTestingModule({
       imports: [Clock, DatePipe],
       providers: [
+        provideZonelessChangeDetection(),
         { provide: PLATFORM_ID, useValue: platform }
       ]
     }).compileComponents();

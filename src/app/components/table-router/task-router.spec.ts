@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { TaskRouter } from './task-router';
 
 describe('TaskRouter', () => {
@@ -8,7 +8,10 @@ describe('TaskRouter', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TaskRouter]
+      imports: [TaskRouter],
+      providers: [
+        provideZonelessChangeDetection()
+      ]
     })
     .compileComponents();
 

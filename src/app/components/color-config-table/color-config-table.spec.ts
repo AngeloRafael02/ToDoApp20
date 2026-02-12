@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideZonelessChangeDetection } from '@angular/core';
 import { ColorConfigTable } from './color-config-table';
 
 describe('ColorConfigTable', () => {
@@ -8,7 +8,10 @@ describe('ColorConfigTable', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ColorConfigTable]
+      imports: [ColorConfigTable],
+      providers: [
+        provideZonelessChangeDetection()
+      ]
     })
     .compileComponents();
 
