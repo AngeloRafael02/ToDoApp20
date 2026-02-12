@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { PieChart } from './pie-chart';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('PieChart', () => {
   let component: PieChart;
@@ -10,7 +12,9 @@ describe('PieChart', () => {
     await TestBed.configureTestingModule({
       imports: [PieChart],
       providers: [
-        provideZonelessChangeDetection()
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
       ]
     })
     .compileComponents();

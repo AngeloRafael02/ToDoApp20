@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Stats } from './stats';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('Stats', () => {
   let component: Stats;
@@ -10,7 +12,10 @@ describe('Stats', () => {
     await TestBed.configureTestingModule({
       imports: [Stats],
       providers: [
-        provideZonelessChangeDetection()
+        provideZonelessChangeDetection(),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        Stats
       ]
     })
     .compileComponents();

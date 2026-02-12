@@ -1,11 +1,16 @@
 import { TestBed } from '@angular/core/testing';
 import { TableFilterService } from './table-filter';
+import { provideZoneChangeDetection } from '@angular/core';
 
 describe('TableFilterService', () => {
   let service: TableFilterService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers:[
+        provideZoneChangeDetection(),
+      ]
+    });
     service = TestBed.inject(TableFilterService);
   });
 

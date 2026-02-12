@@ -1,12 +1,18 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StyleService } from './style';
+import { provideZoneChangeDetection } from '@angular/core';
 
 describe('StyleService', () => {
   let service: StyleService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      providers:[
+        StyleService,
+        provideZoneChangeDetection(),
+      ]
+    });
     service = TestBed.inject(StyleService);
   });
 
