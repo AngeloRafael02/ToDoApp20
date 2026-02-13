@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { StringService } from './string';
-import { provideZoneChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('String', () => {
   let service: StringService;
@@ -10,7 +10,7 @@ describe('String', () => {
     TestBed.configureTestingModule({
       providers:[
         StringService,
-        provideZoneChangeDetection()
+        provideZonelessChangeDetection(),
       ]
     });
     service = TestBed.inject(StringService);

@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DateService } from './date';
-import { provideZoneChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 
 describe('DateService', () => {
   let service: DateService;
@@ -10,7 +10,7 @@ describe('DateService', () => {
     TestBed.configureTestingModule({
       providers:[
         DateService,
-        provideZoneChangeDetection(),
+        provideZonelessChangeDetection(),
       ]
     });
     service = TestBed.inject(DateService);

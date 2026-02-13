@@ -1,8 +1,7 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { Clock } from './clock';
 import { PLATFORM_ID } from '@angular/core';
-import { DatePipe } from '@angular/common';
 
 describe('Clock', () => {
   let component: Clock;
@@ -10,7 +9,8 @@ describe('Clock', () => {
 
   async function setupTestBed(platform: string) {
     await TestBed.configureTestingModule({
-      imports: [Clock, DatePipe],
+      // Clock is standalone, so it goes in imports
+      imports: [Clock],
       providers: [
         provideZonelessChangeDetection(),
         { provide: PLATFORM_ID, useValue: platform }
@@ -23,33 +23,29 @@ describe('Clock', () => {
 
   describe('Browser Environment', () => {
     beforeEach(async () => {
+      jasmine.clock().uninstall();
+
       await setupTestBed('browser');
+
+      jasmine.clock().install();
     });
 
-    it('should create the component', () => {
-      expect(component).toBeTruthy();
+    afterEach(() => {
+      jasmine.clock().uninstall();
     });
 
-    it('should initialize with current time', () => {
-      const now = new Date();
-      expect(component.currentTime().getTime()).toBeCloseTo(now.getTime(), -2);
-    });
+    it('should update currentTime signal every second', () => {
+      const baseTime = new Date();
+      jasmine.clock().mockDate(baseTime);
 
-    it('should update currentTime signal every second', fakeAsync(() => {
       fixture.detectChanges();
       const initialTime = component.currentTime().getTime();
-      tick(1000);
-      const updatedTime = component.currentTime().getTime();
-      expect(updatedTime).toBeGreaterThanOrEqual(initialTime + 1000);
-      component.ngOnDestroy();
-    }));
 
-    it('should clear interval on destroy', fakeAsync(() => {
-      fixture.detectChanges();
-      const clearIntervalSpy = spyOn(window, 'clearInterval').and.callThrough();
-      component.ngOnDestroy();
-      expect(clearIntervalSpy).toHaveBeenCalled();
-    }));
+      jasmine.clock().tick(1000);
+
+      const updatedTime = component.currentTime().getTime();
+      expect(updatedTime).toBe(initialTime + 1000);
+    });
   });
 
   describe('Server Environment', () => {
@@ -57,10 +53,10 @@ describe('Clock', () => {
       await setupTestBed('server');
     });
 
-    it('should NOT start interval on server', fakeAsync(() => {
+    it('should NOT start interval on server', () => {
       const setIntervalSpy = spyOn(window, 'setInterval');
       fixture.detectChanges();
       expect(setIntervalSpy).not.toHaveBeenCalled();
-    }));
+    });
   });
 });

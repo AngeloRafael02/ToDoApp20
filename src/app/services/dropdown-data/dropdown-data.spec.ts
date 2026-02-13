@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { DropdownDataService } from './dropdown-data';
-import { provideZoneChangeDetection } from '@angular/core';
+import { provideZonelessChangeDetection } from '@angular/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 
@@ -12,7 +12,7 @@ describe('DropdownDataService', () => {
     TestBed.configureTestingModule({
       providers:[
         DropdownDataService,
-        provideZoneChangeDetection(),
+        provideZonelessChangeDetection(),
         provideHttpClient(),
         provideHttpClientTesting(),
       ]
