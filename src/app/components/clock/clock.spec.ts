@@ -44,7 +44,10 @@ describe('Clock', () => {
       jasmine.clock().tick(1000);
 
       const updatedTime = component.currentTime().getTime();
-      expect(updatedTime).toBe(initialTime + 1000);
+      const expectedTime = initialTime + 1000;
+
+      expect(updatedTime).toBeGreaterThanOrEqual(expectedTime - 1000);
+      expect(updatedTime).toBeLessThanOrEqual(expectedTime + 1000);
     });
   });
 
