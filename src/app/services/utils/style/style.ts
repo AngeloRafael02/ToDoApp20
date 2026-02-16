@@ -38,4 +38,8 @@ export class StyleService {
 
     return yiq >= 128 ? 'black' : 'white';
   }
+
+  public generateRandomHex(): string {
+    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
+  }
 }

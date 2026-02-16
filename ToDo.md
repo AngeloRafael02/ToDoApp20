@@ -11,9 +11,6 @@
 ### Services
 - create account/user service/store to store all user credentials
 
-### Misc
-- create git Hook to check if console commands are in any file
-
 # Finished
 - Make Rows Data appear on task-table component - DONE
 - implement Table scss for better theme styling - DONE
@@ -40,3 +37,4 @@
 - make tabs adjustable in position - DONE
 - create Component to teach basic function of the game - DONE
 - Add Animations for switching between charts [read this](https://angular.dev/guide/animations) - DONE
+- create git Hook to check if console commands are in any file - DONE

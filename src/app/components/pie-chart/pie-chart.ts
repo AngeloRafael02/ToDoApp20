@@ -6,6 +6,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { chartDataInterface, PieSliceInterface } from '../../interfaces/misc.interface';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { ThemeService } from '../../services/theme/theme';
+import { StyleService } from '../../services/utils/style/style';
 
 @Component({
   selector: 'pie-chart',
@@ -29,6 +30,7 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private dropdownService: DropdownDataService,
+    private stylesService: StyleService,
     private themeService: ThemeService
   ) {
     Chart.register(...registerables);
@@ -141,11 +143,11 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
           legend: {
             display: true,
             position: 'bottom',
-            labels:{
+            labels: {
               color: themeColor,
               usePointStyle: false,
               padding: 20,
-              font: { size:14 }
+              font: { size: 14 }
             }
           }
         }
@@ -155,11 +157,7 @@ export class PieChart implements AfterViewInit, OnChanges, OnDestroy {
 
   private getPieSliceColors(): string[] {
     return this.data.map(item => {
-      return this.colorMap[item.name] || this.generateRandomHex();
+      return this.colorMap[item.name] || this.stylesService.generateRandomHex()
     });
-  }
-
-  private generateRandomHex(): string {
-    return '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0');
   }
 }
