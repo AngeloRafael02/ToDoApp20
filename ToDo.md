@@ -1,5 +1,9 @@
 # To Do
 - implement accesibility features in Components [read this](https://material.angular.dev/cdk/a11y/overview)
+- bug fix, table animation only works on "npm run start"
+
+### about Component
+- add new tab for Shortcuts
 
 ### stats Component
 - add keybind to navigate though all the tabs
