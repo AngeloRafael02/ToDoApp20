@@ -9,14 +9,16 @@ import { ConfigType } from '../../interfaces/forms.interface';
   providedIn: 'root',
 })
 export class TasksService {
-  
+
   private allTaskSubject = new BehaviorSubject<taskViewInterface[] | null>(null);
 
-  constructor(
-    private backendService:BackendService,
-  ){}
+  public allTasks$ = this.allTaskSubject.asObservable();
 
-  public queryAllTask(id:number){
+  constructor(
+    private backendService: BackendService,
+  ) { }
+
+  public queryAllTask(id: number) {
     this.backendService.getTableTasks<taskViewInterface[]>(id).subscribe({
       next: (result) => this.allTaskSubject.next(result.data),
       error: (err) => console.error('Failed to load tasks', err)

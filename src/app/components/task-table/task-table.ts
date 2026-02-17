@@ -15,7 +15,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { A11yModule } from '@angular/cdk/a11y';
 import { Subscription, take } from 'rxjs';
 
-import { BackendService} from '../../services/backend/backend';
+import { BackendService } from '../../services/backend/backend';
 import { StringService } from '../../services/utils/string/string';
 import { DateService } from '../../services/utils/date/date';
 import { StyleService } from '../../services/utils/style/style';
@@ -290,7 +290,7 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskTable implements  AfterViewInit, OnDestroy {
+export class TaskTable implements AfterViewInit, OnDestroy {
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -298,29 +298,29 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
   @ViewChild('input') filterInput!: ElementRef<HTMLInputElement>;
   private filterSubscription?: Subscription;
 
-  public title:string = 'Unfinished';
-  private status:number = 0;
+  public title: string = 'Unfinished';
+  private status: number = 0;
 
   private categories: categoriesInterface[] = [];
   private statuses: conditionInterface[] = [];
   private threatLevels: threatInterface[] = [];
 
   // Table State
-  private tasks:taskViewInterface[] = []
-  public taskColumns:string[] = [];
-  public tasksSource:MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
+  private tasks: taskViewInterface[] = []
+  public taskColumns: string[] = [];
+  public tasksSource: MatTableDataSource<taskViewInterface> = new MatTableDataSource(this.tasks);
 
   //Expanded Row State
   public expandedTask: taskViewInterface | null = null;
   //Form Modal State
-  public isModalOpen:boolean = false;
-  public formModalMode:'create'|'edit' = 'create';
-    public selectedTask: taskViewInterface | undefined;
+  public isModalOpen: boolean = false;
+  public formModalMode: 'create' | 'edit' = 'create';
+  public selectedTask: taskViewInterface | undefined;
   //Delete Modal States
   public isDeleteModalOpen: boolean = false;
   public taskIdToDelete: number | null = null;
 
-  private headersOrderMapping:string[] = [
+  private headersOrderMapping: string[] = [
     "Title",
     "Description",
     "Deadline",
@@ -331,12 +331,12 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
   ];
 
   constructor(
-    public stringService:StringService,
-    public backendService:BackendService,
-    public dateService:DateService,
-    public styleService:StyleService,
-    public dropdownService:DropdownDataService,
-    private taskService:TasksService,
+    public stringService: StringService,
+    public backendService: BackendService,
+    public dateService: DateService,
+    public styleService: StyleService,
+    public dropdownService: DropdownDataService,
+    private taskService: TasksService,
     private cdr: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
@@ -353,6 +353,13 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
     this.filterSubscription = this.filterService.filter$.subscribe(filterValue => {
       this.applyExternalFilter(filterValue);
     });
+    this.taskService.allTasks$.subscribe(allTasks => {
+      if (allTasks) {
+        this.tasks = this.taskService.filteredTasks(this.status, 'statuses');
+        this.tasksSource.data = this.tasks;
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   ngAfterViewInit(): void {
@@ -360,18 +367,18 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
     this.tasksSource.paginator = this.paginator;
   }
 
-  ngOnDestroy():void {
+  ngOnDestroy(): void {
     this.filterSubscription?.unsubscribe();
   }
 
-  public openTaskForm(mode:'create'|'edit' = 'create', id:number = 0) {
+  public openTaskForm(mode: 'create' | 'edit' = 'create', id: number = 0) {
     this.isModalOpen = true;
     this.formModalMode = mode;
     this.selectedTask = undefined;
     if (mode === 'edit') {
       this.selectedTask = this.tasks.find(task => task.ID === id);
       if (this.selectedTask) {
-        console.log('Selected Task for Edit:', this.selectedTask);
+        //console.log('Selected Task for Edit:', this.selectedTask);
       } else {
         console.error(`Task with ID ${id} not found.`);
       }
@@ -380,25 +387,16 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
 
   public closeTaskForm(taskData: taskInterface): void {
     if (taskData) {
-      if (taskData.id) {
-        this.backendService.updateOneTask(taskData, taskData.id as number).subscribe({
-          next: () => {
-            this.refreshTable();
-            this.isModalOpen = false;
-          },
-          error: (err) => console.error('Update failed', err)
-        });
-      } else {
-        this.backendService.addTask(taskData).subscribe({
-          next: () => {
-            this.refreshTable();
-            this.isModalOpen = false;
-          },
-          error: (err) => console.error('Creation failed', err)
-        });
-      }
-    } else {
-      this.isModalOpen = false;
+      const request = taskData.id
+        ? this.backendService.updateOneTask(taskData, taskData.id)
+        : this.backendService.addTask(taskData);
+
+      request.subscribe({
+        next: () => {
+          this.taskService.queryAllTask(1);
+          this.isModalOpen = false;
+        }
+      });
     }
   }
 
@@ -413,14 +411,14 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
   }
 
   public setupHeaders() {
-    this.backendService.getHeaders<{column_name:string}[]>('task_view').subscribe(object => {
+    this.backendService.getHeaders<{ column_name: string }[]>('task_view').subscribe(object => {
       let columns = object.data.map(obj => obj.column_name);
       this.headersOrderMapping.forEach((item, index) => {
         columns = this.stringService.rearrangeArrayItem(columns, item, index);
       });
       this.taskColumns = columns.slice(0, 3);
       this.taskColumns.push("Options");
-      this.taskColumns.splice(1,1) //remove Description column
+      this.taskColumns.splice(1, 1) //remove Description column
       this.tasksSource.sortingDataAccessor = (item, property) => {
         return (item as any)[property];
       };
@@ -434,27 +432,27 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
   }
 
   public refreshTable(): void {
-    let tempID:number = 0;
+    let tempID: number = 0;
     this.dropdownService.statuses$.subscribe({
       next: (data) => {
-        let statusObj = data?.find(data=> data.id == this.status)
+        let statusObj = data?.find(data => data.id == this.status)
         tempID = (!statusObj) ? 0 : statusObj.id;
-        this.tasks = this.taskService.filteredTasks(tempID,'statuses')
+        this.tasks = this.taskService.filteredTasks(tempID, 'statuses')
         this.tasksSource.data = this.tasks;
         this.tasksSource.sort = this.sort;
         this.tasksSource.paginator = this.paginator;
         this.cdr.markForCheck();
       },
-        error: (err) => {
-          console.error('Error refreshing table:', err);
-        }
+      error: (err) => {
+        console.error('Error refreshing table:', err);
       }
+    }
     )
   }
 
-  public finishTask(id:number) {
+  public finishTask(id: number) {
     this.backendService.finishOneTask(id).subscribe({
-      next: (data) => this.refreshTable(),
+      next: (data) => this.taskService.queryAllTask(1),
       error: (err) => console.error('Error Completing Task', err)
     });
   }
@@ -503,7 +501,7 @@ export class TaskTable implements  AfterViewInit, OnDestroy {
     if (this.taskIdToDelete !== null) {
       this.backendService.deleteOneTask(this.taskIdToDelete).subscribe({
         next: () => {
-          this.refreshTable();
+          this.taskService.queryAllTask(1);
           this.cancelDelete();
         },
         error: (err) => console.error(`Error deleting task`, err)
