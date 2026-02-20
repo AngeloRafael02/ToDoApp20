@@ -79,8 +79,6 @@ export class AboutComponent implements OnInit {
   public statusAbbr:string='';
   public threatLevelAbbr:string='';
 
-
-
   constructor(
     private dropdownService:DropdownDataService
   ){ }

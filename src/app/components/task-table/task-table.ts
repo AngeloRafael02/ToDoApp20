@@ -101,8 +101,8 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
             <td mat-cell *matCellDef="let element" [attr.colspan]="taskColumns.length">
               <div class="detail-container" [class.expanded]="expandedTask === element">
                 <div class="detail-content">
-                  <mat-chip-set aria-label="Fish selection">
-                    <mat-chip [style.backgroundColor]="getCellSpecificColor('Category', element)">{{ element.Category }}</mat-chip>
+                  <mat-chip-set aria-label="task-attributes">
+                    <mat-chip style="color:black;" [style.backgroundColor]="getCellSpecificColor('Category', element)">{{ element.Category }}</mat-chip>
                     <mat-chip [style.backgroundColor]="styleService.PriorityColor(+element.Priority)">Priority: {{ element.Priority == null ? 'None' : element.Priority}}</mat-chip>
                     <mat-chip [style.backgroundColor]="getCellSpecificColor('Status', element)">{{ element.Status }}</mat-chip>
                     <mat-chip [style.backgroundColor]="getCellSpecificColor('Threat Level', element)">{{ element['Threat Level'] }}</mat-chip>
@@ -185,6 +185,9 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
         }
       }
       tr {
+        .mat-column-expandedDetail {
+          padding: 0 !important;
+        }
         .mat-footer-row {
           font-weight: bold;
           border-top: 1px solid black;
@@ -241,6 +244,7 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
     }
 
     .detail-container  {
+      width: 100%;
       overflow: hidden;
       display: flex;
       transition: max-height 0.3s ease-out, opacity 0.2s ease;
@@ -248,8 +252,18 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
       opacity: 0;
       background-color: #fafafa;
       .detail-content{
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
         width: 100%;
         text-align:left;
+      }
+      mat-chip {
+        color: black !important;
+        --mdc-chip-label-text-color: black !important;
+        ::ng-deep .mdc-evolution-chip__text-label {
+          color: black !important;
+        }
       }
     }
 
