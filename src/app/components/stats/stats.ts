@@ -242,7 +242,9 @@ export class Stats implements OnInit {
         break;
       case 'Categories':
       case 'Threat Levels':
-        this.filterService.setFilter(event.name);
+        this.router.navigateByUrl(`/Status/All`).then(()=>{
+          this.filterService.setFilter(event.name);
+        })
         break
     }
     console.log(`Clicked ${event.name} in ${event.chartTitle}: ${event.value}`);
