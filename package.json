@@ -8,7 +8,7 @@
     "build": "ng build --verbose --stats-json --aot --named-chunks --prerender",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr": "node dist/ToDoApp20/server/server.mjs",
+    "serve:ssr": "node --inspect --trace-warnings dist/ToDoApp20/server/server.mjs",
     "auto:ssr": "npm run build && npm run serve:ssr",
     "prepare": "husky install"
   },
