@@ -1,6 +1,9 @@
 # To Do
 - implement accesibility features in Components [read this](https://material.angular.dev/cdk/a11y/overview)
-- bug fix, table animation only works on "npm run start"
+
+## Bug Fix
+- table animation only works on "npm run start", not on "npm run auto:ssr"
+- Theme toggle feature only works on "npm run start", not on "npm run auto:ssr"
 
 ### about Component
 - add new tab for Shortcuts documentation
