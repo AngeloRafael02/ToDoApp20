@@ -182,11 +182,11 @@ import { TableFilterService } from '../../services/table-filter/table-filter';
 export class Stats implements OnInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
-  private id:number = 1; //temporary
+  private id: number = 1; //temporary
 
-  public catData:chartDataInterface[] = [];
-  public statsData:chartDataInterface[] = [];
-  public threatsData:chartDataInterface[] = [];
+  public catData: chartDataInterface[] = [];
+  public statsData: chartDataInterface[] = [];
+  public threatsData: chartDataInterface[] = [];
   public tabs = ['Charts', 'Config'];
 
   public readonly panelOpenState = signal(false);
@@ -194,16 +194,16 @@ export class Stats implements OnInit {
   constructor(
     private cdr: ChangeDetectorRef,
     private router: Router,
-    private backendService:BackendService,
-    private filterService:TableFilterService
-  ){}
+    private backendService: BackendService,
+    private filterService: TableFilterService
+  ) { }
 
 
   ngOnInit(): void {
     forkJoin({
-      categories: this.backendService.getChartData<chartDataInterface[]>(this.id,'categories'),
-      status: this.backendService.getChartData<chartDataInterface[]>(this.id,'status'),
-      threats: this.backendService.getChartData<chartDataInterface[]>(this.id,'threats'),
+      categories: this.backendService.getChartData<chartDataInterface[]>(this.id, 'categories'),
+      status: this.backendService.getChartData<chartDataInterface[]>(this.id, 'status'),
+      threats: this.backendService.getChartData<chartDataInterface[]>(this.id, 'threats'),
     }).subscribe({
       next: (result) => {
         this.catData = result.categories.data;
@@ -231,22 +231,27 @@ export class Stats implements OnInit {
   public handleKeyboardEvent(event: KeyboardEvent) {
     if (event.altKey && event.key.toLowerCase() === 'e') {
       event.preventDefault();
-      this.panelOpenState.update(value => !value);
+      this.panelOpenState.update((value:boolean) => !value);
     }
   }
 
+  private currentFilter: string = '';
   public handleSliceClick(event: PieSliceInterface) {
-    switch (event.chartTitle){
+    switch (event.chartTitle) {
       case 'Status':
-        this.router.navigateByUrl(`/Status/${event.name}`)
+        this.router.navigateByUrl(`/Status/${event.name}`).then(() => {
+          this.filterService.setFilter('');
+          this.currentFilter = '';
+        });
         break;
       case 'Categories':
       case 'Threat Levels':
-        this.router.navigateByUrl(`/Status/All`).then(()=>{
-          this.filterService.setFilter(event.name);
-        })
-        break
+        const nextFilter = this.currentFilter === event.name ? '' : event.name;
+        this.router.navigateByUrl(`/Status/All`).then(() => {
+          this.filterService.setFilter(nextFilter);
+          this.currentFilter = nextFilter;
+        });
+        break;
     }
-    console.log(`Clicked ${event.name} in ${event.chartTitle}: ${event.value}`);
   }
 }
