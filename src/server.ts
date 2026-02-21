@@ -1,5 +1,5 @@
 import { AngularNodeAppEngine, createNodeRequestHandler, isMainModule, writeResponseToNodeResponse } from '@angular/ssr/node';
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import compression from 'compression';
 import helmet from 'helmet';
 import { join } from 'node:path';
@@ -18,9 +18,9 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use('/utils',utilsRouter);
-app.use('/tasks',taskRouter);
-app.use('/charts',chartsRouter);
+app.use('/utils', utilsRouter);
+app.use('/tasks', taskRouter);
+app.use('/charts', chartsRouter);
 
 /**
  * Serve static files from /browser
@@ -36,7 +36,7 @@ app.use(
 /**
  * Handle all other requests by rendering the Angular application.
  */
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   angularApp
     .handle(req)
     .then((response) =>

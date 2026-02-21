@@ -26,7 +26,8 @@ export const query = async (
                 status: 'error',
                 data: ['Request not found.']
             });
-        }
+        } 
+        res.set('Cache-Control', 'public, max-age=3600');
         return res.status(200).json({
             status: 'success',
             count: result.rowCount,
