@@ -1,0 +1,24 @@
+# Handle line endings automatically for files detected as text 
+# and leave binary files alone.
+* text=auto
+
+# Force LF for source files to ensure consistency across OSs
+*.ts text eol=lf
+*.html text eol=lf
+*.scss text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.js text eol=lf
+*.svg text eol=lf
+*.md text eol=lf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+
+# Mark package-lock.json as a generated file so it's collapsed in PRs
+package-lock.json linguist-generated=true
