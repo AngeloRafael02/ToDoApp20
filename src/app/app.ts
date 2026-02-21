@@ -8,7 +8,6 @@ import { DropdownDataService } from './services/dropdown-data/dropdown-data';
 import { TaskRouter } from './components/table-router/task-router';
 import { TasksService } from './services/tasks/tasks-service';
 import { MatButtonModule } from '@angular/material/button';
-import { Modal } from './components/modal/modal';
 import { AboutComponent } from './components/about/about';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
 
@@ -20,29 +19,23 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
     Clock,
     TaskRouter,
     Stats,
-    Modal,
     AboutComponent,
     ThemeToggleComponent
   ],
   template: `
     <div class="container">
-      <div class="header">
+      <header class="header">
         <div>
           <h1>{{ title() }}</h1>
-          <button matMiniFab>
-            <mat-icon aria-hidden="false" aria-label="Web App Help" fontIcon="help" (click)="isAboutComponentVisible = true"></mat-icon>
-          </button>
+          <about></about>
         </div>
         <app-clock></app-clock>
         <theme-toggle></theme-toggle>
-      </div>
+      </header>
 
       <stats></stats>
       <task-router></task-router>
     </div>
-    <modal [visible]="isAboutComponentVisible" [title]="'About'" (close)="isAboutComponentVisible=false" [width]="'600px'">
-      <about></about>
-    </modal>
   `,
   styles: `
     .container {
@@ -60,21 +53,12 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
         align-items: center;
         gap: 0.5rem;
 
-        h1 {
-        }
-
         div {
           display:flex;
           flex-direction: row;
           justify-content: left;
           align-items: center;
           gap: 0.5rem;
-        }
-
-        button {
-          background-color: transparent;
-          box-shadow: none;
-          color: var(--app-primary-text);
         }
       }
     }
@@ -83,15 +67,14 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
 export class App implements OnInit {
 
   protected readonly title = signal('ToDoApp20');
-  public isAboutComponentVisible:boolean = false;
 
-  constructor (
+  constructor(
     @Inject(DOCUMENT) private document: Document,
     private titleService: Title,
     private metaService: Meta,
     private dropdownService: DropdownDataService,
-    private taskService:TasksService
-  ) {}
+    private taskService: TasksService
+  ) { }
 
   ngOnInit(): void {
     this.dropdownService.initializeDropdownData();
@@ -104,7 +87,7 @@ export class App implements OnInit {
     const canonicalUrl = this.document.location.href.split('?')[0];
     const tags: MetaDefinition[] = [
       { name: 'description', content: 'To-Do-App in Angular 20 with SSR.' },
-      { property: 'og:title', content: pageTitle},
+      { property: 'og:title', content: pageTitle },
       { rel: 'canonical', href: canonicalUrl }
     ];
     this.titleService.setTitle(pageTitle);
