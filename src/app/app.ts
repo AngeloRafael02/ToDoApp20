@@ -10,6 +10,7 @@ import { TasksService } from './services/tasks/tasks-service';
 import { MatButtonModule } from '@angular/material/button';
 import { AboutComponent } from './components/about/about';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
+import { FooterComponent } from './components/footer/footer';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +21,8 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
     TaskRouter,
     Stats,
     AboutComponent,
-    ThemeToggleComponent
+    ThemeToggleComponent,
+    FooterComponent
   ],
   template: `
     <div class="container">
@@ -34,7 +36,9 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
       </header>
 
       <stats></stats>
+
       <task-router></task-router>
+
     </div>
   `,
   styles: `
@@ -45,6 +49,8 @@ import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
       gap: 1rem;
       padding-left: 5%;
       padding-right: 5%;
+      padding-bottom: 2rem;
+      padding-top: 2rem;
 
       .header {
         display:flex;

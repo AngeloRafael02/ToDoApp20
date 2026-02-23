@@ -11,7 +11,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { ActivatedRoute, Router } from '@angular/router';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { A11yModule } from '@angular/cdk/a11y';
 import { Subscription, take } from 'rxjs';
 

@@ -60,7 +60,6 @@ body {
   background-color: var(--app-color1);
 }
 
-
 ::view-transition-old(table-content) {
   animation: 500ms ease-in-out both slide-out;
 }
