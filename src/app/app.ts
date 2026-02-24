@@ -30,41 +30,52 @@ import { FooterComponent } from './components/footer/footer';
         <div>
           <h1>{{ title() }}</h1>
           <about></about>
+          <theme-toggle class="mobile-only"></theme-toggle>
         </div>
         <app-clock></app-clock>
-        <theme-toggle></theme-toggle>
+        <theme-toggle class="pc-only"></theme-toggle>
       </header>
 
       <stats></stats>
 
       <task-router></task-router>
-
     </div>
+    <app-footer></app-footer>
+
   `,
-  styles: `
+styles: `
     .container {
       display: flex;
       flex-direction: column;
       justify-content: center;
       gap: 1rem;
-      padding-left: 5%;
-      padding-right: 5%;
-      padding-bottom: 2rem;
-      padding-top: 2rem;
+      padding: 2rem 5%;
 
       .header {
-        display:flex;
-        flex-direction: row;
-        justify-content: space-between;
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
+        text-align: center;
+
+        /* Desktop View */
+        @media (min-width: 768px) {
+          flex-direction: row;
+          justify-content: space-between;
+          text-align: left;
+          gap: 0rem;
+        }
 
         div {
-          display:flex;
+          display: flex;
           flex-direction: row;
-          justify-content: left;
+          justify-content: center;
           align-items: center;
           gap: 0.5rem;
+
+          @media (min-width: 768px) {
+            justify-content: flex-start;
+          }
         }
       }
     }
