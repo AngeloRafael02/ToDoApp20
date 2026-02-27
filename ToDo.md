@@ -5,9 +5,6 @@
 - table animation only works on "npm run start", not on "npm run auto:ssr"
 - Theme toggle feature only works on "npm run start", not on "npm run auto:ssr"
 
-### about Component
-- add new tab for Shortcuts documentation
-
 ### stats Component
 - add keybind to navigate though all the tabs
 - data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
@@ -43,3 +40,4 @@
 - Add Animations for switching between charts [read this](https://angular.dev/guide/animations) - DONE
 - create git Hook to check if console commands are in any file - DONE
 - Fix Table Update after Finish/Update/Delete, to automatically react - DONE
+- add new tab for Shortcuts documentation - DONE

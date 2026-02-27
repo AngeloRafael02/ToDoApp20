@@ -9,3 +9,15 @@ export interface PieSliceInterface {
   value: number;
   chartTitle: string;
 }
+
+export interface TaskPart {
+  input: string;
+  definition: string;
+  inputType: string;
+  specs: string[];
+}
+
+export interface AppKeybind {
+  keybind:string,
+  command: string
+}
