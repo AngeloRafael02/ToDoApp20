@@ -43,7 +43,21 @@ import { FooterComponent } from './components/footer/footer';
     <app-footer></app-footer>
 
   `,
-styles: `
+  styles: `
+    :host {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    :host > .container {
+      flex: 1 0 auto;
+    }
+
+    :host > app-footer {
+      flex-shrink: 0;
+    }
+
     .container {
       display: flex;
       flex-direction: column;
