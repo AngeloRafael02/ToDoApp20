@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+. "$(dirname -- "$0")/_/husky.sh" # Remove this and line abaove on version 10.0.0 of husy
 
 #npm test
 node scripts/console-log-check.js
