@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --verbose",
-    "build": "ng build --verbose --stats-json --aot --named-chunks --prerender",
+    "build": "ng build --verbose --stats-json --aot --named-chunks",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr": "node --inspect --trace-warnings dist/ToDoApp20/server/server.mjs",
