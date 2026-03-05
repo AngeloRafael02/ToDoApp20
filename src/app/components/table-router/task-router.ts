@@ -1,8 +1,10 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Inject, OnInit, PLATFORM_ID } from "@angular/core";
 import { NavigationEnd, Router, RouterOutlet } from "@angular/router";
 import { filter, Observable } from "rxjs";
 import { MatTabChangeEvent, MatTabsModule } from "@angular/material/tabs";
-import { CommonModule } from "@angular/common";
+import { CommonModule, isPlatformBrowser } from "@angular/common";
+import { injectSpeedInsights } from '@vercel/speed-insights';
+import { inject as injectAnalytics } from '@vercel/analytics';
 
 import { DropdownDataService } from "../../services/dropdown-data/dropdown-data";
 import { conditionInterface } from "../../interfaces/forms.interface";
@@ -75,11 +77,26 @@ export class TaskRouter implements OnInit {
   private currentTabs: conditionInterface[] = [];
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private dropdownService:DropdownDataService,
     private router: Router,
   ){}
 
   ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      injectSpeedInsights();
+      injectAnalytics();
+      this.router.events.pipe(
+        filter(event => event instanceof NavigationEnd)
+      ).subscribe((event: NavigationEnd) => {
+        injectSpeedInsights({
+          route: event.urlAfterRedirects
+        });
+        injectAnalytics({
+          endpoint: event.urlAfterRedirects
+        });
+      });
+    }
     this.statuses$ = this.dropdownService.statuses$;
     this.statuses$.subscribe(tabs => {
       if (tabs) {
