@@ -40,7 +40,7 @@ export class Modal implements OnChanges {
 
   @Input() title: string = '';
   @Input() visible: boolean = false;
-  @Input() width: string = '400px'
+  @Input() dimensions: { width:string, height:string } = { width:'400px', height:'610px'}
   @Output() close = new EventEmitter<any>();
 
   private dialogRef!: MatDialogRef<any> | null;
@@ -59,7 +59,8 @@ export class Modal implements OnChanges {
 
   openModal(): void {
     this.dialogRef = this.dialog.open(this.dialogTemplate, {
-      width: this.width,
+      width: this.dimensions.width,
+      height:this.dimensions.height,
       disableClose: false,
       hasBackdrop: true,
     });

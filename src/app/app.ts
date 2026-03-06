@@ -39,9 +39,9 @@ import { FooterComponent } from './components/footer/footer';
       <stats></stats>
 
       <task-router></task-router>
+
     </div>
     <app-footer></app-footer>
-
   `,
   styles: `
     :host {
@@ -63,7 +63,10 @@ import { FooterComponent } from './components/footer/footer';
       flex-direction: column;
       justify-content: center;
       gap: 1rem;
-      padding: 2rem 5%;
+      padding-left: 5%;
+      padding-right: 5%;
+      padding-bottom: 2rem;
+      padding-top: 2rem;
 
       .header {
         display: flex;

@@ -6,7 +6,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { DropdownDataService } from '../../services/dropdown-data/dropdown-data';
 import { Modal } from "../modal/modal";
 import { AppKeybind, TaskPart } from "../../interfaces/misc.interface";
-
+import { KeybindService } from "../../services/keybinds/keybinds";
 
 @Component({
   selector: 'about',
@@ -19,7 +19,7 @@ import { AppKeybind, TaskPart } from "../../interfaces/misc.interface";
     <button matMiniFab>
       <mat-icon aria-hidden="false" aria-label="Web App Help" fontIcon="help" (click)="isAboutComponentVisible.set(true)"></mat-icon>
     </button>
-    <modal [visible]="isAboutComponentVisible()" [title]="'About'" (close)="isAboutComponentVisible.set(false)" [width]="'600px'">
+    <modal [visible]="isAboutComponentVisible()" [title]="'About'" (close)="isAboutComponentVisible.set(false)" [dimensions]="{width:'600px', height:'600px'}">
       <mat-tab-group>
         <mat-tab label="Tasks">
           <h2>Welcome to ToDoApp20</h2>
@@ -70,10 +70,14 @@ import { AppKeybind, TaskPart } from "../../interfaces/misc.interface";
                   </tr>
                 </thead>
                 <tbody>
-                  @for (keybind of appKeybinds; track keybind) {
+                  @for (kb of keybindService.keybinds(); track kb.command) {
                     <tr>
-                      <td>{{ keybind.command }}</td>
-                      <td><code>{{ keybind.keybind }}</code></td>
+                      <td>
+                        <label [for]="kb.command">{{ kb.command }}</label>
+                      </td>
+                      <td>
+                        alt + <input type="text" [id]="kb.command" [name]="kb.command" [value]="kb.character" (blur)="onKeybindBlur(kb.command, $any($event.target).value)" class="keybind-input" placeholder="e.g. ctrl + s" maxlength="1">
+                      </td>
                     </tr>
                   }
                 </tbody>
@@ -99,6 +103,17 @@ import { AppKeybind, TaskPart } from "../../interfaces/misc.interface";
         ul {
           padding-left:10px;
         }
+        .keybind-input {
+          border: 1px dashed #ccc;
+          padding: 4px;
+          font-family: monospace;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .keybind-input:focus {
+          outline: none;
+          border-color: var(--app-primary-text);
+        }
       }
     }
   `
@@ -122,12 +137,13 @@ export class AboutComponent implements OnInit {
   ];
 
   public appKeybinds:AppKeybind[] = [
-    { command:'Open Help Dialog', keybind:'alt + r'},
-    { command:'Open Stats', keybind:'alt + e'},
+    { command:'Open Help Dialog', character:'r'},
+    { command:'Open Stats', character:'e'},
   ]
 
   constructor(
-    private dropdownService: DropdownDataService
+    private dropdownService: DropdownDataService,
+    public keybindService: KeybindService
   ) { }
 
   @HostListener('window:keydown', ['$event'])
@@ -164,4 +180,11 @@ export class AboutComponent implements OnInit {
     if (column === 'Threat Level') return this.threatLevelAbbr;
     return '';
   }
+
+  public onKeybindBlur(command: string, newValue: string): void {
+    if (newValue && newValue.trim().length > 0) {
+      this.keybindService.updateKeybind(command, newValue);
+    }
+  }
+
 }
