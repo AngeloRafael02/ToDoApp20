@@ -148,7 +148,7 @@ export class AboutComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   public toggleHelpIcon(event: KeyboardEvent) {
-    if (event.altKey && event.key.toLocaleLowerCase() === 'r') {
+    if (this.keybindService.matchShortcut(event, 'Open Help Dialog')) {
       event.preventDefault();
       this.isAboutComponentVisible.update((value:boolean) => !value)
     }

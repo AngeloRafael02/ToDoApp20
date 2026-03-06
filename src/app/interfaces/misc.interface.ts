@@ -18,6 +18,6 @@ export interface TaskPart {
 }
 
 export interface AppKeybind {
-  keybind:string,
-  command: string
+  command: string;
+  character: string;
 }

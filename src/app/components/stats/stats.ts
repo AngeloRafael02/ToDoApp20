@@ -13,6 +13,7 @@ import { BackendService } from '../../services/backend/backend';
 import { chartDataInterface, PieSliceInterface } from '../../interfaces/misc.interface';
 import { Router } from '@angular/router';
 import { TableFilterService } from '../../services/table-filter/table-filter';
+import { KeybindService } from '../../services/keybinds/keybinds';
 
 @Component({
   selector: 'stats',
@@ -195,7 +196,8 @@ export class Stats implements OnInit {
     private cdr: ChangeDetectorRef,
     private router: Router,
     private backendService: BackendService,
-    private filterService: TableFilterService
+    private filterService: TableFilterService,
+    private keybindService: KeybindService
   ) { }
 
 
@@ -229,7 +231,7 @@ export class Stats implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   public handleKeyboardEvent(event: KeyboardEvent) {
-    if (event.altKey && event.key.toLowerCase() === 'e') {
+    if (this.keybindService.matchShortcut(event, 'Open Stats')) {
       event.preventDefault();
       this.panelOpenState.update((value:boolean) => !value);
     }
