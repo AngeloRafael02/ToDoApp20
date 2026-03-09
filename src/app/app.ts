@@ -1,6 +1,7 @@
-import { Component, DOCUMENT, Inject, OnInit, signal } from '@angular/core';
+import { Component, DOCUMENT, Inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { Title, Meta, MetaDefinition } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
+import { isPlatformBrowser } from '@angular/common';
 
 import { Clock } from './components/clock/clock';
 import { Stats } from './components/stats/stats';
@@ -104,6 +105,7 @@ export class App implements OnInit {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
+    @Inject(PLATFORM_ID) private platformId: Object,
     private titleService: Title,
     private metaService: Meta,
     private dropdownService: DropdownDataService,
@@ -111,8 +113,10 @@ export class App implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.dropdownService.initializeDropdownData();
-    this.taskService.queryAllTask(1);
+    if (isPlatformBrowser(this.platformId)) {
+      this.dropdownService.initializeDropdownData();
+      this.taskService.queryAllTask(1);
+    }
     this.setupMetadata();
   }
 
