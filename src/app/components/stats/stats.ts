@@ -1,5 +1,5 @@
-import { ChangeDetectorRef, Component, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, ElementRef, HostListener, Inject, OnInit, PLATFORM_ID, signal, ViewChild } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -193,6 +193,7 @@ export class Stats implements OnInit {
   public readonly panelOpenState = signal(false);
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private cdr: ChangeDetectorRef,
     private router: Router,
     private backendService: BackendService,
@@ -202,19 +203,21 @@ export class Stats implements OnInit {
 
 
   ngOnInit(): void {
-    forkJoin({
-      categories: this.backendService.getChartData<chartDataInterface[]>(this.id, 'categories'),
-      status: this.backendService.getChartData<chartDataInterface[]>(this.id, 'status'),
-      threats: this.backendService.getChartData<chartDataInterface[]>(this.id, 'threats'),
-    }).subscribe({
-      next: (result) => {
-        this.catData = result.categories.data;
-        this.statsData = result.status.data;
-        this.threatsData = result.threats.data;
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Failed to load chart data', err)
-    })
+    if (isPlatformBrowser(this.platformId)) {
+      forkJoin({
+        categories: this.backendService.getChartData<chartDataInterface[]>(this.id, 'categories'),
+        status: this.backendService.getChartData<chartDataInterface[]>(this.id, 'status'),
+        threats: this.backendService.getChartData<chartDataInterface[]>(this.id, 'threats'),
+      }).subscribe({
+        next: (result) => {
+          this.catData = result.categories.data;
+          this.statsData = result.status.data;
+          this.threatsData = result.threats.data;
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Failed to load chart data', err)
+      })
+    }
   }
 
   public scroll(direction: 'left' | 'right') {
