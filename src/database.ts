@@ -4,6 +4,9 @@ require('dotenv').config();
 
 export const pool = new Pool({
   connectionString: process.env['DATABASE_URL'] as string,
+  ssl: process.env['DATABASE_URL']?.includes('localhost') ? false : {
+    rejectUnauthorized: false
+  }
 });
 
 /**
@@ -20,6 +23,10 @@ export const query = async (
   expectEmpty:boolean = false
 ) => {
     try {
+        if (!process.env['DATABASE_URL']) {
+            console.error("DATABASE_URL is missing!");
+            return res.status(500).json({ status: 'error', data: ['Configuration missing'] });
+        }
         const result = await pool.query(query, params);
         if (expectEmpty === false && result.rows.length === 0) {
             return res.status(404).json({

@@ -1,0 +1,27 @@
+[
+    {
+        "id": 5,
+        "level": "Inevitable",
+        "color": "A9A9A9"
+    },
+    {
+        "id": 3,
+        "level": "High",
+        "color": "FDE4CF"
+    },
+    {
+        "id": 2,
+        "level": "Medium",
+        "color": "FBF8CC"
+    },
+    {
+        "id": 4,
+        "level": "Alarming",
+        "color": "FFCFD2"
+    },
+    {
+        "id": 1,
+        "level": "Low",
+        "color": "B9FBC0"
+    }
+]

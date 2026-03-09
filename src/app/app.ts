@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AboutComponent } from './components/about/about';
 import { ThemeToggleComponent } from './components/theme-toggle/theme-toggle';
 import { FooterComponent } from './components/footer/footer';
+import { Auth } from './components/auth/auth';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ import { FooterComponent } from './components/footer/footer';
     Stats,
     AboutComponent,
     ThemeToggleComponent,
-    FooterComponent
+    FooterComponent,
+    Auth
   ],
   template: `
     <div class="container">
@@ -34,7 +36,10 @@ import { FooterComponent } from './components/footer/footer';
           <theme-toggle class="mobile-only"></theme-toggle>
         </div>
         <app-clock></app-clock>
-        <theme-toggle class="pc-only"></theme-toggle>
+        <div>
+          <theme-toggle class="pc-only"></theme-toggle>
+          <!--<app-auth></app-auth>-->
+        </div>
       </header>
 
       <stats></stats>

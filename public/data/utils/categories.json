@@ -1,0 +1,57 @@
+[
+    {
+        "id": 5,
+        "cat": "IT",
+        "color": "B9FBC0"
+    },
+    {
+        "id": 11,
+        "cat": "Other",
+        "color": "BFBFBF"
+    },
+    {
+        "id": 9,
+        "cat": "Fitness",
+        "color": "8EECF5"
+    },
+    {
+        "id": 8,
+        "cat": "Estate",
+        "color": "FFCFD2"
+    },
+    {
+        "id": 7,
+        "cat": "Finance",
+        "color": "90DFB4"
+    },
+    {
+        "id": 1,
+        "cat": "Personal",
+        "color": "CFBAF0"
+    },
+    {
+        "id": 4,
+        "cat": "Automotive",
+        "color": "FDE4CF"
+    },
+    {
+        "id": 2,
+        "cat": "Knowledge",
+        "color": "98F5E1"
+    },
+    {
+        "id": 6,
+        "cat": "Government",
+        "color": "FBF8CC"
+    },
+    {
+        "id": 3,
+        "cat": "Career",
+        "color": "A3C4F3"
+    },
+    {
+        "id": 10,
+        "cat": "Health",
+        "color": "F1C0E8"
+    }
+]

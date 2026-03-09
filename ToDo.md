@@ -3,11 +3,6 @@
 
 ## Bug Fix
 - table animation only works on "npm run start", not on "npm run auto:ssr"
-- Theme toggle feature only works on "npm run start", not on "npm run auto:ssr"
-
-### stats Component
-- add keybind to navigate though all the tabs
-- data reacts depending on current table (Do this when multiple tables via router is created and Animations are made)
 
 ### Services
 - create account/user service/store to store all user credentials
