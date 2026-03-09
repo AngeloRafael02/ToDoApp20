@@ -49,7 +49,7 @@ export class BackendService {
     return this.http.get<{ status: string; data: T }>(`/charts/${option}/${id}`).pipe(
       catchError((error: HttpErrorResponse) => {
         console.error(this.errorMsg(option), error);
-        return this.http.get<{ status: string; data: T }>(`/data/utils/status`)
+        return of({status:'error', data:[] as unknown as T});
       })
     );
   }
