@@ -21,13 +21,18 @@ export class ThemeService {
     if (this.isBrowser) {
       const savedTheme = localStorage.getItem('theme');
       const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      this.darkMode = savedTheme === 'dark' || (!savedTheme && systemDark);
+      const domDark = document.documentElement.classList.contains('dark-mode');
+      this.darkMode = savedTheme ? savedTheme === 'dark' : (domDark || systemDark);
       this.updateTheme();
     }
   }
 
   toggleTheme() {
-    this.darkMode = !this.darkMode;
+    this.setTheme(!this.darkMode);
+  }
+
+  setTheme(isDark: boolean) {
+    this.darkMode = isDark;
     if (this.isBrowser) {
       localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
     }

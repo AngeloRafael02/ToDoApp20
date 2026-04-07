@@ -2,19 +2,18 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../../services/theme/theme';
 
 @Component({
   selector: 'theme-toggle',
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule, MatIconModule, FormsModule],
+  imports: [CommonModule, MatSlideToggleModule, MatIconModule],
   template: `
     <div class="toggle-container">
       <mat-icon>{{ themeService.isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
       <mat-slide-toggle
-        [ngModel]="themeService.isDark()"
-        (change)="themeService.toggleTheme()"
+        [checked]="themeService.isDark()"
+        (change)="themeService.setTheme($event.checked)"
         color="primary">
       </mat-slide-toggle>
     </div>
