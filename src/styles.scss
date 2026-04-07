@@ -77,20 +77,3 @@ body {
   from { transform: translateY(0); opacity: 1; }
   to { transform: translateY(-50px); opacity: 0; }
 }
-
-/* Responsive visibility helpers */
-.mobile-only {
-  display: block;
-
-  @media (min-width: 768px) {
-    display: none;
-  }
-}
-
-.pc-only {
-  display: none;
-
-  @media (min-width: 768px) {
-    display: block;
-  }
-}

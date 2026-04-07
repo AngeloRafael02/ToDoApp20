@@ -100,6 +100,20 @@ import { Auth } from './components/auth/auth';
             justify-content: flex-start;
           }
         }
+
+        .mobile-only {
+          display: block;
+          @media (min-width: 768px) {
+            display: none;
+          }
+        }
+
+        .pc-only {
+          display: none;
+          @media (min-width: 768px) {
+            display: block;
+          }
+        }
       }
     }
   `
